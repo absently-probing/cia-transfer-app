@@ -1,4 +1,4 @@
-package de.fu_berlin.imp.secure_upload
+package de.fuberlin.imp.secure_upload
 
 import android.os.Bundle
 
