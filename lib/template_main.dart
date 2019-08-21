@@ -43,12 +43,12 @@ class RandomWordsState extends State<RandomWords> {
 
 
   Widget build(BuildContext context) {
-    final wordPair = WordPair.random();
+    //final wordPair = WordPair.random();
     //return Text(wordPair.asPascalCase);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Startup Name Generator'),
+        title: Text(''),
         actions: <Widget>[      // Add 3 lines from here...
           IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
         ],

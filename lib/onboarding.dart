@@ -25,7 +25,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 class MyHomePage extends StatefulWidget {
   final String title;
   MyHomePage({this.title});
@@ -37,7 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   int _slideIndex = 0;
-
+  //final GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   final List<String> images = [
     "assets/slide_1.png",
     "assets/slide_2.png",
@@ -45,6 +44,7 @@ class MyHomePageState extends State<MyHomePage> {
     "assets/slide_4.png"
   ];
 
+  List<Color> colors = [Colors.orange];
   final List<String> text0 = [
     "Welcome in your app",
     "Enjoy teaching...",
@@ -60,10 +60,8 @@ class MyHomePageState extends State<MyHomePage> {
   ];
 
   final IndexController controller = IndexController();
-
   @override
   Widget build(BuildContext context) {
-
     TransformerPageView transformerPageView = TransformerPageView(
         pageSnapping: true,
         onPageChanged: (index) {
@@ -133,6 +131,15 @@ class MyHomePageState extends State<MyHomePage> {
                         SizedBox(
                           height: 55.0,
                         ),
+                        new ParallaxContainer(
+                          position: info.position,
+                          translationFactor: 500.0,
+                          child: Dots(
+                            controller: controller,
+                            slideIndex: _slideIndex,
+                            numberOfDots: images.length,
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -145,6 +152,70 @@ class MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.white,
       body: transformerPageView,
     );
+  }
+}
+class Dots extends StatelessWidget {
 
+  final IndexController controller;
+  final int slideIndex;
+  final int numberOfDots;
+  Dots({this.controller, this.slideIndex, this.numberOfDots});
+
+  List<Widget> _generateDots() {
+    List<Widget> dots = [];
+    for (int i = 0; i < numberOfDots; i++) {
+      dots.add(i == slideIndex ? _activeSlide(i) : _inactiveSlide(i));
+    }
+    return dots;
+  }
+
+  Widget _activeSlide(int index) {
+    return GestureDetector(
+      onTap: () {
+        print('Tapped');
+      },
+      child: new Container(
+        child: Padding(
+          padding: EdgeInsets.only(left: 8.0, right: 8.0),
+          child: Container(
+            width: 20.0,
+            height: 20.0,
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent.withOpacity(.3),
+              borderRadius: BorderRadius.circular(50.0),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _inactiveSlide(int index) {
+    return GestureDetector(
+      onTap: () {
+        controller.move(index);
+      },
+      child: new Container(
+        child: Padding(
+          padding: EdgeInsets.only(left: 5.0, right: 5.0),
+          child: Container(
+            width: 14.0,
+            height: 14.0,
+            decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(50.0)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: _generateDots(),
+        ));
   }
 }
