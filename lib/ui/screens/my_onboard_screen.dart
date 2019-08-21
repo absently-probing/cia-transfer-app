@@ -26,8 +26,14 @@ final pages = [
   new PageViewModel(
       Colors.red,
       Strings.appTitle,
-      new Text(
-        'How To Use',
+      new ConstrainedBox(
+        constraints: new BoxConstraints(
+          maxHeight: 500.0,
+        ),
+      child: new SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: new Text(
+        Strings.appUsing,
         softWrap: true,
         textAlign: TextAlign.center,
         style: new TextStyle(
@@ -36,18 +42,10 @@ final pages = [
           fontFamily: Strings.titleTextFont,
           fontWeight: FontWeight.w700,
           fontSize: 15.0,
+          ),
         ),
-      )
-      //ListView(
-      //  padding: const EdgeInsets.all(8.0),
-      // children: <Widget>[
-      //  Container(
-      //    height: 50,
-      //    color: Colors.amber[600],
-      //    child: Center(child: Text(Strings.appDescription)),
-      //  ),
-      // ],
-      //),
+      ),
+      ),
       ),
   new PageViewModel(
     Colors.green,
@@ -55,10 +53,23 @@ final pages = [
       new Container(
         child: new Column(
           children: <Widget>[
-            Text('Please Select a Cloud Storage'),
-            new MyDropdownMenu(),
-            new CustomFlatButton(
-              title: "LogIn",
+            new Text('Please Select a Cloud Storage',
+              style: new TextStyle(
+                color: Colors.white,
+                decoration: TextDecoration.none,
+                fontFamily: Strings.titleTextFont,
+                fontWeight: FontWeight.w700,
+                fontSize: 15.0,
+              ),
+            ),
+            new Padding(
+              padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: new MyDropdownMenu(),
+            ),
+            new Padding(
+            padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
+            child: new CustomFlatButton(
+              title: "Log In",
               fontSize: 22,
               fontWeight: FontWeight.w700,
               textColor: Colors.white,
@@ -70,13 +81,15 @@ final pages = [
                   String url= "https://www.google.de";
                   _launchURL();
                   Navigator.of(_context).pushNamed("/root");}
-                }
-                    ,
+              }
+              ,
               splashColor: Colors.black12,
-              borderColor: Color.fromRGBO(212, 20, 15, 1.0),
-              borderWidth: 0,
-              color: Color.fromRGBO(212, 20, 15, 1.0),
+              borderColor: Colors.white,
+              borderWidth: 3.00,
+              color: Colors.green,
             ),
+            ),
+
           ],
 
         )
@@ -91,7 +104,6 @@ _launchURL() async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    print("Hello");
     throw 'Could not launch $url';
   }
 }
@@ -125,7 +137,7 @@ class Page extends StatelessWidget {
               transform: new Matrix4.translationValues(
                   0.0, 50.0 * 0.5 - iconPercentVisible, 0.0),
               child: new Padding(
-                padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
+                padding: new EdgeInsets.only(top: 10.0, bottom: 0.0),
                 child: new Stack(
                   children: <Widget>[
                     new Container(
@@ -152,7 +164,7 @@ class Page extends StatelessWidget {
               transform: new Matrix4.translationValues(
                   0.0, 50.0 * 1.0 - titlePercentVisible, 0.0),
               child: new Padding(
-                  padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                  padding: EdgeInsets.only(top: 0.0, bottom: 15.0),
                   child: new Text(
                     viewModel.title,
                     softWrap: true,
@@ -174,7 +186,7 @@ class Page extends StatelessWidget {
                   0.0, 50.0 * 0.75 - textPercentVisible, 0.0),
               child: new Padding(
                 padding: EdgeInsets.only(
-                    top: 10.0, bottom: 250.0, left: 20.00, right: 20.00),
+                    top: 15.0, bottom: 100.0, left: 20.00, right: 20.00),
                 child: viewModel.body,
               ),
             ),

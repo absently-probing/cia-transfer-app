@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         '/root': (BuildContext context) => new MyRootScreen(),
       },
       theme: ThemeData(
-        primaryColor: Colors.blue,
+        primaryColor: Colors.blueGrey,
         primarySwatch: Colors.grey,
       ),
       home: _handleCurrentScreen(),

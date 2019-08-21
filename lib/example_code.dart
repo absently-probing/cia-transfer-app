@@ -1,62 +1,61 @@
-// Flutter code sample for material.DropdownButton.1
+// Flutter code sample for widgets.SingleChildScrollView.2
 
-// This sample shows a `DropdownButton` whose value is one of
-// "One", "Two", "Free", or "Four".
+// In this example, the column becomes either as big as viewport, or as big as
+// the contents, whichever is biggest.
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 void main() => runApp(MyApp());
 
 /// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
-  static const String _title = 'Flutter Code Sample';
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
-        body: new SizedBox(
-          width: 200,
-          height: 200,
-          child: MyDropdownMenu(),
-        )
-      ),
+    return WidgetsApp(
+      title: 'Flutter Code Sample',
+      builder: (BuildContext context, Widget navigator) {
+        return MyStatelessWidget();
+      },
+      color: const Color(0xffffffff),
     );
   }
 }
 
-class MyDropdownMenu extends StatefulWidget {
-  MyDropdownMenu({Key key}) : super(key: key);
-
-  @override
-  _MyDropdownMenuState createState() => _MyDropdownMenuState();
-}
-
-class _MyDropdownMenuState extends State<MyDropdownMenu> {
-  String dropdownValue = 'Select Cloud Storage Provider';
+/// This is the stateless widget that the main application instantiates.
+class MyStatelessWidget extends StatelessWidget {
+  MyStatelessWidget({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: DropdownButton<String>(
-          value: dropdownValue,
-          onChanged: (String newValue) {
-            setState(() {
-              dropdownValue = newValue;
-            });
-          },
-          items: <String>['Select Cloud Storage Provider','Dropbox', 'GoogleDrive', 'OneDrive']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints viewportConstraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: viewportConstraints.maxHeight,
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    // A fixed-height child.
+                    color: const Color(0xff808000), // Yellow
+                    height: 120.0,
+                  ),
+                  Expanded(
+                    // A flexible child that will grow to fit the viewport but
+                    // still be at least as big as necessary to fit its contents.
+                    child: Container(
+                      color: const Color(0xff800000), // Red
+                      height: 120.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

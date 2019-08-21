@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:secure_upload/data/strings.dart';
 
 String sProvider = null;
 
@@ -104,7 +105,15 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
       items.add(
         DropdownMenuItem(
           value: provider,
-          child: Text(provider.name),
+          child: Text(provider.name,
+          style: new TextStyle(
+            color: Colors.white,
+            decoration: TextDecoration.none,
+            fontFamily: Strings.titleTextFont,
+            fontWeight: FontWeight.w700,
+            fontSize: 15.0,
+          ),
+        ),
         ),
       );
     }
@@ -122,11 +131,18 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
   @override
   Widget build(BuildContext context) {
     return Center(
+      child: new Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: Theme.of(context).primaryColor
+          ),
         child: DropdownButton(
           value: _selectedProvider,
           items: _dropdownMenuItems,
           onChanged: onChangeDropdownMenuItem,
         ),
-      );
+      ),
+    );
   }
 }
+
+
