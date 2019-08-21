@@ -145,4 +145,28 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
   }
 }
 
+enum WhyFarther { cloud, sync, setting }
 
+class MyPopupMenuButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return
+      new PopupMenuButton<WhyFarther>(
+          //onSelected: (WhyFarther result) { setState(() { _selection = result; }); },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
+            const PopupMenuItem<WhyFarther>(
+              value: WhyFarther.cloud,
+              child: Text('Cloud Storage'),
+            ),
+            const PopupMenuItem<WhyFarther>(
+              value: WhyFarther.sync,
+              child: Text('Synchronization'),
+            ),
+            const PopupMenuItem<WhyFarther>(
+              value: WhyFarther.setting,
+              child: Text('Settings'),
+            ),
+          ],
+        );
+  }
+}

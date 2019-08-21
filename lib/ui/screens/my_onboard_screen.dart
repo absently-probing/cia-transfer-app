@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 BuildContext _context;
-
 
 final pages = [
   new PageViewModel(
@@ -75,12 +76,13 @@ final pages = [
               textColor: Colors.white,
               onPressed: () {
                 if (sProvider == null){
-                  return null;
+
+                  Navigator.of(_context).pushNamed("/root");
                 } else {
                   // widget.prefs.setBool('seen', true);
                   String url= "https://www.google.de";
                   _launchURL();
-                  Navigator.of(_context).pushNamed("/root");}
+                  Navigator.of(_context).pushReplacementNamed("/root");}
               }
               ,
               splashColor: Colors.black12,

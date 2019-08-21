@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/ui/screens/decrypt_path_previous_screen.dart';
 import 'package:secure_upload/ui/screens/decrypt_path_second_screen.dart';
+import 'package:secure_upload/ui/screens/my_root_screen.dart';
+import 'package:secure_upload/data/strings.dart';
 
-void main() => runApp(new MyApp());
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      theme: new ThemeData(),
-      home: new FormPage(),
-    );
-  }
-}
 
-class FormPage extends StatefulWidget {
+class DecryptScreen extends StatefulWidget {
   @override
   MyAppState createState() => new MyAppState();
 }
 
-class MyAppState extends State<FormPage> {
+class MyAppState extends State<DecryptScreen> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final stateKey = new GlobalKey<FormState>();
 
@@ -43,24 +34,16 @@ class MyAppState extends State<FormPage> {
 
     if (form.validate()) {
       form.save();
-
-
-
       Navigator.push(context,
           MaterialPageRoute(builder:(context)=>SecondScreen())
 
       );
-
       //performLogin();
-
-
 
     }
   }
 
   void performLogin() {
-
-
     final snackbar = new SnackBar(
         content: new Text("Decryption Successful!, Email : $_url, password : $_password")
     );
@@ -73,12 +56,8 @@ class MyAppState extends State<FormPage> {
     return new Scaffold(
         key: scaffoldKey,
         appBar: new AppBar(
-          leading: IconButton(icon: new Icon(Icons.arrow_back_ios), onPressed: (){
-            Navigator.push(context,
-                MaterialPageRoute(builder:(context)=>PreviousScreen())
-            );
-          }),
-          title: new Text("Secure Upload"),
+          centerTitle: true,
+          title: new Text(Strings.appTitle),
         ),
         body: new Padding(
           padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 250.0, bottom: 10.0),

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:secure_upload/data/strings.dart';
+import 'package:secure_upload/ui/screens/decrypt_path_home.dart';
 
 class MyRootScreen extends StatefulWidget {
   @override
   createState() => new _MyRootScreenState();
 }
-
-enum WhyFarther { cloud, sync, setting }
 
 class Choice {
   const Choice({this.title, this.icon});
@@ -17,6 +16,10 @@ class Choice {
 }
 
 class _MyRootScreenState extends State<MyRootScreen> {
+  final double iconPercentVisible = 0.5;
+  final double titlePercentVisible = 1.0;
+  final double textPercentVisible = 0.75;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,40 +27,73 @@ class _MyRootScreenState extends State<MyRootScreen> {
         centerTitle: true,
         title: Text(Strings.appTitle),
         actions: <Widget>[
-          PopupMenuButton<WhyFarther>(
-            //onSelected: (WhyFarther result) { setState(() { _selection = result; }); },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
-              const PopupMenuItem<WhyFarther>(
-                value: WhyFarther.cloud,
-                child: Text('Cloud Storage'),
-              ),
-              const PopupMenuItem<WhyFarther>(
-                value: WhyFarther.sync,
-                child: Text('Synchronization'),
-              ),
-              const PopupMenuItem<WhyFarther>(
-                value: WhyFarther.setting,
-                child: Text('Settings'),
-              ),
-            ],
-          )
+          new MyPopupMenuButton(),
         ],
       ),
-      body: new Column(
-        //Change Column!!!!
-        children: <Widget>[
-          Text(
-            'Welcome',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
+      body: new Container(
+        width: double.infinity,
+        color: Colors.blueGrey,
+        child: new Column(
+          children: [
+            new Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                new Opacity(
+                  opacity: iconPercentVisible,
+                  child: new Padding(
+                    padding:
+                        new EdgeInsets.only(top: 10.0, bottom: 0.0, left: 40.0),
+                    child: new Stack(
+                      children: <Widget>[
+                        new Container(
+                          child: Icon(
+                            Icons.cloud_queue,
+                            size: 100.00,
+                            color: Colors.white,
+                          ),
+                        ),
+                        new Container(
+                          child: Icon(
+                            Icons.lock_outline,
+                            size: 50.00,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                new Opacity(
+                  opacity: titlePercentVisible,
+                  child: new Padding(
+                      padding:
+                          EdgeInsets.only(top: 10.0, bottom: 15.0, right: 40.0),
+                      child: new Text(
+                        Strings.appTitle,
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: new TextStyle(
+                          color: Colors.white,
+                          decoration: TextDecoration.none,
+                          fontFamily: Strings.titleTextFont,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 24.0,
+                        ),
+                      )),
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
-          ),
-          //const SizedBox(height: 30,),
-          Text('Hello'),
-          new MainScreenButtons(),
-        ],
+            new Expanded(
+              child: new Opacity(
+                opacity: titlePercentVisible,
+                child: new Padding(
+                  padding: EdgeInsets.only(
+                      top: 15.0, bottom: 100.0, left: 20.00, right: 20.00),
+                  child: new MainScreenButtons(),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -78,33 +114,31 @@ class _MainScreenButtonsState extends State<MainScreenButtons> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           new Padding(
-            padding:
-            const EdgeInsets.symmetric(vertical: 8.0, horizontal: 40.0),
-            child: CustomFlatButton(
-              title: "Encrypt",
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              textColor: Colors.white,
-              onPressed: null,
-              splashColor: Colors.black12,
-              borderColor: Color.fromRGBO(212, 20, 15, 1.0),
-              borderWidth: 0,
-              color: Color.fromRGBO(212, 20, 15, 1.0),
+            padding: new EdgeInsets.all(20.0),
+            child: new SizedBox(
+              width: 300,
+              height: 100,
+              child: const RaisedButton(
+                onPressed: null,
+                child: const Text('Encryption not available',
+                    style: TextStyle(fontSize: 20)),
+              ),
             ),
           ),
           new Padding(
-            padding: new EdgeInsets.all(10.0),
-            child: const RaisedButton(
-              onPressed: null,
-              child: const Text('Encryption not available',
-                  style: TextStyle(fontSize: 20)),
-            ),
-          ),
-          new Padding(
-            padding: EdgeInsets.all(10.0),
-            child: RaisedButton(
-              onPressed: () {},
-              child: const Text('Decrypt', style: TextStyle(fontSize: 20)),
+            padding: EdgeInsets.all(20.0),
+            child: new SizedBox(
+              width: 300,
+              height: 100,
+              child: RaisedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DecryptScreen()),
+                  );
+                },
+                child: const Text('Decrypt', style: TextStyle(fontSize: 20)),
+              ),
             ),
           ),
         ],
