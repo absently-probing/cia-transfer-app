@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget _handleCurrentScreen() {
     bool seen = (prefs.getBool('seen') ?? false);
     if (seen) {
-      return new MyRootScreen(prefs: prefs);
+      return new MyRootScreen();
     } else {
       return new MyWalkthroughScreen(prefs: prefs);
     }
