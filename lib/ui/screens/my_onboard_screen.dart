@@ -3,8 +3,6 @@ import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
-
 BuildContext _context;
 
 final pages = [
@@ -75,11 +73,12 @@ final pages = [
               fontWeight: FontWeight.w700,
               textColor: Colors.white,
               onPressed: () {
+                // widget.prefs.setBool('seen', true);
                 if (sProvider == null){
-
+                  // widget.prefs.setBool('encrypt',false);
                   Navigator.of(_context).pushNamed("/root");
                 } else {
-                  // widget.prefs.setBool('seen', true);
+                  // widget.prefs.setBool('encrypt',true);
                   String url= "https://www.google.de";
                   _launchURL();
                   Navigator.of(_context).pushReplacementNamed("/root");}
@@ -111,6 +110,7 @@ _launchURL() async {
 }
 
 class Page extends StatelessWidget {
+
   final PageViewModel viewModel;
   final double iconPercentVisible;
   final double titlePercentVisible;

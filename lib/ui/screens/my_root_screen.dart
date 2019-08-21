@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/ui/screens/decrypt_path_home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class MyRootScreen extends StatefulWidget {
   @override
+
   createState() => new _MyRootScreenState();
 }
 
@@ -118,7 +121,9 @@ class _MainScreenButtonsState extends State<MainScreenButtons> {
             child: new SizedBox(
               width: 300,
               height: 100,
-              child: const RaisedButton(
+              child:
+                  //Adding Correct Button depending on Prefs-Setting
+              const RaisedButton(
                 onPressed: null,
                 child: const Text('Encryption not available',
                     style: TextStyle(fontSize: 20)),
