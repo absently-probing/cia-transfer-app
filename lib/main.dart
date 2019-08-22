@@ -4,42 +4,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:secure_upload/ui/screens/my_walkthrough_screen.dart';
 import 'package:secure_upload/ui/screens/my_root_screen.dart';
 
-void main() {
-  SharedPreferences.getInstance().then((prefs) {
-    runApp(MyApp(prefs: prefs));
-  });
+Future<void> main() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var showWalkthrough = prefs.getBool('showWalkthrough') ?? true;
+  runApp(MaterialApp(
+    title: Strings.appTitle,
+    debugShowCheckedModeBanner: false,
+    routes: <String, WidgetBuilder>{
+      '/walkthrough': (BuildContext context) => new MyWalkthroughScreen(),
+      '/root': (BuildContext context) => new MyRootScreen(),
+    },
+    home: showWalkthrough ? new MyWalkthroughScreen() : new MyRootScreen(),
+    theme: ThemeData(
+      primaryColor: Colors.blueGrey,
+      primarySwatch: Colors.grey,
+    ),
+  ));
 }
-
-class MyApp extends StatelessWidget {
-  final SharedPreferences prefs;
-  MyApp({this.prefs});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: Strings.appTitle,
-      debugShowCheckedModeBanner: false,
-      routes: <String, WidgetBuilder>{
-        '/walkthrough': (BuildContext context) => new MyWalkthroughScreen(),
-        '/root': (BuildContext context) => new MyRootScreen(),
-      },
-      theme: ThemeData(
-        primaryColor: Colors.blueGrey,
-        primarySwatch: Colors.grey,
-      ),
-      home: _handleCurrentScreen(),
-    );
-  }
-
-  Widget _handleCurrentScreen() {
-    bool seen = (prefs.getBool('seen') ?? false);
-    if (seen) {
-      return new MyRootScreen();
-    } else {
-      return new MyWalkthroughScreen(prefs: prefs);
-    }
-  }
-}
-
-
-

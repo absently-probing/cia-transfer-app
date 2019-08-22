@@ -73,7 +73,7 @@ final pages = [
               fontWeight: FontWeight.w700,
               textColor: Colors.white,
               onPressed: () {
-                // widget.prefs.setBool('seen', true);
+                _dontShowWalkthroughAgain();
                 if (sProvider == null){
                   // widget.prefs.setBool('encrypt',false);
                   Navigator.of(_context).pushNamed("/root");
@@ -99,6 +99,11 @@ final pages = [
     ),
 
 ];
+
+_dontShowWalkthroughAgain() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('showWalkthrough', false);
+}
 
 _launchURL() async {
   const url = 'https://flutter.dev';
