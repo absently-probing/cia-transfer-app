@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
+import 'package:secure_upload/ui/screens/my_walkthrough_screen.dart';
 
 String sProvider = null;
 
@@ -145,23 +146,37 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
   }
 }
 
-enum WhyFarther { cloud, sync, setting }
+enum WhyFarther { onBoarding, cloud, sync, setting}
+
+
+
+
 
 class MyPopupMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return
       new PopupMenuButton<WhyFarther>(
-          //onSelected: (WhyFarther result) { setState(() { _selection = result; }); },
+          onSelected: (WhyFarther result) { if (result == WhyFarther.onBoarding){Navigator.push(
+context, MaterialPageRoute(builder: (context) => MyWalkthroughScreen()),);
+          }
+          },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
+            const PopupMenuItem<WhyFarther>(
+              value: WhyFarther.onBoarding,
+              child: Text('OnBoarding'),
+            ),
+            const PopupMenuDivider(),
             const PopupMenuItem<WhyFarther>(
               value: WhyFarther.cloud,
               child: Text('Cloud Storage'),
             ),
+            const PopupMenuDivider(),
             const PopupMenuItem<WhyFarther>(
               value: WhyFarther.sync,
               child: Text('Synchronization'),
             ),
+            const PopupMenuDivider(),
             const PopupMenuItem<WhyFarther>(
               value: WhyFarther.setting,
               child: Text('Settings'),
