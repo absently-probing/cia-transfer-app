@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/ui/screens/decrypt_path_second_screen.dart';
-import 'package:secure_upload/ui/screens/my_root_screen.dart';
 import 'package:secure_upload/data/strings.dart';
-
+import 'package:secure_upload/ui/screens/my_root_screen.dart';
 
 
 class DecryptScreen extends StatefulWidget {
@@ -45,9 +43,7 @@ class MyAppState extends State<DecryptScreen> {
       content: new Text("Decryption Successful!"), //, Email : $_url, password : $_password
       action: SnackBarAction(
       label: 'Download',
-      onPressed: (){Navigator.push(context,
-        MaterialPageRoute(builder:(context)=>SecondScreen())
-        );
+      onPressed: (){Navigator.of(context).pushNamedAndRemoveUntil("/root",(Route<dynamic> route) => false);
       },
       ),
       duration: const Duration(minutes: 5),
