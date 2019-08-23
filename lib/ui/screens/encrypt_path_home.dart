@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/ui/screens/encrypt_path_second_screen.dart';
 import 'package:secure_upload/data/strings.dart';
+import 'package:secure_upload/data/global.dart' as globals;
 
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -98,7 +99,7 @@ class MyAppState extends State<EncryptScreen> {
                    _paths != null
                       ? new Container(
                         padding: const EdgeInsets.only(bottom: 30.0),
-                        height: MediaQuery.of(context).size.height * 0.50,
+                        height: (globals.maxHeight - 200.0) * 0.50 ,
                         child: new Scrollbar(
                          child: new ListView.separated(
                           itemCount: _paths != null && _paths.isNotEmpty

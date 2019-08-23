@@ -65,7 +65,7 @@ final pages = [
             ),
             new Padding(
               padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: new MyDropdownMenuWithButton(_handleButtonClick),
+              child: new SelectCloudWithButton(_handleButtonClick),
             ),
 
           ],

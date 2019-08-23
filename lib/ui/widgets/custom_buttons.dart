@@ -146,16 +146,16 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
   }
 }
 
-class MyDropdownMenuWithButton extends StatefulWidget {
+class SelectCloudWithButton extends StatefulWidget {
   final void Function() _callback;
 
-  MyDropdownMenuWithButton(this._callback, {Key key}) : super(key: key);
+  SelectCloudWithButton(this._callback, {Key key}) : super(key: key);
 
   @override
-  _MyDropdownMenuWithButtonState createState() => _MyDropdownMenuWithButtonState(_callback);
+  _SelectCloudWithButton createState() => _SelectCloudWithButton(_callback);
 }
 
-class _MyDropdownMenuWithButtonState extends State<MyDropdownMenuWithButton> {
+class _SelectCloudWithButton extends State<SelectCloudWithButton> {
   final void Function() _callback;
   String _sButtonTitle = Strings.onboardingSkip;
   List<CloudStorageProvider> _cloudStorageProvider = CloudStorageProvider.getProvider();
@@ -164,7 +164,7 @@ class _MyDropdownMenuWithButtonState extends State<MyDropdownMenuWithButton> {
 
   CloudStorageProvider _selectedProvider;
 
-  _MyDropdownMenuWithButtonState(this._callback);
+  _SelectCloudWithButton(this._callback);
 
   @override
   void initState() {
