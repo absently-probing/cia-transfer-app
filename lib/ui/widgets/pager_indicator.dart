@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/screens/my_onboard_screen.dart';
 import 'dart:ui';
 
@@ -98,12 +99,12 @@ class PageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Container(
-        width: 45.0,
-        height: 45.0,
+        width: globals.paperIndicatorWidth,
+        height: globals.pagerIndicatorHeight,
         child: new Center(
         child: new Container(
-          width: lerpDouble(20.0, 40.0, viewModel.activePercent),
-          height: lerpDouble(20.0, 40.0, viewModel.activePercent),
+          width: lerpDouble(globals.indicatorMinWidth, globals.indicatorMaxWidth, viewModel.activePercent),
+          height: lerpDouble(globals.indicatorMinHeight, globals.indicatorMaxHeight, viewModel.activePercent),
           decoration: new BoxDecoration(
               shape: BoxShape.circle,
               color: viewModel.isHollow

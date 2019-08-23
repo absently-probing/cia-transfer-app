@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:secure_upload/data/strings.dart';
+import 'package:secure_upload/data/global.dart' as globals;
+import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/ui/screens/decrypt_path_home.dart';
 import 'package:secure_upload/ui/screens/encrypt_path_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +30,8 @@ class _MyRootScreenState extends State<MyRootScreen> {
 
   @override
   Widget build(BuildContext context) {
+    globals.maxHeight = utils.screenHeight(context);
+    globals.maxWidth = utils.screenWidth(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -54,14 +58,14 @@ class _MyRootScreenState extends State<MyRootScreen> {
                         new Container(
                           child: Icon(
                             Icons.cloud_queue,
-                            size: 100.00,
+                            size: globals.cloudIcon,
                             color: Colors.white,
                           ),
                         ),
                         new Container(
                           child: Icon(
                             Icons.lock_outline,
-                            size: 50.00,
+                            size: globals.lockIcon,
                           ),
                         ),
                       ],
@@ -122,8 +126,8 @@ class _MainScreenButtonsState extends State<MainScreenButtons> {
           new Padding(
             padding: new EdgeInsets.all(20.0),
             child: new SizedBox(
-              width: 300,
-              height: 100,
+              width: globals.rootButtonWidth,
+              height: globals.rootButtonHeight,
               
                   //Adding Correct Button depending on Prefs-Setting
               child: RaisedButton(
@@ -141,8 +145,8 @@ class _MainScreenButtonsState extends State<MainScreenButtons> {
           new Padding(
             padding: new EdgeInsets.all(20.0),
             child: new SizedBox(
-              width: 300,
-              height: 100,
+              width: globals.rootButtonWidth,
+              height: globals.rootButtonHeight,
               child: RaisedButton(
                 onPressed: () {
                   Navigator.push(

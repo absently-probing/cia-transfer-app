@@ -29,7 +29,7 @@ final pages = [
       Strings.appTitle,
       new ConstrainedBox(
         constraints: new BoxConstraints(
-          maxHeight: globals.maxHeight - 269,
+          maxHeight: globals.onboardTextHeight,
         ),
       child: new SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -152,14 +152,14 @@ class Page extends StatelessWidget {
                     new Container(
                       child: Icon(
                         Icons.cloud_queue,
-                        size: 100.00,
+                        size: globals.cloudIcon,
                         color: Colors.white,
                       ),
                     ),
                     new Container(
                       child: Icon(
                         Icons.lock_outline,
-                        size: 50.00,
+                        size: globals.lockIcon,
                       ),
                     ),
                   ],
@@ -173,7 +173,7 @@ class Page extends StatelessWidget {
               transform: new Matrix4.translationValues(
                   0.0, 50.0 * 1.0 - titlePercentVisible, 0.0),
               child: new Padding(
-                  padding: EdgeInsets.only(top: 0.0, bottom: 15.0),
+                  padding: EdgeInsets.only(top: 0.0, bottom: globals.onboardTitleBottomPadding),
                   child: new Text(
                     viewModel.title,
                     softWrap: true,
@@ -195,7 +195,7 @@ class Page extends StatelessWidget {
                   0.0, 50.0 * 0.75 - textPercentVisible, 0.0),
               child: new Padding(
                 padding: EdgeInsets.only(
-                    top: 15.0, bottom: 100.0, left: 20.00, right: 20.00),
+                    top: globals.onboardTopPadding, bottom: globals.onboardBottomPadding, left: 20.00, right: 20.00),
                 child: viewModel.body,
               ),
             ),

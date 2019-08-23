@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/widgets/pager_indicator.dart';
 
 class PageDragger extends StatefulWidget {
@@ -20,7 +21,7 @@ class PageDragger extends StatefulWidget {
 }
 
 class _PageDraggerState extends State<PageDragger> {
-  static const FULL_TRANSITION_PX = 300.0;
+  static double FULL_TRANSITION_PX = globals.transitionPixels;
 
   Offset dragStart;
   SlideDirection slideDirection;
