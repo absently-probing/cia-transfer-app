@@ -1,3 +1,5 @@
+
+import 'package:secure_upload/data/global.dart' as globals;
 import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
@@ -23,11 +25,11 @@ final pages = [
     ),
   ),
   new PageViewModel(
-      Colors.red,
+      Colors.blueGrey,
       Strings.appTitle,
       new ConstrainedBox(
         constraints: new BoxConstraints(
-          maxHeight: 500.0,
+          maxHeight: globals.maxHeight - 268,
         ),
       child: new SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -47,7 +49,7 @@ final pages = [
       ),
       ),
   new PageViewModel(
-    Colors.green,
+    Colors.blueGrey,
     Strings.appTitle,
       new Container(
         child: new Column(

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:secure_upload/data/utils.dart' as utils;
+import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/screens/my_onboard_screen.dart';
 import 'package:secure_upload/ui/widgets/pager_indicator.dart';
 import 'package:secure_upload/ui/widgets/page_dragger.dart';
@@ -80,6 +82,9 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen> with TickerPr
 
   @override
   Widget build(BuildContext context) {
+    globals.maxHeight = utils.screenHeight(context);
+    globals.maxWidth = utils.screenWidth(context);
+
     return new Scaffold(
       body: new Stack(
         children: [
