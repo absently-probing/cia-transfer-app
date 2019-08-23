@@ -38,7 +38,8 @@ class SecondEncrypt extends StatelessWidget{
       // TODO: when pushing this button reset history stack
       floatingActionButton: FloatingActionButton (
         onPressed: (){
-          Navigator.of(context).pushNamed('/root');
+          Navigator.of(context).pushNamedAndRemoveUntil('/root',
+              (Route<dynamic> route) => false);
         },
         child: Icon(Icons.thumb_up),
         backgroundColor: Colors.green,
