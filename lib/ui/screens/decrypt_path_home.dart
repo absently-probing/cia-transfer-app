@@ -34,21 +34,25 @@ class MyAppState extends State<DecryptScreen> {
 
     if (form.validate()) {
       form.save();
-      Navigator.push(context,
-          MaterialPageRoute(builder:(context)=>SecondScreen())
 
-      );
-      //performLogin();
+      performLogin();
 
     }
   }
 
   void performLogin() {
     final snackbar = new SnackBar(
-        content: new Text("Decryption Successful!, Email : $_url, password : $_password")
+      content: new Text("Decryption Successful!"), //, Email : $_url, password : $_password
+      action: SnackBarAction(
+      label: 'Download',
+      onPressed: (){Navigator.push(context,
+        MaterialPageRoute(builder:(context)=>SecondScreen())
+        );
+      },
+      ),
+      duration: const Duration(minutes: 5),
     );
     scaffoldKey.currentState.showSnackBar(snackbar);
-
   }
 
   @override
@@ -80,18 +84,18 @@ class MyAppState extends State<DecryptScreen> {
                   obscureText: true,
                 ),
                 new Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 170.0, bottom: 100.0),
-                ),
-                new RaisedButton(
-                    child: new Text(
-                      "Decrypt",
-                      style: new TextStyle(color: Colors.white),
+                  padding: new EdgeInsets.all(20.0),
+                  child: new SizedBox(
+                    width: 300,
+                    height: 100,
+                    child: RaisedButton(
+                      onPressed: _submit,
+                      child: const Text('Decrypt',
+                          style: TextStyle(fontSize: 20)),
                     ),
-                    color: Colors.blue,
+                  ),
+                ),
 
-                    onPressed: _submit
-
-                )
               ],
             ),
           ),
