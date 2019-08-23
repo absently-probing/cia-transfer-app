@@ -146,6 +146,102 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
   }
 }
 
+class MyDropdownMenuWithButton extends StatefulWidget {
+  final void Function() _callback;
+
+  MyDropdownMenuWithButton(this._callback, {Key key}) : super(key: key);
+
+  @override
+  _MyDropdownMenuWithButtonState createState() => _MyDropdownMenuWithButtonState(_callback);
+}
+
+class _MyDropdownMenuWithButtonState extends State<MyDropdownMenuWithButton> {
+  final void Function() _callback;
+  String _sButtonTitle = Strings.onboardingSkip;
+  List<CloudStorageProvider> _cloudStorageProvider = CloudStorageProvider.getProvider();
+
+  List<DropdownMenuItem<CloudStorageProvider>> _dropdownMenuItems;
+
+  CloudStorageProvider _selectedProvider;
+
+  _MyDropdownMenuWithButtonState(this._callback);
+
+  @override
+  void initState() {
+    _dropdownMenuItems = buildDropdownMenuItems(_cloudStorageProvider);
+    _selectedProvider = _dropdownMenuItems[0].value;
+    _sButtonTitle = Strings.onboardingSkip;
+    super.initState();
+  }
+
+
+  List<DropdownMenuItem<CloudStorageProvider>>  buildDropdownMenuItems(List providers) {
+    List<DropdownMenuItem<CloudStorageProvider>> items = List();
+    for (CloudStorageProvider provider in providers){
+      items.add(
+        DropdownMenuItem(
+          value: provider,
+          child: Text(provider.name,
+            style: new TextStyle(
+              color: Colors.white,
+              decoration: TextDecoration.none,
+              fontFamily: Strings.titleTextFont,
+              fontWeight: FontWeight.w700,
+              fontSize: 15.0,
+            ),
+          ),
+        ),
+      );
+    }
+    return items;
+  }
+
+  onChangeDropdownMenuItem(CloudStorageProvider selectedProvider){
+    setState(() {
+      _selectedProvider = selectedProvider;
+      selectedProvider.name == 'No Cloud Storage'
+          ? sProvider = null
+          : sProvider = selectedProvider.name;
+      _sButtonTitle = _selectedProvider.name == 'No Cloud Storage'
+          ? Strings.onboardingSkip
+          : Strings.onboardingLogin;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: new Theme(
+        data: Theme.of(context).copyWith(
+            canvasColor: Theme.of(context).primaryColor
+        ),
+        child: new Column(
+        children: <Widget>[
+        new DropdownButton(
+          value: _selectedProvider,
+          items: _dropdownMenuItems,
+          onChanged: onChangeDropdownMenuItem,
+        ),
+          new Padding(
+            padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
+            child: new CustomFlatButton(
+              title: _sButtonTitle,
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              textColor: Colors.white,
+              onPressed: _callback,
+              splashColor: Colors.black12,
+              borderColor: Colors.white,
+              borderWidth: 3.00,
+              color: Colors.blueGrey,
+            ),
+          ),
+        ]
+        )
+      ),
+    );
+  }
+}
+
 enum WhyFarther { onBoarding, cloud, sync, setting}
 
 

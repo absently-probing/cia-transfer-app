@@ -65,32 +65,7 @@ final pages = [
             ),
             new Padding(
               padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: new MyDropdownMenu(),
-            ),
-            new Padding(
-            padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: new CustomFlatButton(
-              title: "Log In",
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              textColor: Colors.white,
-              onPressed: () {
-                _dontShowWalkthroughAgain();
-                if (sProvider == null){
-                  // widget.prefs.setBool('encrypt',false);
-                  Navigator.of(_context).pushNamed("/root");
-                } else {
-                  // widget.prefs.setBool('encrypt',true);
-                  String url= "https://www.google.de";
-                  _launchURL();
-                  Navigator.of(_context).pushReplacementNamed("/root");}
-              }
-              ,
-              splashColor: Colors.black12,
-              borderColor: Colors.white,
-              borderWidth: 3.00,
-              color: Colors.blueGrey,
-            ),
+              child: new MyDropdownMenuWithButton(_handleButtonClick),
             ),
 
           ],
@@ -114,6 +89,18 @@ _launchURL() async {
   } else {
     throw 'Could not launch $url';
   }
+}
+
+_handleButtonClick() {
+  _dontShowWalkthroughAgain();
+  if (sProvider == null){
+    // widget.prefs.setBool('encrypt',false);
+    Navigator.of(_context).pushNamed("/root");
+  } else {
+    // widget.prefs.setBool('encrypt',true);
+    String url= "https://www.google.de";
+    _launchURL();
+    Navigator.of(_context).pushReplacementNamed("/root");}
 }
 
 class Page extends StatelessWidget {
