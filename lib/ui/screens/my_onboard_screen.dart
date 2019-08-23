@@ -29,7 +29,7 @@ final pages = [
       Strings.appTitle,
       new ConstrainedBox(
         constraints: new BoxConstraints(
-          maxHeight: globals.maxHeight - 268,
+          maxHeight: globals.maxHeight - 269,
         ),
       child: new SingleChildScrollView(
         scrollDirection: Axis.vertical,
