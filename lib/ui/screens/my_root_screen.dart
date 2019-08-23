@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/ui/screens/decrypt_path_home.dart';
+import 'package:secure_upload/ui/screens/encrypt_path_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'encrypt_path_home.dart';
 
 
 class MyRootScreen extends StatefulWidget {
@@ -121,17 +124,22 @@ class _MainScreenButtonsState extends State<MainScreenButtons> {
             child: new SizedBox(
               width: 300,
               height: 100,
-              child:
+              
                   //Adding Correct Button depending on Prefs-Setting
-              const RaisedButton(
-                onPressed: null,
-                child: const Text('Encryption not available',
+              child: RaisedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EncryptScreen()),
+                  );
+                },
+                child: const Text('Encryption',
                     style: TextStyle(fontSize: 20)),
               ),
             ),
           ),
           new Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: new EdgeInsets.all(20.0),
             child: new SizedBox(
               width: 300,
               height: 100,
@@ -142,7 +150,8 @@ class _MainScreenButtonsState extends State<MainScreenButtons> {
                     MaterialPageRoute(builder: (context) => DecryptScreen()),
                   );
                 },
-                child: const Text('Decrypt', style: TextStyle(fontSize: 20)),
+                child: const Text('Decrypt',
+                    style: TextStyle(fontSize: 20)),
               ),
             ),
           ),
@@ -150,4 +159,7 @@ class _MainScreenButtonsState extends State<MainScreenButtons> {
       ),
     );
   }
+}
+
+class EncryptSceen {
 }
