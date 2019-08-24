@@ -5,6 +5,7 @@ import 'package:secure_upload/ui/screens/my_walkthrough_screen.dart';
 import 'package:secure_upload/ui/screens/my_root_screen.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var showWalkthrough = prefs.getBool('showWalkthrough') ?? true;
   runApp(MaterialApp(

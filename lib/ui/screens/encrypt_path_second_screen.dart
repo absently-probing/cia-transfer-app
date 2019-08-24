@@ -31,20 +31,25 @@ class SecondEncrypt extends StatelessWidget{
               version: QrVersions.auto,
               size: 200.0,
             ),
+            Spacer(),
+            new Padding(
+              padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
+              child: new Align(
+                  alignment: Alignment.bottomRight,
+                  child: new FloatingActionButton (
+                    // TODO: when pushing this button reset history stack
+                    onPressed: (){
+                      Navigator.of(context).pushNamedAndRemoveUntil('/root',
+                            (Route<dynamic> route) => false);
+                      },
+                    child: Icon(Icons.thumb_up),
+                    backgroundColor: Colors.green,
+                  ),
+              ),
+            ),
           ]
         )
       ),
-
-      // TODO: when pushing this button reset history stack
-      floatingActionButton: FloatingActionButton (
-        onPressed: (){
-          Navigator.of(context).pushNamedAndRemoveUntil('/root',
-              (Route<dynamic> route) => false);
-        },
-        child: Icon(Icons.thumb_up),
-        backgroundColor: Colors.green,
-      ),
-
     );
   }
 }

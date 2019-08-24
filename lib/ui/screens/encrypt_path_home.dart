@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/ui/screens/encrypt_path_second_screen.dart';
 import 'package:secure_upload/data/strings.dart';
-import 'package:secure_upload/data/global.dart' as globals;
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 
 
 
 class EncryptScreen extends StatefulWidget {
+  EncryptScreen({Key key}) : super(key: key);
+
   @override
-  MyAppState createState() => new MyAppState();
+  _EncryptScreen createState() => new _EncryptScreen();
 }
 
-class MyAppState extends State<EncryptScreen> {
-  final scaffoldKey = new GlobalKey<ScaffoldState>();
-  final stateKey = new GlobalKey<FormState>();
+class _EncryptScreen extends State<EncryptScreen> {
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _stateKey = new GlobalKey<FormState>();
 
   String _password;
   String _url;
 
 
-  Map<String,String> _paths;
-  String _fileName;
+  List<List<String>> _paths = [];
 
   @override
   void initState() {
@@ -42,20 +43,25 @@ class MyAppState extends State<EncryptScreen> {
     final snackbar = new SnackBar(
         content: new Text("Decryption Successful!, Email : $_url, password : $_password")
     );
-    scaffoldKey.currentState.showSnackBar(snackbar);
+    _scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
   void _openFileExplorer() async {
+    Map<String, String> _tmp_paths = null;
       try {
-          _paths = await FilePicker.getMultiFilePath();
+          _tmp_paths = await FilePicker.getMultiFilePath();
+
       } on PlatformException catch (e) {
         print("Unsupported operation" + e.toString());
       }
       if (!mounted) return;
 
       setState(() {
-        _fileName =
-             _paths != null ? _paths.keys.toString() : '...';
+        if (_tmp_paths != null) {
+          for (String key in _tmp_paths.keys) {
+              _paths.add([key, _tmp_paths[key]]);
+          }
+        }
       });
   }
 
@@ -63,74 +69,81 @@ class MyAppState extends State<EncryptScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        key: scaffoldKey,
+        key: _scaffoldKey,
         appBar: new AppBar(
           centerTitle: true,
           title: new Text(Strings.appTitle),
         ),
-        body: new Center(
-        child: new Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 100.0, bottom: 10.0),
-          child: new Form(
-            key: stateKey,
-            child: new Column(
-              children: <Widget>[
-                new Padding(
-                  padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                  child: new RaisedButton(
-                    onPressed: () => _openFileExplorer(),
-                    child: new Text("Open file picker"),
+        body: new Form(
+            key: _stateKey,
+            child: new Stack(
+                children: <Widget>[
+                  new Column(
+                    children: <Widget>[
+                      new Padding(
+                        padding : EdgeInsets.only(top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
+                        child: new FloatingActionButton(
+                          heroTag: "addFile",
+                          backgroundColor: Colors.blue,
+                          onPressed: () => _openFileExplorer(),
+                          child: new Container(
+                            child: Transform.scale(
+                              scale: 2,
+                              child: new Text("+"),
+                            ),
+                          ),
+                        ),
+                      ),
+                      new Expanded(
+                        child: new ListView.builder(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            itemCount: _paths.length,
+                            itemBuilder: (BuildContext ctxt, int index){
+                              final item = UniqueKey().toString();
+
+                              return new Dismissible(
+                                  key: Key(item),
+                                  onDismissed: (direction) {
+                                    setState(() {
+                                      _paths.removeAt(index);
+                                    });},
+                                  child: new Card(
+                                      child: new ListTile(
+                                        title: new Text(_paths[index][0]),
+                                        subtitle: new Text(_paths[index][1]),
+                                      )
+                                  )
+                              );
+                            }),
+                      ),
+                    ],
                   ),
-                ),
-               new RaisedButton(
-                 onPressed: (){
-                   Navigator.push(context,
-                       MaterialPageRoute(builder:(context)=>SecondEncrypt())
-
-                   );
-                 },
-                 child: new Text("Upload")
-               ),
-
-
-                new Builder(
-                  // TODO: make this prettier
-                  builder: (BuildContext context) =>
-                   _paths != null
-                      ? new Container(
-                        padding: const EdgeInsets.only(bottom: 30.0),
-                        height: (globals.maxHeight - 200.0) * 0.50 ,
-                        child: new Scrollbar(
-                         child: new ListView.separated(
-                          itemCount: _paths != null && _paths.isNotEmpty
-                              ? _paths.length
-                              : 1,
-                          itemBuilder: (BuildContext context, int index) {
-                            final bool isMultiPath =
-                                _paths != null && _paths.isNotEmpty;
-                            final String name = 'File $index: ' +
-                                (isMultiPath
-                                    ? _paths.keys.toList()[index]
-                                    : _fileName ?? '...');
-                            final path = _paths.values.toList()[index].toString();
-
-                            return new ListTile(
-                              title: new Text(
-                                name,
-                              ),
-                              subtitle: new Text(path),
-                            );
+                //Spacer(),
+                new Padding(
+                    padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
+                    child: new Align(
+                      alignment: Alignment.bottomRight,
+                      child: new FloatingActionButton(
+                        heroTag: "upload",
+                        onPressed: (){
+                          Navigator.push(context,
+                             MaterialPageRoute(builder:(context)=>SecondEncrypt())
+                          );
                           },
-                          separatorBuilder:
-                              (BuildContext context, int index) =>
-                          new Divider(),
-                        )),
-                  )
-                      : new Container(),
+                        child: new Stack(
+                            children: <Widget>[
+                              new Container(
+                                child: Icon(
+                                  Icons.cloud_queue,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ]),
+                      ),
+                    )
                 ),
-              ],
-            ),
-          ),
-        )));
+                ])
+        ),
+    );
   }
 }
