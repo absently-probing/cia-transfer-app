@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/ui/screens/encrypt_path_second_screen.dart';
 import 'package:secure_upload/data/strings.dart';
-
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -22,8 +20,8 @@ class _EncryptScreen extends State<EncryptScreen> {
   String _password;
   String _url;
 
-
   List<List<String>> _paths = [];
+  Map<String, String> _path = {};
 
   @override
   void initState() {
@@ -59,7 +57,10 @@ class _EncryptScreen extends State<EncryptScreen> {
       setState(() {
         if (_tmp_paths != null) {
           for (String key in _tmp_paths.keys) {
+            if (!_path.containsKey(_tmp_paths[key])) {
               _paths.add([key, _tmp_paths[key]]);
+              _path[_tmp_paths[key]] = key;
+            }
           }
         }
       });
@@ -99,12 +100,14 @@ class _EncryptScreen extends State<EncryptScreen> {
                             padding: const EdgeInsets.only(top: 10.0),
                             itemCount: _paths.length,
                             itemBuilder: (BuildContext ctxt, int index){
-                              final item = UniqueKey().toString();
+                              final item = _paths[index][1];
+                              print(item);
 
                               return new Dismissible(
                                   key: Key(item),
                                   onDismissed: (direction) {
                                     setState(() {
+                                      _path.remove(_paths[index][1]);
                                       _paths.removeAt(index);
                                     });},
                                   child: new Card(
