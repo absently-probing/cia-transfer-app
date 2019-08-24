@@ -9,8 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'encrypt_path_home.dart';
 
-
-class MyRootScreen extends StatefulWidget {
+/*
+class MyRootScreen extends StatelessWidget {
   @override
 
   createState() => new _MyRootScreenState();
@@ -21,18 +21,21 @@ class Choice {
 
   final String title;
   final IconData icon;
-}
+}*/
 
-class _MyRootScreenState extends State<MyRootScreen> {
+class MyRootScreen extends StatelessWidget {
   final double iconPercentVisible = 0.5;
   final double titlePercentVisible = 1.0;
   final double textPercentVisible = 0.75;
+
+  MyRootScreen();
 
   @override
   Widget build(BuildContext context) {
     globals.maxHeight = utils.screenHeight(context);
     globals.maxWidth = utils.screenWidth(context);
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(Strings.appTitle),
@@ -45,61 +48,56 @@ class _MyRootScreenState extends State<MyRootScreen> {
         color: Colors.blueGrey,
         child: new Column(
           children: [
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                new Opacity(
-                  opacity: iconPercentVisible,
-                  child: new Padding(
-                    padding:
-                        new EdgeInsets.only(top: 10.0, bottom: 0.0, left: 40.0),
-                    child: new Stack(
-                      children: <Widget>[
-                        new Container(
-                          child: Icon(
-                            Icons.cloud_queue,
-                            size: globals.cloudIcon,
-                            color: Colors.white,
-                          ),
+            new Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              new Opacity(
+                opacity: iconPercentVisible,
+                child: new Padding(
+                  padding: new EdgeInsets.only(top: 10.0, bottom: 0.0, left: 0),
+                  child: new Stack(
+                    children: <Widget>[
+                      new Container(
+                        child: Icon(
+                          Icons.cloud_queue,
+                          size: globals.cloudIcon,
+                          color: Colors.white,
                         ),
-                        new Container(
-                          child: Icon(
-                            Icons.lock_outline,
-                            size: globals.lockIcon,
-                          ),
+                      ),
+                      new Container(
+                        child: Icon(
+                          Icons.lock_outline,
+                          size: globals.lockIcon,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                new Opacity(
-                  opacity: titlePercentVisible,
-                  child: new Padding(
-                      padding:
-                          EdgeInsets.only(top: 10.0, bottom: 15.0, right: 40.0),
-                      child: new Text(
-                        Strings.appTitle,
-                        softWrap: true,
-                        textAlign: TextAlign.center,
-                        style: new TextStyle(
-                          color: Colors.white,
-                          decoration: TextDecoration.none,
-                          fontFamily: Strings.titleTextFont,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 24.0,
-                        ),
-                      )),
-                ),
-              ],
-            ),
-            new Expanded(
-              child: new Opacity(
+              ),
+            ]),
+            new Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              new Opacity(
                 opacity: titlePercentVisible,
                 child: new Padding(
-                  padding: EdgeInsets.only(
-                      top: 15.0, bottom: 100.0, left: 20.00, right: 20.00),
-                  child: new MainScreenButtons(),
-                ),
+                    padding: EdgeInsets.only(top: 10.0, bottom: 15.0, right: 0),
+                    child: new Text(
+                      Strings.appTitle,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: new TextStyle(
+                        color: Colors.white,
+                        decoration: TextDecoration.none,
+                        fontFamily: Strings.titleTextFont,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 24.0,
+                      ),
+                    )),
+              ),
+            ]),
+            new Opacity(
+              opacity: titlePercentVisible,
+              child: new Padding(
+                padding: EdgeInsets.only(
+                    top: 15.0, bottom: 10.0, left: 20.00, right: 20.00),
+                child: new MainScreenButtons(),
               ),
             ),
           ],
@@ -109,36 +107,32 @@ class _MyRootScreenState extends State<MyRootScreen> {
   }
 }
 
-class MainScreenButtons extends StatefulWidget {
-  @override
-  createState() => new _MainScreenButtonsState();
-}
-
 /// This is the stateless widget that the main application instantiates.
-class _MainScreenButtonsState extends State<MainScreenButtons> {
+class MainScreenButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
+    return Container(
+      alignment: Alignment.center,
+      child: new Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+        //mainAxisAlignment: MainAxisAlignment.end,
         children: [
           new Padding(
             padding: new EdgeInsets.all(20.0),
             child: new SizedBox(
               width: globals.rootButtonWidth,
               height: globals.rootButtonHeight,
-              
-                  //Adding Correct Button depending on Prefs-Setting
+
+              //Adding Correct Button depending on Prefs-Setting
               child: RaisedButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => EncryptScreen()),
+                    context,
+                    MaterialPageRoute(builder: (context) => EncryptScreen()),
                   );
                 },
-                child: const Text('Encryption',
-                    style: TextStyle(fontSize: 20)),
+                child:
+                const Text('Encryption', style: TextStyle(fontSize: 20)),
               ),
             ),
           ),
@@ -154,8 +148,7 @@ class _MainScreenButtonsState extends State<MainScreenButtons> {
                     MaterialPageRoute(builder: (context) => DecryptScreen()),
                   );
                 },
-                child: const Text('Decrypt',
-                    style: TextStyle(fontSize: 20)),
+                child: const Text('Decrypt', style: TextStyle(fontSize: 20)),
               ),
             ),
           ),
@@ -163,7 +156,4 @@ class _MainScreenButtonsState extends State<MainScreenButtons> {
       ),
     );
   }
-}
-
-class EncryptSceen {
 }

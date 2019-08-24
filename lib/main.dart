@@ -19,6 +19,14 @@ Future<void> main() async {
     theme: ThemeData(
       primaryColor: Colors.blueGrey,
       primarySwatch: Colors.grey,
+      hintColor: Colors.black,
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(),
+        labelStyle: TextStyle(
+          color: Colors.black,
+          fontSize: 24.0,
+        ),
+      ),
     ),
   ));
 }

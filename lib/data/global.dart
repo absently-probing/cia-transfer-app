@@ -6,8 +6,8 @@ double maxHeight = 0;
 double maxWidth = 0;
 
 // logo
-double cloudIcon = 100.0;
-double lockIcon = 50.0;
+double cloudIcon = min(100.0, maxHeight / 8);
+double lockIcon = min(50.0, cloudIcon / 2);
 
 // pager_indicator.dart
 double pagerIndicatorHeight = 45.0;
@@ -22,10 +22,10 @@ double transitionPixels = maxHeight / 4;
 
 // my_root_screen.dart
 double rootButtonWidth = min(300.0, maxWidth);
-double rootButtonHeight = min(100.0, maxHeight / 8);
+double rootButtonHeight = min(100.0, maxHeight / 10);
 
 // my_onboard_screen.dart
-double onboardTitleBottomPadding = 15.0;
+double onboardIconTopPadding = 30.0;
 double onboardBottomPadding = 2 * pagerIndicatorHeight;
 double onboardTopPadding = 15.0;
-double onboardTextHeight = maxHeight - onboardBottomPadding - onboardTopPadding - cloudIcon - lockIcon - onboardTitleBottomPadding;
+double onboardTextHeight = maxHeight - onboardBottomPadding - onboardTopPadding - cloudIcon - lockIcon - onboardIconTopPadding;

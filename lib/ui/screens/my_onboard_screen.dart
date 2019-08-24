@@ -126,11 +126,8 @@ class Page extends StatelessWidget {
         children: [
           new Opacity(
             opacity: iconPercentVisible,
-            child: new Transform(
-              transform: new Matrix4.translationValues(
-                  0.0, 50.0 * 0.5 - iconPercentVisible, 0.0),
-              child: new Padding(
-                padding: new EdgeInsets.only(top: 10.0, bottom: 0.0),
+            child: new Padding(
+                padding: new EdgeInsets.only(top: globals.onboardIconTopPadding, bottom: 0.0),
                 child: new Stack(
                   children: <Widget>[
                     new Container(
@@ -149,16 +146,10 @@ class Page extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
           ),
           new Opacity(
             opacity: titlePercentVisible,
-            child: new Transform(
-              transform: new Matrix4.translationValues(
-                  0.0, 50.0 * 1.0 - titlePercentVisible, 0.0),
-              child: new Padding(
-                  padding: EdgeInsets.only(top: 0.0, bottom: globals.onboardTitleBottomPadding),
-                  child: new Text(
+            child: new Text(
                     viewModel.title,
                     softWrap: true,
                     textAlign: TextAlign.center,
@@ -169,19 +160,13 @@ class Page extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       fontSize: 24.0,
                     ),
-                  )),
             ),
           ),
           new Opacity(
             opacity: titlePercentVisible,
-            child: new Transform(
-              transform: new Matrix4.translationValues(
-                  0.0, 50.0 * 0.75 - textPercentVisible, 0.0),
-              child: new Padding(
-                padding: EdgeInsets.only(
-                    top: globals.onboardTopPadding, bottom: globals.onboardBottomPadding, left: 20.00, right: 20.00),
-                child: viewModel.body,
-              ),
+            child: new Padding(
+              padding: new EdgeInsets.only(top: globals.onboardTopPadding, bottom: 10.0),
+              child: viewModel.body,
             ),
           ),
         ],
