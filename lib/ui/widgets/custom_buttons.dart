@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/ui/screens/my_walkthrough_screen.dart';
 
-String sProvider = null;
-
 class CustomFlatButton extends StatelessWidget {
   final String title;
   final Color textColor;
@@ -91,6 +89,7 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
   List<DropdownMenuItem<CloudStorageProvider>> _dropdownMenuItems;
 
   CloudStorageProvider _selectedProvider;
+  String _sProvider = null;
 
   @override
   void initState() {
@@ -125,8 +124,8 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
     setState(() {
       _selectedProvider = selectedProvider;
       selectedProvider.name == 'No Cloud Storage'
-          ? sProvider = null
-          : sProvider = selectedProvider.name;
+          ? _sProvider = null
+          : _sProvider = selectedProvider.name;
     });
   }
   @override
@@ -147,7 +146,7 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
 }
 
 class SelectCloudWithButton extends StatefulWidget {
-  final void Function() _callback;
+  final void Function(BuildContext context, String provider) _callback;
 
   SelectCloudWithButton(this._callback, {Key key}) : super(key: key);
 
@@ -156,13 +155,14 @@ class SelectCloudWithButton extends StatefulWidget {
 }
 
 class _SelectCloudWithButton extends State<SelectCloudWithButton> {
-  final void Function() _callback;
+  final void Function(BuildContext context, String provider) _callback;
   String _sButtonTitle = Strings.onboardingSkip;
   List<CloudStorageProvider> _cloudStorageProvider = CloudStorageProvider.getProvider();
 
   List<DropdownMenuItem<CloudStorageProvider>> _dropdownMenuItems;
 
   CloudStorageProvider _selectedProvider;
+  String _sProvider = null;
 
   _SelectCloudWithButton(this._callback);
 
@@ -200,8 +200,8 @@ class _SelectCloudWithButton extends State<SelectCloudWithButton> {
     setState(() {
       _selectedProvider = selectedProvider;
       selectedProvider.name == 'No Cloud Storage'
-          ? sProvider = null
-          : sProvider = selectedProvider.name;
+          ? _sProvider = null
+          : _sProvider = selectedProvider.name;
       _sButtonTitle = _selectedProvider.name == 'No Cloud Storage'
           ? Strings.onboardingSkip
           : Strings.onboardingLogin;
@@ -228,7 +228,9 @@ class _SelectCloudWithButton extends State<SelectCloudWithButton> {
               fontSize: 22,
               fontWeight: FontWeight.w700,
               textColor: Colors.white,
-              onPressed: _callback,
+              onPressed: (){
+                _callback(context, _sProvider);
+              },
               splashColor: Colors.black12,
               borderColor: Colors.white,
               borderWidth: 3.00,

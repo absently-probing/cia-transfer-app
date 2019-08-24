@@ -5,7 +5,6 @@ import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-BuildContext _context;
 
 final pages = [
   new PageViewModel(
@@ -91,16 +90,16 @@ _launchURL() async {
   }
 }
 
-_handleButtonClick() {
+_handleButtonClick(BuildContext context, String sProvider) {
   _dontShowWalkthroughAgain();
   if (sProvider == null){
     // widget.prefs.setBool('encrypt',false);
-    Navigator.of(_context).pushNamed("/root");
+    Navigator.of(context).pushNamed("/root");
   } else {
     // widget.prefs.setBool('encrypt',true);
     String url= "https://www.google.de";
     _launchURL();
-    Navigator.of(_context).pushReplacementNamed("/root");}
+    Navigator.of(context).pushReplacementNamed("/root");}
 }
 
 class Page extends StatelessWidget {
@@ -119,8 +118,6 @@ class Page extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
-
     return new Container(
       width: double.infinity,
       color: viewModel.color,
