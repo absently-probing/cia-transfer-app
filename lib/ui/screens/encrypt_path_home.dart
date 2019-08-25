@@ -4,8 +4,6 @@ import 'package:secure_upload/data/strings.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 
-
-
 class EncryptScreen extends StatefulWidget {
   EncryptScreen({Key key}) : super(key: key);
 
@@ -35,118 +33,119 @@ class _EncryptScreen extends State<EncryptScreen> {
     super.dispose();
   }
 
-
-
   void performLogin() {
     final snackbar = new SnackBar(
-        content: new Text("Decryption Successful!, Email : $_url, password : $_password")
-    );
+        content: new Text(
+            "Decryption Successful!, Email : $_url, password : $_password"));
     _scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
   void _openFileExplorer() async {
     Map<String, String> _tmp_paths = null;
-      try {
-          _tmp_paths = await FilePicker.getMultiFilePath();
+    try {
+      _tmp_paths = await FilePicker.getMultiFilePath();
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
+    }
+    if (!mounted) return;
 
-      } on PlatformException catch (e) {
-        print("Unsupported operation" + e.toString());
-      }
-      if (!mounted) return;
-
-      setState(() {
-        if (_tmp_paths != null) {
-          for (String key in _tmp_paths.keys) {
-            if (!_path.containsKey(_tmp_paths[key])) {
-              _paths.add([key, _tmp_paths[key]]);
-              _path[_tmp_paths[key]] = key;
-            }
+    setState(() {
+      if (_tmp_paths != null) {
+        for (String key in _tmp_paths.keys) {
+          if (!_path.containsKey(_tmp_paths[key])) {
+            _paths.add([key, _tmp_paths[key]]);
+            _path[_tmp_paths[key]] = key;
           }
         }
-      });
+      }
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        key: _scaffoldKey,
-        appBar: new AppBar(
-          centerTitle: true,
-          title: new Text(Strings.appTitle),
-        ),
-        body: new Form(
-            key: _stateKey,
-            child: new Stack(
-                children: <Widget>[
-                  new Column(
-                    children: <Widget>[
-                      new Padding(
-                        padding : EdgeInsets.only(top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
-                        child: new FloatingActionButton(
-                          heroTag: "addFile",
-                          backgroundColor: Colors.blue,
-                          onPressed: () => _openFileExplorer(),
-                          child: new Container(
-                            child: Transform.scale(
-                              scale: 2,
-                              child: new Text("+"),
-                            ),
-                          ),
-                        ),
-                      ),
-                      new Expanded(
-                        child: new ListView.builder(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            itemCount: _paths.length,
-                            itemBuilder: (BuildContext ctxt, int index){
-                              final item = _paths[index][1];
-                              print(item);
+      key: _scaffoldKey,
+      appBar: new AppBar(
+        centerTitle: true,
+        title: new Text(Strings.appTitle),
+      ),
+      body: Container(key: _stateKey,
+          child: new Stack(children: <Widget>[
+          new Column(
+            children: <Widget>[
+              new Expanded(
+                child: new ListView.builder(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    itemCount: _paths.length,
+                    itemBuilder: (BuildContext ctxt, int index) {
+                      final item = _paths[index][1];
 
-                              return new Dismissible(
-                                  key: Key(item),
-                                  onDismissed: (direction) {
-                                    setState(() {
-                                      _path.remove(_paths[index][1]);
-                                      _paths.removeAt(index);
-                                    });},
-                                  child: new Card(
-                                      child: new ListTile(
-                                        title: new Text(_paths[index][0]),
-                                        subtitle: new Text(_paths[index][1]),
-                                      )
-                                  )
-                              );
-                            }),
-                      ),
-                    ],
-                  ),
-                //Spacer(),
-                new Padding(
-                    padding: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
-                    child: new Align(
-                      alignment: Alignment.bottomRight,
-                      child: new FloatingActionButton(
-                        heroTag: "upload",
-                        onPressed: (){
-                          Navigator.push(context,
-                             MaterialPageRoute(builder:(context)=>SecondEncrypt())
-                          );
+                      return new Dismissible(
+                          key: Key(item),
+                          onDismissed: (direction) {
+                            setState(() {
+                              _path.remove(_paths[index][1]);
+                              _paths.removeAt(index);
+                            });
                           },
-                        child: new Stack(
-                            children: <Widget>[
-                              new Container(
-                                child: Icon(
-                                  Icons.cloud_queue,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ]),
-                      ),
-                    )
+                          child: new Card(
+                              child: new ListTile(
+                            title: new Text(_paths[index][0]),
+                            subtitle: new Text(_paths[index][1]),
+                          )));
+                    }),
+              ),
+            ],
+          ),
+          //Spacer(),
+          new Padding(
+            padding: EdgeInsets.only(
+                top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: new FloatingActionButton(
+                heroTag: "addFile",
+                backgroundColor: Colors.blue,
+                onPressed: () => _openFileExplorer(),
+                child: new Container(
+                  child: Transform.scale(
+                    scale: 2,
+                    child: new Text("+"),
+                  ),
                 ),
-                ])
-        ),
+              ),
+            ),
+          ),
+          new Padding(
+              padding: EdgeInsets.only(
+                  top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
+              child: new Align(
+                alignment: Alignment.bottomRight,
+                child: new FloatingActionButton(
+                  heroTag: "upload",
+                  onPressed: () {
+                    //TODO add navigation screen for cloud file path
+                    //TODO encrypt and upload after naviagetion screen
+                    //TODO add loading screen for encrypt and upload
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SecondEncrypt(
+                                "dropbox.com/asdjio1231", "password1111117890123890127301270371203790127390127903120937890")));
+                  },
+                  child: new Stack(children: <Widget>[
+                    new Container(
+                      child: Icon(
+                        Icons.cloud_queue,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ]),
+                ),
+              )),
+        ])
+      ),
     );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/ui/screens/my_walkthrough_screen.dart';
+
+import 'dart:math';
 
 class CustomFlatButton extends StatelessWidget {
   final String title;
@@ -56,7 +59,7 @@ class CustomFlatButton extends StatelessWidget {
   }
 }
 
-class CloudStorageProvider{
+class CloudStorageProvider {
   int id;
   String name;
 
@@ -65,7 +68,7 @@ class CloudStorageProvider{
     this.name,
   );
 
-  static List<CloudStorageProvider> getProvider(){
+  static List<CloudStorageProvider> getProvider() {
     return <CloudStorageProvider>[
       CloudStorageProvider(1, 'No Cloud Storage'),
       CloudStorageProvider(4, 'Dropbox'),
@@ -73,7 +76,6 @@ class CloudStorageProvider{
       CloudStorageProvider(3, 'GoogleDrive'),
     ];
   }
-
 }
 
 class MyDropdownMenu extends StatefulWidget {
@@ -84,7 +86,8 @@ class MyDropdownMenu extends StatefulWidget {
 }
 
 class _MyDropdownMenuState extends State<MyDropdownMenu> {
-  List<CloudStorageProvider> _cloudStorageProvider = CloudStorageProvider.getProvider();
+  List<CloudStorageProvider> _cloudStorageProvider =
+      CloudStorageProvider.getProvider();
 
   List<DropdownMenuItem<CloudStorageProvider>> _dropdownMenuItems;
 
@@ -98,29 +101,30 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
     super.initState();
   }
 
-
-  List<DropdownMenuItem<CloudStorageProvider>>  buildDropdownMenuItems(List providers) {
+  List<DropdownMenuItem<CloudStorageProvider>> buildDropdownMenuItems(
+      List providers) {
     List<DropdownMenuItem<CloudStorageProvider>> items = List();
-    for (CloudStorageProvider provider in providers){
+    for (CloudStorageProvider provider in providers) {
       items.add(
         DropdownMenuItem(
           value: provider,
-          child: Text(provider.name,
-          style: new TextStyle(
-            color: Colors.white,
-            decoration: TextDecoration.none,
-            fontFamily: Strings.titleTextFont,
-            fontWeight: FontWeight.w700,
-            fontSize: 15.0,
+          child: Text(
+            provider.name,
+            style: new TextStyle(
+              color: Colors.white,
+              decoration: TextDecoration.none,
+              fontFamily: Strings.titleTextFont,
+              fontWeight: FontWeight.w700,
+              fontSize: 15.0,
+            ),
           ),
-        ),
         ),
       );
     }
     return items;
   }
 
-  onChangeDropdownMenuItem(CloudStorageProvider selectedProvider){
+  onChangeDropdownMenuItem(CloudStorageProvider selectedProvider) {
     setState(() {
       _selectedProvider = selectedProvider;
       selectedProvider.name == 'No Cloud Storage'
@@ -128,13 +132,13 @@ class _MyDropdownMenuState extends State<MyDropdownMenu> {
           : _sProvider = selectedProvider.name;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: new Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Theme.of(context).primaryColor
-          ),
+        data: Theme.of(context)
+            .copyWith(canvasColor: Theme.of(context).primaryColor),
         child: DropdownButton(
           value: _selectedProvider,
           items: _dropdownMenuItems,
@@ -157,7 +161,8 @@ class SelectCloudWithButton extends StatefulWidget {
 class _SelectCloudWithButton extends State<SelectCloudWithButton> {
   final void Function(BuildContext context, String provider) _callback;
   String _sButtonTitle = Strings.onboardingSkip;
-  List<CloudStorageProvider> _cloudStorageProvider = CloudStorageProvider.getProvider();
+  List<CloudStorageProvider> _cloudStorageProvider =
+      CloudStorageProvider.getProvider();
 
   List<DropdownMenuItem<CloudStorageProvider>> _dropdownMenuItems;
 
@@ -174,14 +179,15 @@ class _SelectCloudWithButton extends State<SelectCloudWithButton> {
     super.initState();
   }
 
-
-  List<DropdownMenuItem<CloudStorageProvider>>  buildDropdownMenuItems(List providers) {
+  List<DropdownMenuItem<CloudStorageProvider>> buildDropdownMenuItems(
+      List providers) {
     List<DropdownMenuItem<CloudStorageProvider>> items = List();
-    for (CloudStorageProvider provider in providers){
+    for (CloudStorageProvider provider in providers) {
       items.add(
         DropdownMenuItem(
           value: provider,
-          child: Text(provider.name,
+          child: Text(
+            provider.name,
             style: new TextStyle(
               color: Colors.white,
               decoration: TextDecoration.none,
@@ -196,7 +202,7 @@ class _SelectCloudWithButton extends State<SelectCloudWithButton> {
     return items;
   }
 
-  onChangeDropdownMenuItem(CloudStorageProvider selectedProvider){
+  onChangeDropdownMenuItem(CloudStorageProvider selectedProvider) {
     setState(() {
       _selectedProvider = selectedProvider;
       selectedProvider.name == 'No Cloud Storage'
@@ -207,53 +213,49 @@ class _SelectCloudWithButton extends State<SelectCloudWithButton> {
           : Strings.onboardingLogin;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: new Theme(
-        data: Theme.of(context).copyWith(
-            canvasColor: Theme.of(context).primaryColor
-        ),
-        child: new Column(
-        children: <Widget>[
-        new DropdownButton(
-          value: _selectedProvider,
-          items: _dropdownMenuItems,
-          onChanged: onChangeDropdownMenuItem,
-        ),
-          new Padding(
-            padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
-            child: new CustomFlatButton(
-              title: _sButtonTitle,
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              textColor: Colors.white,
-              onPressed: (){
-                _callback(context, _sProvider);
-              },
-              splashColor: Colors.black12,
-              borderColor: Colors.white,
-              borderWidth: 3.00,
-              color: Colors.blueGrey,
+          data: Theme.of(context)
+              .copyWith(canvasColor: Theme.of(context).primaryColor),
+          child: new Column(children: <Widget>[
+            new DropdownButton(
+              value: _selectedProvider,
+              items: _dropdownMenuItems,
+              onChanged: onChangeDropdownMenuItem,
             ),
-          ),
-        ]
-        )
-      ),
+            new Padding(
+              padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: new CustomFlatButton(
+                title: _sButtonTitle,
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                textColor: Colors.white,
+                onPressed: () {
+                  _callback(context, _sProvider);
+                },
+                splashColor: Colors.black12,
+                borderColor: Colors.white,
+                borderWidth: 3.00,
+                color: Colors.blueGrey,
+              ),
+            ),
+          ])),
     );
   }
 }
 
-enum WhyFarther { onBoarding, cloud, sync, setting}
-
+enum WhyFarther { onBoarding, cloud, sync, setting }
 
 class CustomTextField extends StatelessWidget {
   CustomTextField(
       {this.icon,
-        this.hint,
-        this.obsecure = false,
-        this.validator,
-        this.onSaved});
+      this.hint,
+      this.obsecure = false,
+      this.validator,
+      this.onSaved});
   final FormFieldSetter<String> onSaved;
   final Icon icon;
   final String hint;
@@ -267,74 +269,121 @@ class CustomTextField extends StatelessWidget {
         data: ThemeData(
           primaryColor: Colors.black,
           hintColor: Colors.black,
-      ),
-      child: TextFormField(
-        onSaved: onSaved,
-        validator: validator,
-        autofocus: true,
-        obscureText: obsecure,
-        style: TextStyle(
-          fontSize: 20,
         ),
-        decoration: InputDecoration(
-            hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            hintText: hint,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide(
-                width: 2,
+        child: TextFormField(
+          onSaved: onSaved,
+          validator: validator,
+          autofocus: true,
+          obscureText: obsecure,
+          style: TextStyle(
+            fontSize: 20,
+          ),
+          decoration: InputDecoration(
+              hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              hintText: hint,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(
+                  width: 2,
+                ),
               ),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide(
-                width: 3,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(
+                  width: 3,
+                ),
               ),
-            ),
-            prefixIcon: Padding(
-              child: IconTheme(
-                data: IconThemeData(color: Theme.of(context).buttonColor),
-                child: icon,
-              ),
-              padding: EdgeInsets.only(left: 30, right: 10),
-            )),
-      ),
+              prefixIcon: Padding(
+                child: IconTheme(
+                  data: IconThemeData(color: Theme.of(context).buttonColor),
+                  child: icon,
+                ),
+                padding: EdgeInsets.only(left: 30, right: 10),
+              )),
+        ),
       ),
     );
   }
 }
 
+class CustomText extends StatelessWidget {
+  CustomText({this.text, this.icon, this.width, this.fontSize});
+
+  final Icon icon;
+  final String text;
+  final double fontSize;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left: 20, right: 20),
+      child: Row(children: [
+        Container(
+          child: icon,
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 10.0),
+          child: Container(
+            decoration: ShapeDecoration(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              color: Colors.grey[300],
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(left: 15, right: 15),
+              child: SizedBox(
+                width: min(width, (globals.maxWidth - 140)),
+                child: Text(text,
+                    style: TextStyle(
+                      fontSize: fontSize,
+                    ),
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 5),
+              ),
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+}
 
 class MyPopupMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return
-      new PopupMenuButton<WhyFarther>(
-          onSelected: (WhyFarther result) { if (result == WhyFarther.onBoarding){Navigator.push(
-context, MaterialPageRoute(builder: (context) => MyWalkthroughScreen()),);
-          }
-          },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
-            const PopupMenuItem<WhyFarther>(
-              value: WhyFarther.onBoarding,
-              child: Text('OnBoarding'),
-            ),
-            const PopupMenuDivider(),
-            const PopupMenuItem<WhyFarther>(
-              value: WhyFarther.cloud,
-              child: Text('Cloud Storage'),
-            ),
-            const PopupMenuDivider(),
-            const PopupMenuItem<WhyFarther>(
-              value: WhyFarther.sync,
-              child: Text('Synchronization'),
-            ),
-            const PopupMenuDivider(),
-            const PopupMenuItem<WhyFarther>(
-              value: WhyFarther.setting,
-              child: Text('Settings'),
-            ),
-          ],
-        );
+    return new PopupMenuButton<WhyFarther>(
+      onSelected: (WhyFarther result) {
+        if (result == WhyFarther.onBoarding) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyWalkthroughScreen()),
+          );
+        }
+      },
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
+        const PopupMenuItem<WhyFarther>(
+          value: WhyFarther.onBoarding,
+          child: Text('OnBoarding'),
+        ),
+        const PopupMenuDivider(),
+        const PopupMenuItem<WhyFarther>(
+          value: WhyFarther.cloud,
+          child: Text('Cloud Storage'),
+        ),
+        const PopupMenuDivider(),
+        const PopupMenuItem<WhyFarther>(
+          value: WhyFarther.sync,
+          child: Text('Synchronization'),
+        ),
+        const PopupMenuDivider(),
+        const PopupMenuItem<WhyFarther>(
+          value: WhyFarther.setting,
+          child: Text('Settings'),
+        ),
+      ],
+    );
   }
 }

@@ -114,7 +114,7 @@ class MyAppState extends State<DecryptScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Padding(
-                              padding: EdgeInsets.only(bottom: 20),
+                              padding: EdgeInsets.only(top: 20, bottom: 20),
                               child: CustomTextField(
                                 onSaved: (input) => _url = input,
                                 validator: _urlValidator,
