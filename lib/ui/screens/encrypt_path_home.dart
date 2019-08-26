@@ -3,6 +3,13 @@ import 'package:secure_upload/ui/screens/encrypt_path_second_screen.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
+import 'package:secure_upload/backend/cloud/google/googleDriveClient.dart';
+import 'package:secure_upload/backend/cloud/google/simpleStorage.dart';
+import 'package:secure_upload/ui/screens/my_onboard_screen.dart';
+
+import 'dart:io';
+
 
 class EncryptScreen extends StatefulWidget {
   EncryptScreen({Key key}) : super(key: key);
@@ -11,7 +18,7 @@ class EncryptScreen extends StatefulWidget {
   _EncryptScreen createState() => new _EncryptScreen();
 }
 
-class _EncryptScreen extends State<EncryptScreen> {
+class _EncryptScreen extends State<EncryptScreen>{
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _stateKey = new GlobalKey<FormState>();
 
@@ -116,18 +123,27 @@ class _EncryptScreen extends State<EncryptScreen> {
               ),
             ),
           ),
-          new Padding(
+          new Padding (
               padding: EdgeInsets.only(
                   top: 20.0, bottom: 20.0, left: 20.0, right: 20.0),
               child: new Align(
                 alignment: Alignment.bottomRight,
                 child: new FloatingActionButton(
                   heroTag: "upload",
-                  onPressed: () {
+                  onPressed: () async {
                     //TODO add navigation screen for cloud file path
                     //TODO encrypt and upload after naviagetion screen
                     //TODO add loading screen for encrypt and upload
-
+                    var file_1 = File("/data/data/secure_upload_app/abc");
+                    //
+                    var file_2 = File("/data/local/tmp/stored");
+                    await file_1.writeAsString("Test");
+                    await file_2.writeAsString("");
+                    Storage storage = SimpleStorage("/data/local/tmp/stored");
+                    CloudClient client = GoogleDriveClient(storage);
+                    await client.authenticate(launchURL);
+                    var localFile = File("/data/local/tmp/abc");
+                    var fileID = await client.createFile("myupload", localFile);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -147,5 +163,6 @@ class _EncryptScreen extends State<EncryptScreen> {
         ])
       ),
     );
+
   }
 }

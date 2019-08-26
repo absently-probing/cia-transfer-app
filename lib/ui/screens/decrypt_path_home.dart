@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
-import 'package:secure_upload/ui/screens/my_root_screen.dart';
 
 class DecryptScreen extends StatefulWidget {
   @override

@@ -81,8 +81,8 @@ _dontShowWalkthroughAgain() async {
   await prefs.setBool('showWalkthrough', false);
 }
 
-_launchURL() async {
-  const url = 'https://flutter.dev';
+launchURL(String url) async {
+  //const url = 'https://flutter.dev';
   if (await canLaunch(url)) {
     await launch(url);
   } else {
@@ -97,8 +97,8 @@ _handleButtonClick(BuildContext context, String sProvider) {
     Navigator.of(context).pushNamed("/root");
   } else {
     // widget.prefs.setBool('encrypt',true);
-    String url= "https://www.google.de";
-    _launchURL();
+    //String url= "https://www.google.de";
+    //launchURL(url);
     Navigator.of(context).pushReplacementNamed("/root");}
 }
 
