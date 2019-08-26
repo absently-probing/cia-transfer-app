@@ -101,53 +101,51 @@ class MyAppState extends State<DecryptScreen> {
           title: new Text(Strings.appTitle),
         ),
         body: Center(
-        child: Container(
+            child: Container(
           width: globals.maxWidth,
           alignment: Alignment.center,
           color: Theme.of(context).primaryColor,
-          child: ListView(shrinkWrap: true, children: [
-            SingleChildScrollView(
-                child: Form(
-                    key: _stateKey,
-                    child: new Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                              padding: EdgeInsets.only(top: 20, bottom: 20),
-                              child: CustomTextField(
-                                onSaved: (input) => _url = input,
-                                validator: _urlValidator,
-                                icon: Icon(Icons.cloud_download),
-                                hint: "URL",
-                              )),
-                          Padding(
-                              padding: EdgeInsets.only(bottom: 20),
-                              child: CustomTextField(
-                                onSaved: (val) => _password = val,
-                                obsecure: true,
-                                validator: _passwordValidator,
-                                hint: "Password",
-                                icon: Icon(Icons.lock),
-                              )),
-                          Padding(
+          child: SingleChildScrollView(
+              child: Form(
+                  key: _stateKey,
+                  child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
+                            child: CustomTextField(
+                              onSaved: (input) => _url = input,
+                              validator: _urlValidator,
+                              icon: Icon(Icons.cloud_download),
+                              hint: "URL",
+                            )),
+                        Padding(
                             padding: EdgeInsets.only(bottom: 20),
-                            child: Container(
-                              padding: EdgeInsets.only(left: 20, right: 20),
-                              child: SizedBox(
-                                  height: globals.rootButtonHeight,
-                                  width: globals.rootButtonWidth,
-                                  child: filledButton(
-                                      'Decrypt',
-                                      Theme.of(context).hintColor,
-                                      Theme.of(context).buttonColor,
-                                      Theme.of(context).buttonColor,
-                                      Theme.of(context).hintColor,
-                                      _submit)),
-                            ),
+                            child: CustomTextField(
+                              onSaved: (val) => _password = val,
+                              obsecure: true,
+                              validator: _passwordValidator,
+                              hint: "Password",
+                              icon: Icon(Icons.lock),
+                            )),
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 20),
+                          child: Container(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            child: SizedBox(
+                                height: globals.rootButtonHeight,
+                                width: globals.rootButtonWidth,
+                                child: filledButton(
+                                    'Decrypt',
+                                    Theme.of(context).hintColor,
+                                    Theme.of(context).buttonColor,
+                                    Theme.of(context).buttonColor,
+                                    Theme.of(context).hintColor,
+                                    _submit)),
                           ),
-                        ])))
-          ]),
+                        ),
+                      ]))),
         )));
   }
 }
