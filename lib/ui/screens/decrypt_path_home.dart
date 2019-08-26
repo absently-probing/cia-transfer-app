@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
-import 'package:secure_upload/ui/screens/my_root_screen.dart';
+import 'package:secure_upload/ui/custom/icons.dart';
+import 'package:secure_upload/ui/custom/overlay.dart';
 
 class DecryptScreen extends StatefulWidget {
   @override
@@ -54,6 +55,20 @@ class MyAppState extends State<DecryptScreen> {
     return null;
   }
 
+  void _openQRCodeScanner(BuildContext _context) {
+    showDialog(
+      context: _context,
+        builder: (BuildContext context) {
+        return CustomOverlay(
+          child:  Container(
+            height: globals.maxHeight,
+            color: Colors.green,
+          )
+        );
+      },
+    );
+  }
+
   void performLogin() {
     final snackbar = new SnackBar(
       content: new Text("Decryption Successful!"),
@@ -99,6 +114,18 @@ class MyAppState extends State<DecryptScreen> {
         appBar: new AppBar(
           centerTitle: true,
           title: new Text(Strings.appTitle),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(left: 5.0, right: 5.0),
+              child: IconButton(
+                icon: Icon(CustomIcons.qrcode_scanner),
+                tooltip: Strings.scannerTooltip,
+                onPressed: (){
+                  _openQRCodeScanner(context);
+                },
+              ),
+            ),
+          ],
         ),
         body: Center(
             child: Container(
@@ -119,6 +146,7 @@ class MyAppState extends State<DecryptScreen> {
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
                               hint: "URL",
+                              autofocus: true,
                             )),
                         Padding(
                             padding: EdgeInsets.only(bottom: 20),
@@ -128,6 +156,7 @@ class MyAppState extends State<DecryptScreen> {
                               validator: _passwordValidator,
                               hint: "Password",
                               icon: Icon(Icons.lock),
+                              autofocus: false,
                             )),
                         Padding(
                           padding: EdgeInsets.only(bottom: 20),

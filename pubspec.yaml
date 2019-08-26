@@ -80,3 +80,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  fonts:
+    - family: qrcode_scanner
+      fonts:
+        - asset: assets/fonts/qrcode_scanner.ttf
