@@ -11,3 +11,7 @@ double screenHeight(BuildContext context, {double dividedBy = 1}) {
 double screenWidth(BuildContext context, {double dividedBy = 1}) {
   return screenSize(context).width / dividedBy;
 }
+
+double textScaleFactor(BuildContext context){
+  return MediaQuery.textScaleFactorOf(context);
+}

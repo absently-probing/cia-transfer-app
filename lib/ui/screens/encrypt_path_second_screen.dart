@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:secure_upload/data/global.dart' as globals;
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
-import 'package:flutter/services.dart';
 
 class SecondEncrypt extends StatelessWidget {
   final String _url;

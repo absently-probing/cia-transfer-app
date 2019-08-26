@@ -227,7 +227,7 @@ class _SelectCloudWithButton extends State<SelectCloudWithButton> {
               onChanged: onChangeDropdownMenuItem,
             ),
             new Padding(
-              padding: new EdgeInsets.only(top: 10.0, bottom: 10.0),
+              padding: new EdgeInsets.only(top: 20.0, bottom: 10.0),
               child: new CustomFlatButton(
                 title: _sButtonTitle,
                 fontSize: 22,

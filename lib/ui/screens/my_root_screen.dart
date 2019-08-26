@@ -87,7 +87,7 @@ class MyRootScreen extends StatelessWidget {
                         decoration: TextDecoration.none,
                         fontFamily: Strings.titleTextFont,
                         fontWeight: FontWeight.w700,
-                        fontSize: 24.0,
+                        fontSize: globals.logoFontSize,
                       ),
                     )),
               ),

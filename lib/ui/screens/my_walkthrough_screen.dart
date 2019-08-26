@@ -7,7 +7,7 @@ import 'package:secure_upload/ui/widgets/page_dragger.dart';
 import 'package:secure_upload/ui/widgets/page_reveal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:ui';
 
 class MyWalkthroughScreen extends StatefulWidget {
   final SharedPreferences prefs;
@@ -17,7 +17,8 @@ class MyWalkthroughScreen extends StatefulWidget {
   _MyWalkthroughScreenState createState() => new _MyWalkthroughScreenState();
 }
 
-class _MyWalkthroughScreenState extends State<MyWalkthroughScreen> with TickerProviderStateMixin {
+class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
+    with TickerProviderStateMixin {
   StreamController<SlideUpdate> slideUpdateStream;
   AnimatedPageDragger animatedPageDragger;
 
@@ -84,37 +85,63 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen> with TickerPr
   Widget build(BuildContext context) {
     globals.maxHeight = utils.screenHeight(context);
     globals.maxWidth = utils.screenWidth(context);
+    globals.onboardTextScaleFactor = utils.textScaleFactor(context);
 
-    return new Scaffold(
-      body: new Stack(
-        children: [
-          new Page(
-            viewModel: pages[activeIndex],
-          ),
-          new PageReveal(
-            revealPercent: slidePercent,
-            child: new Page(
-              viewModel: pages[nextPageIndex],
-
-              iconPercentVisible: slidePercent*0.5,
-              textPercentVisible: slidePercent*0.75,
-              titlePercentVisible: slidePercent,
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Container(
+        child: Stack(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                    child: Page(
+                      viewModel: pages[activeIndex],
+                    ),
+                ),
+               Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: globals.onboardIndicatorTopPadding,
+                        bottom: globals.onboardIndicatorBottomPadding),
+                    child: PagerIndicator(
+                      viewModel: new PagerIndicatorViewModel(
+                        pages,
+                        activeIndex,
+                        slideDirection,
+                        slidePercent,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          new PagerIndicator(
-            viewModel: new PagerIndicatorViewModel(
-              pages,
-              activeIndex,
-              slideDirection,
-              slidePercent,
+            PageReveal(
+              revealPercent: slidePercent,
+              child: Container(
+                color: Theme.of(context).primaryColor,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: globals.indicatorMaxHeight + globals.onboardIndicatorBottomPadding + globals.onboardIndicatorTopPadding),
+                  child: Page(
+                  viewModel: pages[nextPageIndex],
+                  iconPercentVisible: slidePercent * 0.5,
+                  textPercentVisible: slidePercent * 0.75,
+                  titlePercentVisible: slidePercent,
+                  ),
+                ),
+              ),
             ),
-          ),
-          new PageDragger(
-            canDragLeftToRight: activeIndex > 0,
-            canDragRightToLeft: activeIndex < pages.length - 1,
-            slideUpdateStream: this.slideUpdateStream,
-          ),
-        ],
+            PageDragger(
+              canDragLeftToRight: activeIndex > 0,
+              canDragRightToLeft: activeIndex < pages.length - 1,
+              slideUpdateStream: this.slideUpdateStream,
+            ),
+          ],
+        ),
       ),
     );
   }
