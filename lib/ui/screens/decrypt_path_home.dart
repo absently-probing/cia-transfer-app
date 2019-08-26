@@ -55,6 +55,8 @@ class MyAppState extends State<DecryptScreen> {
     return null;
   }
 
+  // use Navigator.of(context, rootNavigator: true).pop('dialog') to close dialog after
+  // successfully parsed qrcode
   void _openQRCodeScanner(BuildContext _context) {
     showDialog(
       context: _context,
