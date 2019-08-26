@@ -88,13 +88,13 @@ _handleButtonClick(BuildContext context, String sProvider) {
   _dontShowWalkthroughAgain();
   if (sProvider == null) {
     // widget.prefs.setBool('encrypt',false);
-    Navigator.of(context).pushNamed("/root");
   } else {
     // widget.prefs.setBool('encrypt',true);
     String url = "https://www.google.de";
     _launchURL();
-    Navigator.of(context).pushReplacementNamed("/root");
   }
+
+  Navigator.of(context).pushNamedAndRemoveUntil("/root", (Route<dynamic> route) => false);
 }
 
 class Page extends StatelessWidget {

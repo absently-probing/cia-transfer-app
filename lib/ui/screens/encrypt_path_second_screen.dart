@@ -65,7 +65,7 @@ class SecondEncrypt extends StatelessWidget {
                                         icon: Icon(Icons.lock),
                                         fontSize: 12,
                                         width: 200),
-                                    onLongPress: () {
+                                    onTap: () {
                                       Clipboard.setData(
                                           new ClipboardData(text: _url));
                                       key.currentState
