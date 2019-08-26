@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:secure_upload/data/global.dart' as globals;
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
-import 'dart:math';
+import 'package:flutter/services.dart';
 
 class SecondEncrypt extends StatelessWidget {
   final String _url;
@@ -15,7 +15,10 @@ class SecondEncrypt extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     final key = new GlobalKey<ScaffoldState>();
-
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return Scaffold(
       key: key,
       appBar: AppBar(
