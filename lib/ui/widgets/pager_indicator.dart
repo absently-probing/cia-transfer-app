@@ -45,27 +45,32 @@ class PagerIndicator extends StatelessWidget {
     }
 
     final BUBBLE_WIDTH = 45.0;
-    final baseTranslation = ((viewModel.pages.length * BUBBLE_WIDTH) / 2) - (BUBBLE_WIDTH / 2);
+    final baseTranslation =
+        ((viewModel.pages.length * BUBBLE_WIDTH) / 2) - (BUBBLE_WIDTH / 2);
     var translation = baseTranslation - (viewModel.activeIndex * BUBBLE_WIDTH);
 
-    if (viewModel.slideDirection == SlideDirection.leftToRight){
+    if (viewModel.slideDirection == SlideDirection.leftToRight) {
       translation += BUBBLE_WIDTH * viewModel.slidePercent;
     } else if (viewModel.slideDirection == SlideDirection.rightToLeft) {
       translation -= BUBBLE_WIDTH * viewModel.slidePercent;
     }
 
-    return new Column(
-      children: <Widget>[
-        new Expanded(child: new Container()),
-        new Transform(
-          transform: new Matrix4.translationValues(translation,0.0,0.0),
-          child: new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: bubbles,
+    return Container(
+        child: Column(
+      children: [
+        Spacer(),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: bubbles,
+            ),
           ),
-        )
+        ),
       ],
-    );
+    ));
   }
 }
 
@@ -102,9 +107,11 @@ class PageBubble extends StatelessWidget {
         width: globals.paperIndicatorWidth,
         height: globals.pagerIndicatorHeight,
         child: new Center(
-        child: new Container(
-          width: lerpDouble(globals.indicatorMinWidth, globals.indicatorMaxWidth, viewModel.activePercent),
-          height: lerpDouble(globals.indicatorMinHeight, globals.indicatorMaxHeight, viewModel.activePercent),
+            child: new Container(
+          width: lerpDouble(globals.indicatorMinWidth,
+              globals.indicatorMaxWidth, viewModel.activePercent),
+          height: lerpDouble(globals.indicatorMinHeight,
+              globals.indicatorMaxHeight, viewModel.activePercent),
           decoration: new BoxDecoration(
               shape: BoxShape.circle,
               color: viewModel.isHollow
