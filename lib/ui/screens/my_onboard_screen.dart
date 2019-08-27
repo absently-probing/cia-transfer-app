@@ -50,25 +50,27 @@ List<PageViewModel> createStaticPageViewModels(BuildContext context) {
       Strings.appTitle,
       SizedBox(
         height: globals.onboardMaxPageHeight(context),
-        child: SingleChildScrollView(
-            child: Column(
-          children: <Widget>[
-            Text(
-              'Please Select a Cloud Storage',
-              style: TextStyle(
-                color: Colors.white,
-                decoration: TextDecoration.none,
-                fontFamily: Strings.titleTextFont,
-                fontWeight: FontWeight.w700,
-                fontSize: 15.0,
+        child: Center(
+          child: SingleChildScrollView(
+              child: Column(
+            children: <Widget>[
+              Text(
+                'Please Select a Cloud Storage',
+                style: TextStyle(
+                  color: Colors.white,
+                  decoration: TextDecoration.none,
+                  fontFamily: Strings.titleTextFont,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15.0,
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: SelectCloudWithButton(_handleButtonClick),
-            ),
-          ],
-        )),
+              Padding(
+                padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                child: SelectCloudWithButton(_handleButtonClick),
+              ),
+            ],
+          )),
+        ),
       ),
     ),
   ];
