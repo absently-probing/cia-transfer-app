@@ -160,7 +160,6 @@ class Page extends StatelessWidget {
                 fontFamily: Strings.titleTextFont,
                 fontWeight: FontWeight.w700,
                 fontSize: globals.logoFontSize,
-                height: globals.onboardLogoTextHeight,
               ),
             ),
           ),

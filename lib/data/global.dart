@@ -31,10 +31,9 @@ double onboardIconBottomPadding = 10.0;
 double onboardIndicatorBottomPadding = 20.0;
 double onboardIndicatorTopPadding = 10.0;
 double onboardTopPadding = 15.0;
-double onboardTextScaleFactor = 0.0;
-double onboardLogoTextHeight = 4;
+double onboardLogoHeight = 0.0;
 
 double onboardTextHeight = maxHeight
     - (indicatorMaxHeight + onboardIndicatorBottomPadding + onboardIndicatorTopPadding
         + onboardIconTopPadding + cloudIcon
-        + onboardTopPadding + onboardIconBottomPadding +  onboardLogoTextHeight * logoFontSize * onboardTextScaleFactor + 1.0);
+        + onboardTopPadding + onboardIconBottomPadding +  onboardLogoHeight);

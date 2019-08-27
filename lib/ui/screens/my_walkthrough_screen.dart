@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/screens/my_onboard_screen.dart';
@@ -7,6 +8,7 @@ import 'package:secure_upload/ui/widgets/page_dragger.dart';
 import 'package:secure_upload/ui/widgets/page_reveal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'dart:ui';
 
 class MyWalkthroughScreen extends StatefulWidget {
@@ -21,6 +23,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
     with TickerProviderStateMixin {
   StreamController<SlideUpdate> slideUpdateStream;
   AnimatedPageDragger animatedPageDragger;
+  GlobalKey _keyLogoSize = GlobalKey();
 
   int activeIndex = 0;
   int nextPageIndex = 0;
@@ -81,11 +84,41 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
     });
   }
 
+  void initState() {
+    super.initState();
+  }
+
+  // calculate logo size
+  double _getLogoSize(){
+    final constraints = BoxConstraints(
+      maxWidth: globals.maxWidth, // maxwidth calculated
+      minHeight: 0.0,
+      minWidth: 0.0,
+    );
+
+    RenderParagraph renderParagraph = RenderParagraph(
+      TextSpan(
+        text: Strings.appTitle,
+        style: TextStyle(
+          color: Colors.white,
+          decoration: TextDecoration.none,
+          fontFamily: Strings.titleTextFont,
+          fontWeight: FontWeight.w700,
+          fontSize: globals.logoFontSize,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+      maxLines: 1,
+    );
+    renderParagraph.layout(constraints);
+    return renderParagraph.getMinIntrinsicHeight(globals.logoFontSize).ceilToDouble();
+  }
+
   @override
   Widget build(BuildContext context) {
     globals.maxHeight = utils.screenHeight(context);
     globals.maxWidth = utils.screenWidth(context);
-    globals.onboardTextScaleFactor = utils.textScaleFactor(context);
+    globals.onboardLogoHeight = _getLogoSize();
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
