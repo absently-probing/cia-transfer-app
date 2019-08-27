@@ -71,7 +71,6 @@ class MyAppState extends State<DecryptScreen> {
 
   String _passwordValidator(String input) {
     if (!_passwordHadFocus){
-      print("Hi");
       return null;
     }
 
@@ -122,9 +121,7 @@ class MyAppState extends State<DecryptScreen> {
     } else {
       if (_urlHasFocus){
         _urlHasFocus = false;
-        print("start");
         _submit();
-        print("fin");
       }
     }
   }
