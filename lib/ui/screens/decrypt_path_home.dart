@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/screens/decrypt_path_qr.dart';
+import 'package:secure_upload/ui/screens/decrypt_progress_bar.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:secure_upload/ui/custom/icons.dart';
+import 'dart:async';
 
 class DecryptScreen extends StatefulWidget {
   @override
@@ -24,39 +26,45 @@ class _DecryptScreen extends State<DecryptScreen> {
   bool _passwordHadFocus = false;
 
   bool _focusInit = true;
+  bool _submitted = false;
+  bool _qr_scanner = false;
 
-  String _urlValidationResult = null;
-  String _passwordValidationResult = null;
+  String _urlValidationResult;
+  String _passwordValidationResult;
 
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     _focusNodeUrl.addListener(_handleUrlTextField);
     _focusNodePassword.addListener(_handlePassworTextField);
+    super.initState();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
     _focusNodeUrl.dispose();
     _focusNodePassword.dispose();
+    super.dispose();
   }
 
-  void _submit() async {
-    final form = await _stateKey.currentState;
+  void _submit(BuildContext context) {
+    final form = _stateKey.currentState;
 
     if (form.validate()) {
       form.save();
 
       if (_urlController.text != "" && _passwordController.text != "") {
-        performLogin();
+        _performLogin(context);
       }
     }
   }
 
   String _urlValidator(String input) {
+    if (_submitted){
+      return null;
+    }
+
     if (!_passwordHadFocus && input.isEmpty) {
       return _urlValidationResult;
     }
@@ -71,6 +79,10 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   String _passwordValidator(String input) {
+    if (_submitted){
+      return null;
+    }
+
     if (!_passwordHadFocus) {
       return null;
     }
@@ -85,6 +97,12 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   _openQRCodeScanner(BuildContext context) async {
+    _qr_scanner = true;
+    _focusNodeUrl.unfocus();
+    _focusNodePassword.unfocus();
+    FocusScope.of(context).unfocus();
+    FocusScope.of(context).requestFocus(FocusNode());
+
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => DecryptQr()),
@@ -102,43 +120,78 @@ class _DecryptScreen extends State<DecryptScreen> {
             SnackBar(content: Text(Strings.scannerUpdatedUrlAndPasssword)));
       }
     }
+
+    _qr_scanner = false;
   }
 
-  void performLogin() {
-    final snackbar = new SnackBar(
-      content: new Text("Decryption Successful!"),
-      //, Email : $_url, password : $_password
-      action: SnackBarAction(
-        label: 'Download',
-        onPressed: () {
-          Navigator.of(context).pushNamedAndRemoveUntil(
-              "/root", (Route<dynamic> route) => false);
-        },
-      ),
-      duration: const Duration(minutes: 5),
+  void _performLogin(BuildContext context) async {
+    if (_submitted){
+      return;
+    }
+
+    _submitted = true;
+    final String url = _urlController.text;
+    final String password = _passwordController.text;
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DecryptProgress(url: url, password: password)),
     );
-    _scaffoldKey.currentState.showSnackBar(snackbar);
+
+    _submitted = false;
   }
 
   void _handleUrlTextField() {
+    if (_submitted){
+      if (_focusNodeUrl.hasFocus) {
+        _focusNodeUrl.unfocus();
+      }
+
+      return;
+    }
+
+    if (_qr_scanner){
+      if (_focusNodeUrl.hasFocus) {
+        _focusNodeUrl.unfocus();
+      }
+
+      return;
+    }
+
     if (_focusNodeUrl.hasFocus) {
       _urlHasFocus = true;
     } else {
       if (_urlHasFocus) {
         _urlHasFocus = false;
-        _submit();
+        _submit(_focusNodeUrl.context);
       }
     }
   }
 
   void _handlePassworTextField() {
+    if (_submitted){
+      if (_focusNodePassword.hasFocus) {
+        _focusNodePassword.unfocus();
+      }
+
+      return;
+    }
+
+    if (_qr_scanner){
+      if (_focusNodePassword.hasFocus) {
+        _focusNodePassword.unfocus();
+      }
+
+      return;
+    }
+
     if (_focusNodePassword.hasFocus) {
       _passwordHasFocus = true;
     } else {
       if (_passwordHasFocus) {
         _passwordHasFocus = false;
         _passwordHadFocus = true;
-        _submit();
+        _submit(_focusNodePassword.context);
       }
     }
   }
@@ -168,8 +221,8 @@ class _DecryptScreen extends State<DecryptScreen> {
   @override
   Widget build(BuildContext context) {
     if (_focusInit) {
-      FocusScope.of(context).requestFocus(_focusNodeUrl);
       _focusInit = false;
+      FocusScope.of(context).requestFocus(_focusNodeUrl);
     }
 
     return new Scaffold(

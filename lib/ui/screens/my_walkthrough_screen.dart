@@ -86,6 +86,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
 
   void initState() {
     super.initState();
+    globals.onboardLogoHeight = _getLogoSize();
   }
 
   // calculate logo size
@@ -118,7 +119,6 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
   Widget build(BuildContext context) {
     globals.maxHeight = utils.screenHeight(context);
     globals.maxWidth = utils.screenWidth(context);
-    globals.onboardLogoHeight = _getLogoSize();
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,

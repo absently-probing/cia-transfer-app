@@ -10,10 +10,6 @@ class DecryptQr extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FocusScope.of(context).unfocus();
-
-    FocusScope.of(context).requestFocus(FocusNode());
-
     return Column(
         children: <Widget>[
           Expanded(
