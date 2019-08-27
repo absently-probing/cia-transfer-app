@@ -204,7 +204,6 @@ IconButton(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
                               controller: _urlController,
-                              onSaved: (input) => _urlController.text = input,
                               focusNode: _focusNodeUrl,
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
@@ -215,7 +214,6 @@ IconButton(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
                               controller: _passwordController,
-                              onSaved: (val) => _passwordController.text = val,
                               focusNode: _focusNodePassword,
                               obsecure: true,
                               validator: _passwordValidator,
