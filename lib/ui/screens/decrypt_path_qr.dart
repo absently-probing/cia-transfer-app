@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 
 import 'package:validators/validators.dart' as validators;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -12,8 +13,11 @@ class DecryptQr extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    FocusScope.of(context).unfocus();
+
+    FocusScope.of(context).requestFocus(FocusNode());
+
+    return Column(
         children: <Widget>[
           Expanded(
             child: QRView(
@@ -50,7 +54,6 @@ class DecryptQr extends StatelessWidget {
             )
           ),
         ],
-      ),
     );
   }
 

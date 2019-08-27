@@ -24,7 +24,7 @@ class _DecryptScreen extends State<DecryptScreen> {
   bool _passwordHasFocus = false;
   bool _passwordHadFocus = false;
 
-
+  bool _focusInit = true;
 
   String _urlValidationResult = null;
   String _passwordValidationResult = null;
@@ -91,16 +91,17 @@ class _DecryptScreen extends State<DecryptScreen> {
       MaterialPageRoute(builder: (context) => DecryptQr()),
     );
 
-    assert(result.length == 2);
-    _urlController.text = result[0];
+    if(result != null && result.length == 2) {
+      _urlController.text = result[0];
 
-    if (result[1] == null) {
-      _scaffoldKey.currentState
-          .showSnackBar(SnackBar(content: Text(Strings.scannerUpdatedUrl)));
-    } else {
-      _passwordController.text = result[1];
-      _scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text(Strings.scannerUpdatedUrlAndPasssword)));
+      if (result[1] == null) {
+        _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text(Strings.scannerUpdatedUrl)));
+      } else {
+        _passwordController.text = result[1];
+        _scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(Strings.scannerUpdatedUrlAndPasssword)));
+      }
     }
   }
 
@@ -167,6 +168,11 @@ class _DecryptScreen extends State<DecryptScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_focusInit) {
+      FocusScope.of(context).requestFocus(_focusNodeUrl);
+      _focusInit = false;
+    }
+
     return new Scaffold(
         key: _scaffoldKey,
         appBar: new AppBar(
@@ -198,18 +204,18 @@ IconButton(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
                               controller: _urlController,
-                              //onSaved: (input) => _url = input,
+                              onSaved: (input) => _urlController.text = input,
                               focusNode: _focusNodeUrl,
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
                               hint: "URL",
-                              autofocus: true,
+                              autofocus: false,
                             )),
                         Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
                               controller: _passwordController,
-                              //onSaved: (val) => _password = val,
+                              onSaved: (val) => _passwordController.text = val,
                               focusNode: _focusNodePassword,
                               obsecure: true,
                               validator: _passwordValidator,
