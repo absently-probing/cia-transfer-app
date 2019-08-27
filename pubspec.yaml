@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   shared_preferences: ^0.5.3+4
   url_launcher: ^5.1.2
+  share: ^0.6.2+1
 
   # A package that allows you to use a native file explorer to pick single or multiple absolute file
   # paths, with extensions filtering support.
