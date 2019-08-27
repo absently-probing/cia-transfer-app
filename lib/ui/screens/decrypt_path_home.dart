@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/global.dart' as globals;
+import 'package:secure_upload/ui/screens/decrypt_path_qr.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:secure_upload/ui/custom/icons.dart';
 import 'package:secure_upload/ui/custom/overlay.dart';
 
 class DecryptScreen extends StatefulWidget {
   @override
-  MyAppState createState() => new MyAppState();
+  _DecryptScreen createState() => new _DecryptScreen();
 }
 
-class MyAppState extends State<DecryptScreen> {
+class _DecryptScreen extends State<DecryptScreen> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _stateKey = new GlobalKey<FormState>();
   final _focusNodeUrl = new FocusNode();
   final _focusNodePassword = new FocusNode();
 
-  String _url;
-  String _password;
+  var _urlController = TextEditingController();
+  var _passwordController = TextEditingController();
   bool _urlHasFocus = false;
   bool _passwordHasFocus = false;
   bool _passwordHadFocus = false;
@@ -49,7 +51,7 @@ class MyAppState extends State<DecryptScreen> {
     if (form.validate()) {
       form.save();
 
-      if (_url != "" && _password != "") {
+      if (_urlController.text != "" && _passwordController.text != "") {
         performLogin();
       }
     }
@@ -83,20 +85,23 @@ class MyAppState extends State<DecryptScreen> {
     return _passwordValidationResult;
   }
 
-  // use Navigator.of(context, rootNavigator: true).pop('dialog') to close dialog after
-  // successfully parsed qrcode
-  void _openQRCodeScanner(BuildContext _context) {
-    showDialog(
-      context: _context,
-        builder: (BuildContext context) {
-        return CustomOverlay(
-          child:  Container(
-            height: globals.maxHeight,
-            color: Colors.green,
-          )
-        );
-      },
+  _openQRCodeScanner(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DecryptQr()),
     );
+
+    assert(result.length == 2);
+    _urlController.text = result[0];
+
+    if (result[1] == null) {
+      _scaffoldKey.currentState
+          .showSnackBar(SnackBar(content: Text(Strings.scannerUpdatedUrl)));
+    } else {
+      _passwordController.text = result[1];
+      _scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text(Strings.scannerUpdatedUrlAndPasssword)));
+    }
   }
 
   void performLogin() {
@@ -171,7 +176,7 @@ class MyAppState extends State<DecryptScreen> {
 IconButton(
                 icon: Icon(CustomIcons.qrcode_scanner),
                 tooltip: Strings.scannerTooltip,
-                onPressed: (){
+                onPressed: () {
                   _openQRCodeScanner(context);
                 },
               ),
@@ -192,8 +197,9 @@ IconButton(
                         Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
+                              controller: _urlController,
+                              //onSaved: (input) => _url = input,
                               focusNode: _focusNodeUrl,
-                              onSaved: (input) => _url = input,
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
                               hint: "URL",
@@ -202,8 +208,9 @@ IconButton(
                         Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
+                              controller: _passwordController,
+                              //onSaved: (val) => _password = val,
                               focusNode: _focusNodePassword,
-                              onSaved: (val) => _password = val,
                               obsecure: true,
                               validator: _passwordValidator,
                               hint: "Password",

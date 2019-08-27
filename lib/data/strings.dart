@@ -8,6 +8,8 @@ class Strings {
   static const String onboardingLogin = "Log In";
   static const String onboardingSkip = "Skip";
   static const String scannerTooltip = "Open QR Code scanner";
+  static final String scannerUpdatedUrl = "Updated url from scanned QR code!";
+  static final String scannerUpdatedUrlAndPasssword = "Updated url and password from scanned QR code!";
 
   static const String encryptShareUrl = 'Share URL only';
   static const String encryptSharePassword = 'Share Password only';
