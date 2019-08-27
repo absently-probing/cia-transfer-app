@@ -43,5 +43,7 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+    <string>Can we access your camera in order to scan QR-codes?</string>
 </dict>
 </plist>
