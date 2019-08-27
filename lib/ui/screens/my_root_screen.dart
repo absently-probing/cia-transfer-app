@@ -32,40 +32,39 @@ class MyRootScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    globals.maxHeight = utils.screenHeight(context);
-    globals.maxWidth = utils.screenWidth(context);
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(Strings.appTitle),
         actions: <Widget>[
-          new MainContextMenu(),
+          MainContextMenu(),
         ],
       ),
-      body: new Container(
+      body: Container(
         width: double.infinity,
-        color: Colors.blueGrey,
-        child: new Column(
+        child: SingleChildScrollView (
+        child: Column(
           children: [
-            new Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              new Opacity(
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Opacity(
                 opacity: iconPercentVisible,
-                child: new Padding(
-                  padding: new EdgeInsets.only(top: 10.0, bottom: 0.0, left: 0),
-                  child: new Stack(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10.0, bottom: 0.0, left: 0),
+                  child: Stack(
                     children: <Widget>[
-                      new Container(
+                      Container(
                         child: Icon(
                           Icons.cloud_queue,
-                          size: globals.cloudIcon,
+                          size: globals.cloudIcon(context),
                           color: Colors.white,
                         ),
                       ),
-                      new Container(
+                      Container(
                         child: Icon(
                           Icons.lock_outline,
-                          size: globals.lockIcon,
+                          size: globals.lockIcon(context),
                         ),
                       ),
                     ],
@@ -73,16 +72,16 @@ class MyRootScreen extends StatelessWidget {
                 ),
               ),
             ]),
-            new Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              new Opacity(
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Opacity(
                 opacity: titlePercentVisible,
-                child: new Padding(
+                child: Padding(
                     padding: EdgeInsets.only(top: 10.0, bottom: 15.0, right: 0),
-                    child: new Text(
+                    child: Text(
                       Strings.appTitle,
                       softWrap: true,
                       textAlign: TextAlign.center,
-                      style: new TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         decoration: TextDecoration.none,
                         fontFamily: Strings.titleTextFont,
@@ -94,13 +93,14 @@ class MyRootScreen extends StatelessWidget {
             ]),
             new Opacity(
               opacity: titlePercentVisible,
-              child: new Padding(
+              child: Padding(
                 padding: EdgeInsets.only(
                     top: 15.0, bottom: 10.0, left: 20.00, right: 20.00),
-                child: new MainScreenButtons(),
+                child: MainScreenButtons(),
               ),
             ),
           ],
+        ),
         ),
       ),
     );
@@ -113,15 +113,15 @@ class MainScreenButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      child: new Column(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         //mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          new Padding(
-            padding: new EdgeInsets.all(20.0),
-            child: new SizedBox(
-              width: globals.rootButtonWidth,
-              height: globals.rootButtonHeight,
+          Padding(
+            padding: EdgeInsets.all(20.0),
+            child: SizedBox(
+              width: globals.rootButtonWidth(context),
+              height: globals.rootButtonHeight(context),
 
               //Adding Correct Button depending on Prefs-Setting
               child: RaisedButton(
@@ -136,11 +136,11 @@ class MainScreenButtons extends StatelessWidget {
               ),
             ),
           ),
-          new Padding(
-            padding: new EdgeInsets.all(20.0),
-            child: new SizedBox(
-              width: globals.rootButtonWidth,
-              height: globals.rootButtonHeight,
+          Padding(
+            padding: EdgeInsets.all(20.0),
+            child: SizedBox(
+              width: globals.rootButtonWidth(context),
+              height: globals.rootButtonHeight(context),
               child: RaisedButton(
                 onPressed: () {
                   Navigator.push(

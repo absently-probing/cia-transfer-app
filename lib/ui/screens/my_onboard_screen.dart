@@ -6,69 +6,73 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 
-final pages = [
-  PageViewModel(
-    Strings.appTitle,
-    Text(
+List<PageViewModel> createStaticPageViewModels(BuildContext context) {
+  return [
+    PageViewModel(
       Strings.appTitle,
-      softWrap: true,
-      textAlign: TextAlign.center,
-      style: new TextStyle(
-        color: Colors.white,
-        decoration: TextDecoration.none,
-        fontFamily: Strings.titleTextFont,
-        fontWeight: FontWeight.w700,
-        fontSize: 15.0,
+      Text(
+        Strings.appTitle,
+        softWrap: true,
+        textAlign: TextAlign.center,
+        style: new TextStyle(
+          color: Colors.white,
+          decoration: TextDecoration.none,
+          fontFamily: Strings.titleTextFont,
+          fontWeight: FontWeight.w700,
+          fontSize: 15.0,
+        ),
       ),
     ),
-  ),
-  PageViewModel(
-    Strings.appTitle,
-    SizedBox(
-      height: globals.onboardTextHeight,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Container(
-          child: Text(
-            Strings.appUsing,
-            softWrap: true,
-            textAlign: TextAlign.center,
-            style: new TextStyle(
-              color: Colors.white,
-              decoration: TextDecoration.none,
-              fontFamily: Strings.titleTextFont,
-              fontWeight: FontWeight.w700,
-              fontSize: 15.0,
+    PageViewModel(
+      Strings.appTitle,
+      SizedBox(
+        height: globals.onboardMaxPageHeight(context),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Container(
+            child: Text(
+              Strings.appUsing,
+              softWrap: true,
+              textAlign: TextAlign.center,
+              style: new TextStyle(
+                color: Colors.white,
+                decoration: TextDecoration.none,
+                fontFamily: Strings.titleTextFont,
+                fontWeight: FontWeight.w700,
+                fontSize: 15.0,
+              ),
             ),
           ),
         ),
       ),
     ),
-    portraitOnly: true,
-  ),
-  PageViewModel(
-    Strings.appTitle,
-    Container(
-        child: Column(
-      children: <Widget>[
-        Text(
-          'Please Select a Cloud Storage',
-          style: TextStyle(
-            color: Colors.white,
-            decoration: TextDecoration.none,
-            fontFamily: Strings.titleTextFont,
-            fontWeight: FontWeight.w700,
-            fontSize: 15.0,
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-          child: SelectCloudWithButton(_handleButtonClick),
-        ),
-      ],
-    )),
-  ),
-];
+    PageViewModel(
+      Strings.appTitle,
+      SizedBox(
+        height: globals.onboardMaxPageHeight(context),
+        child: SingleChildScrollView(
+            child: Column(
+          children: <Widget>[
+            Text(
+              'Please Select a Cloud Storage',
+              style: TextStyle(
+                color: Colors.white,
+                decoration: TextDecoration.none,
+                fontFamily: Strings.titleTextFont,
+                fontWeight: FontWeight.w700,
+                fontSize: 15.0,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: SelectCloudWithButton(_handleButtonClick),
+            ),
+          ],
+        )),
+      ),
+    ),
+  ];
+}
 
 _dontShowWalkthroughAgain() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -94,7 +98,8 @@ _handleButtonClick(BuildContext context, String sProvider) {
     _launchURL();
   }
 
-  Navigator.of(context).pushNamedAndRemoveUntil("/root", (Route<dynamic> route) => false);
+  Navigator.of(context)
+      .pushNamedAndRemoveUntil("/root", (Route<dynamic> route) => false);
 }
 
 class Page extends StatelessWidget {
@@ -112,14 +117,6 @@ class Page extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (viewModel.portraitOnly){
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
-    }
-
-
     return new Container(
       width: double.infinity,
       child: new Column(
@@ -134,14 +131,14 @@ class Page extends StatelessWidget {
                   new Container(
                     child: Icon(
                       Icons.cloud_queue,
-                      size: globals.cloudIcon,
+                      size: globals.cloudIcon(context),
                       color: Colors.white,
                     ),
                   ),
                   new Container(
                     child: Icon(
                       Icons.lock_outline,
-                      size: globals.lockIcon,
+                      size: globals.lockIcon(context),
                     ),
                   ),
                 ],
@@ -181,11 +178,9 @@ class Page extends StatelessWidget {
 class PageViewModel {
   final String title;
   final Widget body;
-  final bool portraitOnly;
 
   PageViewModel(
     this.title,
     this.body,
-    {this.portraitOnly = false}
   );
 }

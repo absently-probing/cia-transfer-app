@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:secure_upload/data/strings.dart';
-import 'package:secure_upload/data/global.dart' as globals;
+import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/ui/screens/decrypt_path_qr.dart';
 import 'package:secure_upload/ui/screens/decrypt_progress_bar.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
@@ -242,7 +242,7 @@ class _DecryptScreen extends State<DecryptScreen> {
         ),
         body: Center(
             child: Container(
-          width: globals.maxWidth,
+          width: utils.screenWidth(context),
           alignment: Alignment.center,
           color: Theme.of(context).primaryColor,
           child: SingleChildScrollView(

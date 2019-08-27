@@ -4,9 +4,21 @@ import 'package:validators/validators.dart' as validators;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner/qr_scanner_overlay_shape.dart';
 
-class DecryptQr extends StatelessWidget {
+class DecryptQr extends StatefulWidget {
+  _DecryptQrState createState() => _DecryptQrState();
+}
+
+class _DecryptQrState extends State<DecryptQr> {
   QRViewController controller;
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
+
+  _DecryptQrState();
+
+  @override
+  dispose(){
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

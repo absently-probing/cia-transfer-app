@@ -1,68 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:secure_upload/data/global.dart' as globals;
+import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:share/share.dart';
 import 'package:secure_upload/data/strings.dart';
 
-class SecondEncrypt extends StatelessWidget {
+class SecondEncrypt extends StatefulWidget {
   final String _url;
   final String _password;
 
   SecondEncrypt(this._url, this._password);
 
+  _SecondEncryptState createState() =>
+      _SecondEncryptState(this._url, this._password);
+}
+
+class _SecondEncryptState extends State<SecondEncrypt> {
+  final String _url;
+  final String _password;
+  final _key = GlobalKey<ScaffoldState>();
+
+
+  _SecondEncryptState(this._url, this._password);
+
+  void _choiceAction(String choice) {
+    //TODO fix encoding
+    if (choice == Strings.encryptSharePassword) {
+      Share.share('Password:' + '' + _password);
+    } else if (choice == Strings.encryptShareUrl) {
+      Share.share('Url:' + '' + _url);
+    } else if (choice == Strings.encryptShareBoth) {
+      Share.share('Link:' + '' + _url + '' + 'Password:' + '' + _password);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    final key = new GlobalKey<ScaffoldState>();
-
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-
-    void _choiceAction(String choice) {
-      //TODO fix encoding
-      if (choice == Strings.encryptSharePassword) {
-        Share.share('Password:' + '' + _password);
-      } else if (choice == Strings.encryptShareUrl) {
-        Share.share('Url:' + '' + _url);
-      } else if (choice == Strings.encryptShareBoth) {
-        Share.share('Link:' + '' + _url + '' + 'Password:' + '' + _password);
-      }
-    }
-
-    List<PopupMenuEntry<String>> _encryptContextMenuChoices(BuildContext context){
-      return <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
-          value: Strings.encryptShareUrl,
-          child: Text(Strings.encryptShareUrl),
-        ),
-        const PopupMenuDivider(),
-        const PopupMenuItem<String>(
-          value: Strings.encryptSharePassword,
-          child: Text(Strings.encryptSharePassword),
-        ),
-        const PopupMenuDivider(),
-        const PopupMenuItem<String>(
-          value: Strings.encryptShareBoth,
-          child: Text(Strings.encryptShareBoth),
-        ),
-      ];
-    }
-
     return Scaffold(
-      key: key,
+      key: _key,
       appBar: AppBar(
         title: new Text("Upload Complete"),
         actions: <Widget>[
-          PopupMenuButton<String>(
-            icon: Icon(Icons.share),
-            offset: Offset(0, 10),
-            onSelected: _choiceAction,
-            itemBuilder: (BuildContext context) => _encryptContextMenuChoices(context),
-          )
+          EncryptShareMenu(_choiceAction),
         ],
       ),
       body: Container(
@@ -93,7 +73,7 @@ class SecondEncrypt extends StatelessWidget {
                                       onTap: () {
                                         Clipboard.setData(
                                             new ClipboardData(text: _url));
-                                        key.currentState
+                                        _key.currentState
                                             .showSnackBar(new SnackBar(
                                           duration: Duration(milliseconds: 400),
                                           content: new Text("URL copied"),
@@ -111,7 +91,7 @@ class SecondEncrypt extends StatelessWidget {
                                     onTap: () {
                                       Clipboard.setData(
                                           new ClipboardData(text: _url));
-                                      key.currentState
+                                      _key.currentState
                                           .showSnackBar(new SnackBar(
                                         duration: Duration(milliseconds: 400),
                                         content: new Text("Password copied"),
@@ -126,7 +106,7 @@ class SecondEncrypt extends StatelessWidget {
                     QrImage(
                       data: _url + " " + _password,
                       version: QrVersions.auto,
-                      size: globals.maxWidth / 2,
+                      size: utils.screenWidth(context) / 2,
                     ),
                   ]),
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:secure_upload/data/global.dart' as globals;
+import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/ui/custom/progress_indicator.dart';
 
 class DecryptProgress extends StatefulWidget {
@@ -25,7 +25,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
         child: Container(
           color: Theme.of(context).primaryColor,
           child: CircularPercentIndicator(
-            radius: globals.maxWidth / 2,
+            radius: utils.screenWidth(context) / 2,
             animation: true,
             lineWidth: 5.0,
             percent: 0.1,

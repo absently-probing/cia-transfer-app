@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/data/global.dart' as globals;
+import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/ui/screens/my_walkthrough_screen.dart';
 
@@ -342,7 +342,7 @@ class CustomText extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(left: 15, right: 15),
               child: SizedBox(
-                width: min(width, (globals.maxWidth - 140)),
+                width: min(width, (utils.screenWidth(context) - 140)),
                 child: Text(text,
                     style: TextStyle(
                       fontSize: fontSize,
@@ -393,6 +393,38 @@ class MainContextMenu extends StatelessWidget {
           child: Text(Strings.mainContextMneuSettings),
         ),
       ],
+    );
+  }
+}
+
+class EncryptShareMenu extends StatelessWidget {
+  final void Function(String) callback;
+
+  EncryptShareMenu(this.callback);
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+        icon: Icon(Icons.share),
+        offset: Offset(0, 10),
+        onSelected: callback,
+        itemBuilder: (BuildContext context) =>
+        <PopupMenuEntry<String>>[
+          const PopupMenuItem<String>(
+            value: Strings.encryptShareUrl,
+            child: Text(Strings.encryptShareUrl),
+          ),
+          const PopupMenuDivider(),
+          const PopupMenuItem<String>(
+            value: Strings.encryptSharePassword,
+            child: Text(Strings.encryptSharePassword),
+          ),
+          const PopupMenuDivider(),
+          const PopupMenuItem<String>(
+            value: Strings.encryptShareBoth,
+            child: Text(Strings.encryptShareBoth),
+          ),
+        ]
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/screens/my_onboard_screen.dart';
@@ -9,7 +8,6 @@ import 'package:secure_upload/ui/widgets/page_reveal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'dart:ui';
 
 class MyWalkthroughScreen extends StatefulWidget {
   final SharedPreferences prefs;
@@ -84,42 +82,8 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
     });
   }
 
-  void initState() {
-    super.initState();
-    globals.onboardLogoHeight = _getLogoSize();
-  }
-
-  // calculate logo size
-  double _getLogoSize(){
-    final constraints = BoxConstraints(
-      maxWidth: globals.maxWidth, // maxwidth calculated
-      minHeight: 0.0,
-      minWidth: 0.0,
-    );
-
-    RenderParagraph renderParagraph = RenderParagraph(
-      TextSpan(
-        text: Strings.appTitle,
-        style: TextStyle(
-          color: Colors.white,
-          decoration: TextDecoration.none,
-          fontFamily: Strings.titleTextFont,
-          fontWeight: FontWeight.w700,
-          fontSize: globals.logoFontSize,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    );
-    renderParagraph.layout(constraints);
-    return renderParagraph.getMinIntrinsicHeight(globals.logoFontSize).ceilToDouble();
-  }
-
   @override
   Widget build(BuildContext context) {
-    globals.maxHeight = utils.screenHeight(context);
-    globals.maxWidth = utils.screenWidth(context);
-
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Container(
@@ -132,7 +96,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
               children: [
                 Expanded(
                     child: Page(
-                      viewModel: pages[activeIndex],
+                      viewModel: createStaticPageViewModels(context)[activeIndex],
                     ),
                 ),
                Align(
@@ -143,7 +107,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
                         bottom: globals.onboardIndicatorBottomPadding),
                     child: PagerIndicator(
                       viewModel: new PagerIndicatorViewModel(
-                        pages,
+                        createStaticPageViewModels(context),
                         activeIndex,
                         slideDirection,
                         slidePercent,
@@ -160,7 +124,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
                 child: Padding(
                   padding: EdgeInsets.only(bottom: globals.indicatorMaxHeight + globals.onboardIndicatorBottomPadding + globals.onboardIndicatorTopPadding),
                   child: Page(
-                  viewModel: pages[nextPageIndex],
+                  viewModel: createStaticPageViewModels(context)[nextPageIndex],
                   iconPercentVisible: slidePercent * 0.5,
                   textPercentVisible: slidePercent * 0.75,
                   titlePercentVisible: slidePercent,
@@ -170,7 +134,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
             ),
             PageDragger(
               canDragLeftToRight: activeIndex > 0,
-              canDragRightToLeft: activeIndex < pages.length - 1,
+              canDragRightToLeft: activeIndex < createStaticPageViewModels(context).length - 1,
               slideUpdateStream: this.slideUpdateStream,
             ),
           ],

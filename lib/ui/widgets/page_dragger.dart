@@ -21,7 +21,7 @@ class PageDragger extends StatefulWidget {
 }
 
 class _PageDraggerState extends State<PageDragger> {
-  static double FULL_TRANSITION_PX = globals.transitionPixels;
+  static double FULL_TRANSITION_PX = 0.0;
 
   Offset dragStart;
   SlideDirection slideDirection;
@@ -72,6 +72,8 @@ class _PageDraggerState extends State<PageDragger> {
 
   @override
   Widget build(BuildContext context) {
+    FULL_TRANSITION_PX = globals.transitionPixels(context);
+
     return new GestureDetector(
       onHorizontalDragStart: onDragStart,
       onHorizontalDragUpdate: onDragUpdate,
