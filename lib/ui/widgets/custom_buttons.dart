@@ -256,13 +256,15 @@ class CustomTextField extends StatelessWidget {
       this.obsecure = false,
       this.validator,
       this.onSaved,
-      this.autofocus = true});
+      this.autofocus = true,
+      this.controller});
   final FormFieldSetter<String> onSaved;
   final Icon icon;
   final String hint;
   final bool obsecure;
   final FormFieldValidator<String> validator;
   final autofocus;
+  final TextEditingController controller;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -277,6 +279,7 @@ class CustomTextField extends StatelessWidget {
           validator: validator,
           autofocus: autofocus,
           obscureText: obsecure,
+          controller: controller,
           style: TextStyle(
             fontSize: 20,
           ),

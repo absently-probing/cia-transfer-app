@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:validators/validators.dart' as validators;
-
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner/qr_scanner_overlay_shape.dart';
+
+import 'package:secure_upload/ui/screens/decrypt_path_home.dart';
 
 class DecryptQr extends StatelessWidget {
   QRViewController controller;
@@ -17,7 +18,28 @@ class DecryptQr extends StatelessWidget {
           Expanded(
             child: QRView(
               key: _qrKey,
-              onQRViewCreated: _onQRViewCreated,
+              onQRViewCreated: (controller) {
+                this.controller = controller;
+                controller.scannedDataStream.listen((qrCode) {
+                  String url;
+                  String password;
+
+                  // split qr code in url and optional password at first space
+                  var i = qrCode.indexOf(' ');
+                  if (i < 0) {
+                    url = qrCode;
+                  } else {
+                    url = qrCode.substring(0, i);
+                    password = qrCode.substring(i + 1);
+                  }
+
+                  if (_isValidUrl(url)) {
+                    controller.pauseCamera();
+                    controller.dispose();
+                    Navigator.of(context, rootNavigator: true).pop([url, password]);
+                  }
+                });
+              },
               overlay: QrScannerOverlayShape(
                 borderColor: Colors.red,
                 borderRadius: 10,
@@ -25,38 +47,19 @@ class DecryptQr extends StatelessWidget {
                 borderWidth: 10,
                 cutOutSize: 300,
               ),
-            ),
-            flex: 4,
+            )
           ),
         ],
       ),
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      print(scanData);
-      if (_validateQrCode(scanData)) {
-        print("valid");
-      }
-    });
-  }
-
-  bool _validateQrCode(String str) {
-    var seq = str.split(" ");
-    if (seq.length < 1 || seq.length > 2) {
-      return false;
-    }
-    return _validateUrl(seq[0]);
-  }
-
-  bool _validateUrl(String str) {
+  bool _isValidUrl(String str) {
     return validators.isURL(str,
         protocols: ['https'],
         requireTld: true,
         requireProtocol: true,
         // TODO: logical error in validators lib, maybe do our own validation or delegate to cloud providers
-        hostBlacklist: ['google.com', 'dropbox.com']);
+        hostBlacklist: ['www.google.com', 'www.dropbox.com']);
   }
 }

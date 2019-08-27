@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/screens/decrypt_path_qr.dart';
@@ -8,15 +9,15 @@ import 'package:secure_upload/ui/custom/overlay.dart';
 
 class DecryptScreen extends StatefulWidget {
   @override
-  MyAppState createState() => new MyAppState();
+  _DecryptScreen createState() => new _DecryptScreen();
 }
 
-class MyAppState extends State<DecryptScreen> {
+class _DecryptScreen extends State<DecryptScreen> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _stateKey = new GlobalKey<FormState>();
 
-  String _url;
-  String _password;
+  var _urlController = TextEditingController();
+  var _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -56,20 +57,25 @@ class MyAppState extends State<DecryptScreen> {
     return null;
   }
 
-  // use Navigator.of(context, rootNavigator: true).pop('dialog') to close dialog after
-  // successfully parsed qrcode
-  void _openQRCodeScanner(BuildContext _context) {
-    showDialog(
-      context: _context,
-        builder: (BuildContext context) {
-        return CustomOverlay(
-          child:  Container(
-            height: globals.maxHeight,
-            color: Colors.green,
-          )
-        );
-      },
+  _openQRCodeScanner(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DecryptQr()),
     );
+
+    assert(result.length == 2);
+    _urlController.text = result[0];
+
+    if(result[1] != null) {
+      _passwordController.text = result[1];
+    }
+
+    // TODO: throws exception
+    /*
+    Scaffold.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text("Updated Url [and PW] from QR code ....")));
+    */
   }
 
   void performLogin() {
@@ -124,10 +130,7 @@ class MyAppState extends State<DecryptScreen> {
                 icon: Icon(CustomIcons.qrcode_scanner),
                 tooltip: Strings.scannerTooltip,
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DecryptQr()));
+                  _openQRCodeScanner(context);
                 },
               ),
             ),
@@ -148,7 +151,8 @@ class MyAppState extends State<DecryptScreen> {
                         Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
-                              onSaved: (input) => _url = input,
+                              controller: _urlController,
+                              //onSaved: (input) => _url = input,
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
                               hint: "URL",
@@ -157,7 +161,8 @@ class MyAppState extends State<DecryptScreen> {
                         Padding(
                             padding: EdgeInsets.only(bottom: 20),
                             child: CustomTextField(
-                              onSaved: (val) => _password = val,
+                              controller: _passwordController,
+                              //onSaved: (val) => _password = val,
                               obsecure: true,
                               validator: _passwordValidator,
                               hint: "Password",
