@@ -8,4 +8,6 @@ class Strings {
   static final String onboardingLogin = "Log In";
   static final String onboardingSkip = "Skip";
   static final String scannerTooltip = "Open QR Code scanner";
+  static final String scannerUpdatedUrl = "Updated url from scanned QR code!";
+  static final String scannerUpdatedUrlAndPasssword = "Updated url and password from scanned QR code!";
 }

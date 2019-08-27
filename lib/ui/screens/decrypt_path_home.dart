@@ -66,16 +66,14 @@ class _DecryptScreen extends State<DecryptScreen> {
     assert(result.length == 2);
     _urlController.text = result[0];
 
-    if(result[1] != null) {
+    if (result[1] == null) {
+      _scaffoldKey.currentState
+          .showSnackBar(SnackBar(content: Text(Strings.scannerUpdatedUrl)));
+    } else {
       _passwordController.text = result[1];
+      _scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text(Strings.scannerUpdatedUrlAndPasssword)));
     }
-
-    // TODO: throws exception
-    /*
-    Scaffold.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text("Updated Url [and PW] from QR code ....")));
-    */
   }
 
   void performLogin() {
