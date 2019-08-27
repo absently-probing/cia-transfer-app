@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/global.dart' as globals;
+import 'package:secure_upload/ui/screens/decrypt_path_qr.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:secure_upload/ui/custom/icons.dart';
 import 'package:secure_upload/ui/custom/overlay.dart';
@@ -122,8 +123,11 @@ class MyAppState extends State<DecryptScreen> {
               child: IconButton(
                 icon: Icon(CustomIcons.qrcode_scanner),
                 tooltip: Strings.scannerTooltip,
-                onPressed: (){
-                  _openQRCodeScanner(context);
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DecryptQr()));
                 },
               ),
             ),
