@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 
 import 'package:validators/validators.dart' as validators;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner/qr_scanner_overlay_shape.dart';
-
-import 'package:secure_upload/ui/screens/decrypt_path_home.dart';
 
 class DecryptQr extends StatelessWidget {
   QRViewController controller;

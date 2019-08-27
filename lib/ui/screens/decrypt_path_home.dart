@@ -5,7 +5,6 @@ import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/screens/decrypt_path_qr.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:secure_upload/ui/custom/icons.dart';
-import 'package:secure_upload/ui/custom/overlay.dart';
 
 class DecryptScreen extends StatefulWidget {
   @override
