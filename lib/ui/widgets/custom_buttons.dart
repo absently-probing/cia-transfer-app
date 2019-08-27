@@ -247,8 +247,6 @@ class _SelectCloudWithButton extends State<SelectCloudWithButton> {
   }
 }
 
-enum WhyFarther { onBoarding, cloud, sync, setting }
-
 class CustomTextField extends StatelessWidget {
   CustomTextField(
       {this.icon,
@@ -353,37 +351,38 @@ class CustomText extends StatelessWidget {
   }
 }
 
-class MyPopupMenuButton extends StatelessWidget {
+class MainContextMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new PopupMenuButton<WhyFarther>(
-      onSelected: (WhyFarther result) {
-        if (result == WhyFarther.onBoarding) {
+    return new PopupMenuButton<String>(
+      offset: Offset(0, 10),
+      onSelected: (String result) {
+        if (result == Strings.mainContextMenuOnboarding) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => MyWalkthroughScreen()),
           );
         }
       },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<WhyFarther>>[
-        const PopupMenuItem<WhyFarther>(
-          value: WhyFarther.onBoarding,
-          child: Text('OnBoarding'),
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+          value: Strings.mainContextMenuOnboarding,
+          child: Text(Strings.mainContextMenuOnboarding),
         ),
         const PopupMenuDivider(),
-        const PopupMenuItem<WhyFarther>(
-          value: WhyFarther.cloud,
-          child: Text('Cloud Storage'),
+        const PopupMenuItem<String>(
+          value: Strings.mainContextMenuCloudStorage,
+          child: Text(Strings.mainContextMenuCloudStorage),
         ),
         const PopupMenuDivider(),
-        const PopupMenuItem<WhyFarther>(
-          value: WhyFarther.sync,
-          child: Text('Synchronization'),
+        const PopupMenuItem<String>(
+          value: Strings.mainContextMenuSync,
+          child: Text(Strings.mainContextMenuSync),
         ),
         const PopupMenuDivider(),
-        const PopupMenuItem<WhyFarther>(
-          value: WhyFarther.setting,
-          child: Text('Settings'),
+        const PopupMenuItem<String>(
+          value: Strings.mainContextMneuSettings,
+          child: Text(Strings.mainContextMneuSettings),
         ),
       ],
     );

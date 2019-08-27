@@ -117,16 +117,13 @@ class MyAppState extends State<DecryptScreen> {
           centerTitle: true,
           title: new Text(Strings.appTitle),
           actions: [
-            Padding(
-              padding: EdgeInsets.only(left: 5.0, right: 5.0),
-              child: IconButton(
+IconButton(
                 icon: Icon(CustomIcons.qrcode_scanner),
                 tooltip: Strings.scannerTooltip,
                 onPressed: (){
                   _openQRCodeScanner(context);
                 },
               ),
-            ),
           ],
         ),
         body: Center(

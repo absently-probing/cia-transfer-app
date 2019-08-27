@@ -4,25 +4,13 @@ import 'package:secure_upload/data/global.dart' as globals;
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:share/share.dart';
-
-class Constants{
-  static const String url = 'Share URL only';
-  static const String password = 'Share Password only';
-  static const String both = 'Share both';
-
-  static const List<String> choices = <String>[
-    url,
-    password,
-    both
-  ];
-}
+import 'package:secure_upload/data/strings.dart';
 
 class SecondEncrypt extends StatelessWidget {
   final String _url;
   final String _password;
 
   SecondEncrypt(this._url, this._password);
-
 
   @override
   Widget build(BuildContext context) {
@@ -34,35 +22,46 @@ class SecondEncrypt extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    void choiceAction(String choice){
-      if(choice == Constants.password){
+    void _choiceAction(String choice) {
+      //TODO fix encoding
+      if (choice == Strings.encryptSharePassword) {
         Share.share('Password:' + '' + _password);
-      }else if(choice == Constants.url){
+      } else if (choice == Strings.encryptShareUrl) {
         Share.share('Url:' + '' + _url);
-      }else if(choice == Constants.both){
-        Share.share('Link:'+ '' + _url + '' + 'Password:' + '' + _password);
+      } else if (choice == Strings.encryptShareBoth) {
+        Share.share('Link:' + '' + _url + '' + 'Password:' + '' + _password);
       }
     }
+
+    List<PopupMenuEntry<String>> _encryptContextMenuChoices(BuildContext context){
+      return <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+          value: Strings.encryptShareUrl,
+          child: Text(Strings.encryptShareUrl),
+        ),
+        const PopupMenuDivider(),
+        const PopupMenuItem<String>(
+          value: Strings.encryptSharePassword,
+          child: Text(Strings.encryptSharePassword),
+        ),
+        const PopupMenuDivider(),
+        const PopupMenuItem<String>(
+          value: Strings.encryptShareBoth,
+          child: Text(Strings.encryptShareBoth),
+        ),
+      ];
+    }
+
     return Scaffold(
       key: key,
       appBar: AppBar(
         title: new Text("Upload Complete"),
         actions: <Widget>[
           PopupMenuButton<String>(
-            icon: Icon(Icons.share, size: 30.0),
-            offset: Offset(0, 55),
-            elevation: 10,
-            onSelected: choiceAction,
-            itemBuilder: (BuildContext context){
-              const PopupMenuDivider();
-              return Constants.choices.map((String choice){
-                const PopupMenuDivider();
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
+            icon: Icon(Icons.share),
+            offset: Offset(0, 10),
+            onSelected: _choiceAction,
+            itemBuilder: (BuildContext context) => _encryptContextMenuChoices(context),
           )
         ],
       ),
