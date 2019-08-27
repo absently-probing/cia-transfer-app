@@ -13,46 +13,75 @@ class DecryptScreen extends StatefulWidget {
 class MyAppState extends State<DecryptScreen> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _stateKey = new GlobalKey<FormState>();
+  final _focusNodeUrl = new FocusNode();
+  final _focusNodePassword = new FocusNode();
 
   String _url;
   String _password;
+  bool _urlHasFocus = false;
+  bool _passwordHasFocus = false;
+  bool _passwordHadFocus = false;
+
+
+
+  String _urlValidationResult = null;
+  String _passwordValidationResult = null;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _focusNodeUrl.addListener(_handleUrlTextField);
+    _focusNodePassword.addListener(_handlePassworTextField);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    _focusNodeUrl.dispose();
+    _focusNodePassword.dispose();
   }
 
   void _submit() async {
-    final form = _stateKey.currentState;
+    final form = await _stateKey.currentState;
 
     if (form.validate()) {
       form.save();
 
-      performLogin();
+      if (_url != "" && _password != "") {
+        performLogin();
+      }
     }
   }
 
   String _urlValidator(String input) {
-    if (!input.contains('@')) {
-      return 'Invalid Link';
+    if (!_passwordHadFocus && input.isEmpty){
+      return _urlValidationResult;
     }
 
-    return null;
+    if (!input.contains('@')) {
+      _urlValidationResult = 'Invalid Link';
+    } else {
+      _urlValidationResult = null;
+    }
+
+    return _urlValidationResult;
   }
 
   String _passwordValidator(String input) {
-    if (input.isEmpty) {
-      return "Required";
+    if (!_passwordHadFocus){
+      print("Hi");
+      return null;
     }
 
-    return null;
+    if (input.isEmpty) {
+      _passwordValidationResult = "Required";
+    } else {
+      _passwordValidationResult = null;
+    }
+
+    return _passwordValidationResult;
   }
 
   // use Navigator.of(context, rootNavigator: true).pop('dialog') to close dialog after
@@ -85,6 +114,31 @@ class MyAppState extends State<DecryptScreen> {
       duration: const Duration(minutes: 5),
     );
     _scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  void _handleUrlTextField() {
+    if (_focusNodeUrl.hasFocus){
+      _urlHasFocus = true;
+    } else {
+      if (_urlHasFocus){
+        _urlHasFocus = false;
+        print("start");
+        _submit();
+        print("fin");
+      }
+    }
+  }
+
+  void _handlePassworTextField() {
+    if (_focusNodePassword.hasFocus){
+      _passwordHasFocus = true;
+    } else {
+      if (_passwordHasFocus){
+        _passwordHasFocus = false;
+        _passwordHadFocus = true;
+        _submit();
+      }
+    }
   }
 
   //button widgets
@@ -134,13 +188,14 @@ IconButton(
           child: SingleChildScrollView(
               child: Form(
                   key: _stateKey,
-                  child: new Column(
+                  child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
+                              focusNode: _focusNodeUrl,
                               onSaved: (input) => _url = input,
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
@@ -148,8 +203,9 @@ IconButton(
                               autofocus: true,
                             )),
                         Padding(
-                            padding: EdgeInsets.only(bottom: 20),
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
+                              focusNode: _focusNodePassword,
                               onSaved: (val) => _password = val,
                               obsecure: true,
                               validator: _passwordValidator,
@@ -157,7 +213,7 @@ IconButton(
                               icon: Icon(Icons.lock),
                               autofocus: false,
                             )),
-                        Padding(
+                        /*Padding(
                           padding: EdgeInsets.only(bottom: 20),
                           child: Container(
                             padding: EdgeInsets.only(left: 20, right: 20),
@@ -172,7 +228,7 @@ IconButton(
                                     Theme.of(context).hintColor,
                                     _submit)),
                           ),
-                        ),
+                        ),*/
                       ]))),
         )));
   }

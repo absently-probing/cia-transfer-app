@@ -248,19 +248,23 @@ class _SelectCloudWithButton extends State<SelectCloudWithButton> {
 }
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField(
-      {this.icon,
-      this.hint,
-      this.obsecure = false,
-      this.validator,
-      this.onSaved,
-      this.autofocus = true});
   final FormFieldSetter<String> onSaved;
   final Icon icon;
   final String hint;
   final bool obsecure;
   final FormFieldValidator<String> validator;
   final autofocus;
+  final FocusNode focusNode;
+
+  CustomTextField(
+      {this.icon,
+      this.hint,
+      this.obsecure = false,
+      this.validator,
+      this.onSaved,
+      this.autofocus = true,
+      this.focusNode = null});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -271,6 +275,7 @@ class CustomTextField extends StatelessWidget {
           hintColor: Colors.black,
         ),
         child: TextFormField(
+          focusNode: this.focusNode,
           onSaved: onSaved,
           validator: validator,
           autofocus: autofocus,
