@@ -32,7 +32,7 @@ double onboardIndicatorBottomPadding = 20.0;
 double onboardIndicatorTopPadding = 10.0;
 double onboardTopPadding = 15.0;
 double onboardTextScaleFactor = 0.0;
-double onboardLogoTextHeight = 1.3;
+double onboardLogoTextHeight = 4;
 
 double onboardTextHeight = maxHeight
     - (indicatorMaxHeight + onboardIndicatorBottomPadding + onboardIndicatorTopPadding

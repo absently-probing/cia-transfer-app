@@ -40,7 +40,7 @@ class MyRootScreen extends StatelessWidget {
         centerTitle: true,
         title: Text(Strings.appTitle),
         actions: <Widget>[
-          new MyPopupMenuButton(),
+          new MainContextMenu(),
         ],
       ),
       body: new Container(

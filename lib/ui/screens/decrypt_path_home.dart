@@ -15,46 +15,74 @@ class DecryptScreen extends StatefulWidget {
 class _DecryptScreen extends State<DecryptScreen> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _stateKey = new GlobalKey<FormState>();
+  final _focusNodeUrl = new FocusNode();
+  final _focusNodePassword = new FocusNode();
 
   var _urlController = TextEditingController();
   var _passwordController = TextEditingController();
+  bool _urlHasFocus = false;
+  bool _passwordHasFocus = false;
+  bool _passwordHadFocus = false;
+
+
+
+  String _urlValidationResult = null;
+  String _passwordValidationResult = null;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _focusNodeUrl.addListener(_handleUrlTextField);
+    _focusNodePassword.addListener(_handlePassworTextField);
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    _focusNodeUrl.dispose();
+    _focusNodePassword.dispose();
   }
 
   void _submit() async {
-    final form = _stateKey.currentState;
+    final form = await _stateKey.currentState;
 
     if (form.validate()) {
       form.save();
 
-      performLogin();
+      if (_urlController.text != "" && _passwordController.text != "") {
+        performLogin();
+      }
     }
   }
 
   String _urlValidator(String input) {
-    if (!input.contains('@')) {
-      return 'Invalid Link';
+    if (!_passwordHadFocus && input.isEmpty){
+      return _urlValidationResult;
     }
 
-    return null;
+    if (!input.contains('@')) {
+      _urlValidationResult = 'Invalid Link';
+    } else {
+      _urlValidationResult = null;
+    }
+
+    return _urlValidationResult;
   }
 
   String _passwordValidator(String input) {
-    if (input.isEmpty) {
-      return "Required";
+    if (!_passwordHadFocus){
+      return null;
     }
 
-    return null;
+    if (input.isEmpty) {
+      _passwordValidationResult = "Required";
+    } else {
+      _passwordValidationResult = null;
+    }
+
+    return _passwordValidationResult;
   }
 
   _openQRCodeScanner(BuildContext context) async {
@@ -92,6 +120,29 @@ class _DecryptScreen extends State<DecryptScreen> {
     _scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
+  void _handleUrlTextField() {
+    if (_focusNodeUrl.hasFocus){
+      _urlHasFocus = true;
+    } else {
+      if (_urlHasFocus){
+        _urlHasFocus = false;
+        _submit();
+      }
+    }
+  }
+
+  void _handlePassworTextField() {
+    if (_focusNodePassword.hasFocus){
+      _passwordHasFocus = true;
+    } else {
+      if (_passwordHasFocus){
+        _passwordHasFocus = false;
+        _passwordHadFocus = true;
+        _submit();
+      }
+    }
+  }
+
   //button widgets
   Widget filledButton(String text, Color splashColor, Color highlightColor,
       Color fillColor, Color textColor, void function()) {
@@ -122,16 +173,13 @@ class _DecryptScreen extends State<DecryptScreen> {
           centerTitle: true,
           title: new Text(Strings.appTitle),
           actions: [
-            Padding(
-              padding: EdgeInsets.only(left: 5.0, right: 5.0),
-              child: IconButton(
+IconButton(
                 icon: Icon(CustomIcons.qrcode_scanner),
                 tooltip: Strings.scannerTooltip,
                 onPressed: () {
                   _openQRCodeScanner(context);
                 },
               ),
-            ),
           ],
         ),
         body: Center(
@@ -142,7 +190,7 @@ class _DecryptScreen extends State<DecryptScreen> {
           child: SingleChildScrollView(
               child: Form(
                   key: _stateKey,
-                  child: new Column(
+                  child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
@@ -151,23 +199,25 @@ class _DecryptScreen extends State<DecryptScreen> {
                             child: CustomTextField(
                               controller: _urlController,
                               //onSaved: (input) => _url = input,
+                              focusNode: _focusNodeUrl,
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
                               hint: "URL",
                               autofocus: true,
                             )),
                         Padding(
-                            padding: EdgeInsets.only(bottom: 20),
+                            padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
                               controller: _passwordController,
                               //onSaved: (val) => _password = val,
+                              focusNode: _focusNodePassword,
                               obsecure: true,
                               validator: _passwordValidator,
                               hint: "Password",
                               icon: Icon(Icons.lock),
                               autofocus: false,
                             )),
-                        Padding(
+                        /*Padding(
                           padding: EdgeInsets.only(bottom: 20),
                           child: Container(
                             padding: EdgeInsets.only(left: 20, right: 20),
@@ -182,7 +232,7 @@ class _DecryptScreen extends State<DecryptScreen> {
                                     Theme.of(context).hintColor,
                                     _submit)),
                           ),
-                        ),
+                        ),*/
                       ]))),
         )));
   }
