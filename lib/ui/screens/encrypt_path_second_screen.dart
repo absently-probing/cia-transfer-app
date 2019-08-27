@@ -90,11 +90,12 @@ class SecondEncrypt extends StatelessWidget {
                                           icon: new Icon(Icons.cloud_download),
                                           fontSize: 20,
                                           width: 200),
-                                      onLongPress: () {
+                                      onTap: () {
                                         Clipboard.setData(
                                             new ClipboardData(text: _url));
                                         key.currentState
                                             .showSnackBar(new SnackBar(
+                                          duration: Duration(milliseconds: 400),
                                           content: new Text("URL copied"),
                                         ));
                                       })),
@@ -112,6 +113,7 @@ class SecondEncrypt extends StatelessWidget {
                                           new ClipboardData(text: _url));
                                       key.currentState
                                           .showSnackBar(new SnackBar(
+                                        duration: Duration(milliseconds: 400),
                                         content: new Text("Password copied"),
                                       ));
                                     }),
