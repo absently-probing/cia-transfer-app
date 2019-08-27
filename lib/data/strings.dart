@@ -15,6 +15,9 @@ class Strings {
   static const String encryptSharePassword = 'Share Password only';
   static const String encryptShareBoth = 'Share both';
 
+  static const String decryptUrlTextField = 'URL';
+  static const String decryptPasswordTextField = 'Password';
+
   static const String mainContextMenuOnboarding = 'OnBoarding';
   static const String mainContextMenuCloudStorage = 'Cloud Storage';
   static const String mainContextMenuSync = 'Synchronization';

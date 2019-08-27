@@ -57,7 +57,7 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   String _urlValidator(String input) {
-    if (!_passwordHadFocus && input.isEmpty){
+    if (!_passwordHadFocus && input.isEmpty) {
       return _urlValidationResult;
     }
 
@@ -71,7 +71,7 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   String _passwordValidator(String input) {
-    if (!_passwordHadFocus){
+    if (!_passwordHadFocus) {
       return null;
     }
 
@@ -90,7 +90,7 @@ class _DecryptScreen extends State<DecryptScreen> {
       MaterialPageRoute(builder: (context) => DecryptQr()),
     );
 
-    if(result != null && result.length == 2) {
+    if (result != null && result.length == 2) {
       _urlController.text = result[0];
 
       if (result[1] == null) {
@@ -121,10 +121,10 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   void _handleUrlTextField() {
-    if (_focusNodeUrl.hasFocus){
+    if (_focusNodeUrl.hasFocus) {
       _urlHasFocus = true;
     } else {
-      if (_urlHasFocus){
+      if (_urlHasFocus) {
         _urlHasFocus = false;
         _submit();
       }
@@ -132,10 +132,10 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   void _handlePassworTextField() {
-    if (_focusNodePassword.hasFocus){
+    if (_focusNodePassword.hasFocus) {
       _passwordHasFocus = true;
     } else {
-      if (_passwordHasFocus){
+      if (_passwordHasFocus) {
         _passwordHasFocus = false;
         _passwordHadFocus = true;
         _submit();
@@ -178,13 +178,13 @@ class _DecryptScreen extends State<DecryptScreen> {
           centerTitle: true,
           title: new Text(Strings.appTitle),
           actions: [
-IconButton(
-                icon: Icon(CustomIcons.qrcode_scanner),
-                tooltip: Strings.scannerTooltip,
-                onPressed: () {
-                  _openQRCodeScanner(context);
-                },
-              ),
+            IconButton(
+              icon: Icon(CustomIcons.qrcode_scanner),
+              tooltip: Strings.scannerTooltip,
+              onPressed: () {
+                _openQRCodeScanner(context);
+              },
+            ),
           ],
         ),
         body: Center(
@@ -206,7 +206,7 @@ IconButton(
                               focusNode: _focusNodeUrl,
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
-                              hint: "URL",
+                              hint: Strings.decryptUrlTextField,
                               autofocus: false,
                             )),
                         Padding(
@@ -216,7 +216,7 @@ IconButton(
                               focusNode: _focusNodePassword,
                               obsecure: true,
                               validator: _passwordValidator,
-                              hint: "Password",
+                              hint: Strings.decryptPasswordTextField,
                               icon: Icon(Icons.lock),
                               autofocus: false,
                             )),
