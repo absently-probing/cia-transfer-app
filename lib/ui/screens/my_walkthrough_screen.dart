@@ -86,7 +86,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: Container(
+      body: SafeArea (
         child: Stack(
           children: [
             Column(
@@ -94,7 +94,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Expanded(
+                Expanded (
                     child: Page(
                       viewModel: createStaticPageViewModels(context)[activeIndex],
                     ),

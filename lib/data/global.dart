@@ -44,6 +44,7 @@ double lockIcon(BuildContext context) {
   double onboardIndicatorBottomPadding = 20.0;
   double onboardIndicatorTopPadding = 10.0;
   double onboardTopPadding = 15.0;
+
   double onboardLogoHeight(context) {
     final constraints = BoxConstraints(
       maxWidth: utils.screenWidth(context), // maxwidth calculated
@@ -73,5 +74,6 @@ double lockIcon(BuildContext context) {
     return utils.screenHeight(context)
       - (indicatorMaxHeight + onboardIndicatorBottomPadding + onboardIndicatorTopPadding
           + onboardIconTopPadding + cloudIcon(context)
-          + onboardTopPadding + onboardIconBottomPadding +  onboardLogoHeight(context));
+          + onboardTopPadding + onboardIconBottomPadding +  onboardLogoHeight(context)
+          + utils.screenSafeAreaPadding(context));
   }

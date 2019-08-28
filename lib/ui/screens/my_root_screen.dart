@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:secure_upload/ui/widgets/custom_buttons.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/ui/screens/decrypt_path_home.dart';
 import 'package:secure_upload/ui/screens/encrypt_path_home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,8 +41,7 @@ class MyRootScreen extends StatelessWidget {
           MainContextMenu(),
         ],
       ),
-      body: Container(
-        width: double.infinity,
+      body: SafeArea(
         child: SingleChildScrollView (
         child: Column(
           children: [

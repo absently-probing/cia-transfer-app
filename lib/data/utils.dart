@@ -4,10 +4,14 @@ Size screenSize(BuildContext context) {
   return MediaQuery.of(context).size;
 }
 
-double screenHeight(BuildContext context, {double dividedBy = 1}) {
-  return screenSize(context).height / dividedBy;
+double screenHeight(BuildContext context) {
+  return screenSize(context).height;
 }
 
-double screenWidth(BuildContext context, {double dividedBy = 1}) {
-  return screenSize(context).width / dividedBy;
+double screenWidth(BuildContext context) {
+  return screenSize(context).width;
+}
+
+double screenSafeAreaPadding(BuildContext context){
+  return MediaQuery.of(context).padding.top + MediaQuery.of(context).padding.bottom;
 }
