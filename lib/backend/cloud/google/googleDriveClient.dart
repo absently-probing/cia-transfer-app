@@ -32,13 +32,13 @@ class GoogleDriveClient extends cloudClient.CloudClient {
   }
 
   Future<String> createFile(String name, File localFile) async {
-      var client = _getAuthorizedClient();
+      var client = await _getAuthorizedClient();
       var fileID = _writeFile(name, localFile.openRead(), localFile.lengthSync(), client);
       return fileID;
   }
 
   void setAccessibility(String fileID, bool accessible) async {
-    var client = _getAuthorizedClient();
+    var client = await _getAuthorizedClient();
     var api = drive.DriveApi(client);
     var permission = drive.Permission();
     var accessibility = await getAccessibility(fileID);
@@ -66,10 +66,10 @@ class GoogleDriveClient extends cloudClient.CloudClient {
     return uploadedFile.id;
   }
 
-  http.Client _getAuthorizedClient() {
+  Future<http.Client> _getAuthorizedClient() async {
     var client = http.Client();
-    var credentials = _unserializeAccessCredentials(storage.get("credentials"));
-    return auth.autoRefreshingClient(_id, credentials, client);
+    var credentials = _unserializeAccessCredentials(await storage.get("credentials"));
+    return auth.autoRefreshingClient(_id, credentials, client);//Future.value(auth.autoRefreshingClient(_id, credentials, client));
   }
 
   // ***
@@ -138,7 +138,7 @@ class GoogleDriveClient extends cloudClient.CloudClient {
   }
 
   Future<drive.PermissionList> _getPermissions(String fileID) async {
-    var client = _getAuthorizedClient();
+    var client = await _getAuthorizedClient();
     var api = drive.DriveApi(client);
     var permissions = await api.permissions.list(fileID);
     return permissions;

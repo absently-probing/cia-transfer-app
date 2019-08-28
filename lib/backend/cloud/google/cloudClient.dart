@@ -7,7 +7,7 @@ enum CloudProvider {
 }
 
 abstract class Storage {
-  String get(String key);
+  Future<String> get(String key);
   void set(String key, String value);
 }
 

@@ -21,8 +21,8 @@ class SimpleStorage extends cloudClient.Storage {
   }
   
   @override
-  String get(String key) {
-    return utf8.decode(base64.decode(dict[key]));
+  Future<String> get(String key) {
+    return Future.value(utf8.decode(base64.decode(dict[key])));
   }
 
   @override
