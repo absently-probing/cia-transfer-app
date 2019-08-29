@@ -51,7 +51,7 @@ class _PageDraggerState extends State<PageDragger> {
 
 
       widget.slideUpdateStream.add(
-          new SlideUpdate(
+          SlideUpdate(
             UpdateType.dragging,
             slideDirection,
             slidePercent,
@@ -61,7 +61,7 @@ class _PageDraggerState extends State<PageDragger> {
 
   _onDragEnd(DragEndDetails details) {
     widget.slideUpdateStream.add(
-      new SlideUpdate(
+      SlideUpdate(
           UpdateType.doneDragging,
           SlideDirection.none,
         0.0,
@@ -73,7 +73,7 @@ class _PageDraggerState extends State<PageDragger> {
   Widget build(BuildContext context) {
     FULL_TRANSITION_PX = globals.transitionPixels(context);
 
-    return new GestureDetector(
+    return GestureDetector(
       onHorizontalDragStart: _onDragStart,
       onHorizontalDragUpdate: _onDragUpdate,
       onHorizontalDragEnd: _onDragEnd,

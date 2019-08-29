@@ -15,7 +15,7 @@ class OnboardingPages {
           Strings.appTitle,
           softWrap: true,
           textAlign: TextAlign.center,
-          style: new TextStyle(
+          style: TextStyle(
             color: Colors.white,
             decoration: TextDecoration.none,
             fontFamily: Strings.titleTextFont,
@@ -35,7 +35,7 @@ class OnboardingPages {
                 Strings.appUsing,
                 softWrap: true,
                 textAlign: TextAlign.center,
-                style: new TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   decoration: TextDecoration.none,
                   fontFamily: Strings.titleTextFont,
