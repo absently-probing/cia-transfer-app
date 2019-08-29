@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:secure_upload/ui/screens/walkthrough_screen.dart';
+import 'package:secure_upload/ui/screens/onboarding/walkthrough_screen.dart';
 import 'package:secure_upload/ui/screens/home_screen.dart';
 
 Future<void> main() async {

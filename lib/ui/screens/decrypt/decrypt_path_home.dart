@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
-import 'package:secure_upload/ui/screens/decrypt_path_qr.dart';
-import 'package:secure_upload/ui/screens/decrypt_progress_bar.dart';
+import 'package:secure_upload/ui/screens/decrypt/decrypt_path_qr.dart';
+import 'package:secure_upload/ui/screens/decrypt/decrypt_path_progress_bar.dart';
 import 'package:secure_upload/ui/custom/text_field.dart';
 import 'package:secure_upload/ui/custom/icons.dart';
 

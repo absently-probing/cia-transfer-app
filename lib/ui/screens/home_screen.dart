@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:secure_upload/ui/custom/menus.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/ui/screens/decrypt_path_home.dart';
-import 'package:secure_upload/ui/screens/encrypt_path_home.dart';
-import 'package:secure_upload/ui/screens/walkthrough_screen.dart';
+import 'package:secure_upload/ui/screens/decrypt/decrypt_path_home.dart';
+import 'package:secure_upload/ui/screens/encrypt/encrypt_path_home.dart';
+import 'package:secure_upload/ui/screens/onboarding/walkthrough_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatelessWidget {

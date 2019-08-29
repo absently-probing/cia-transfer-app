@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/ui/screens/onboard_screen.dart';
+import 'package:secure_upload/ui/screens/onboarding/onboard_screen.dart';
 import 'package:secure_upload/ui/widgets/pager_indicator.dart';
 import 'package:secure_upload/ui/widgets/page_dragger.dart';
 import 'package:secure_upload/ui/widgets/page_reveal.dart';

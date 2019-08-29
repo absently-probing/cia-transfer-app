@@ -7,23 +7,23 @@ import 'package:secure_upload/ui/custom/menus.dart';
 import 'package:share/share.dart';
 import 'package:secure_upload/data/strings.dart';
 
-class SecondEncrypt extends StatefulWidget {
+class FinalEncrypt extends StatefulWidget {
   final String _url;
   final String _password;
 
-  SecondEncrypt(this._url, this._password);
+  FinalEncrypt(this._url, this._password);
 
-  _SecondEncryptState createState() =>
-      _SecondEncryptState(this._url, this._password);
+  _FinalEncryptState createState() =>
+      _FinalEncryptState(this._url, this._password);
 }
 
-class _SecondEncryptState extends State<SecondEncrypt> {
+class _FinalEncryptState extends State<FinalEncrypt> {
   final String _url;
   final String _password;
   final _key = GlobalKey<ScaffoldState>();
 
 
-  _SecondEncryptState(this._url, this._password);
+  _FinalEncryptState(this._url, this._password);
 
   void _choiceAction(String choice) {
     //TODO fix encoding

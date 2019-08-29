@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/ui/screens/encrypt_path_second_screen.dart';
+import 'package:secure_upload/ui/screens/encrypt/encrypt_path_progress_bar.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -42,15 +42,16 @@ class _EncryptScreen extends State<EncryptScreen> {
     });
   }
 
-  void _openEncryptLoadingScreen(BuildContext context){
-    //TODO encrypt and upload
-    //TODO add loading screen for encrypt and upload
+  void _openEncryptLoadingScreen(BuildContext context) {
+    List<String> files = [];
+    for (String key in _path.keys){
+      files.add(key);
+    }
 
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => SecondEncrypt(
-                "dropbox.com/asdjio1231", "password1111117890123890127301270371203790127390127903120937890")));
+            builder: (context) => EncryptProgress(files: files)));
   }
 
   @override
