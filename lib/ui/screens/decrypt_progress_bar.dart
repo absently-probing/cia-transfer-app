@@ -29,7 +29,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
             animation: true,
             lineWidth: 5.0,
             percent: 0.1,
-            center: new Text("10%"),
+            center: Text("10%"),
       ),
     ));
   }

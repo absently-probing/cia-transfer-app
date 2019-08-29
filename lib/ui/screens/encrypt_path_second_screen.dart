@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:secure_upload/ui/widgets/custom_buttons.dart';
+import 'package:secure_upload/ui/custom/text.dart';
+import 'package:secure_upload/ui/custom/menus.dart';
 import 'package:share/share.dart';
 import 'package:secure_upload/data/strings.dart';
 
@@ -35,12 +36,37 @@ class _SecondEncryptState extends State<SecondEncrypt> {
     }
   }
 
+  void _copyUrl(){
+    Clipboard.setData(
+        ClipboardData(text: _url));
+    _key.currentState
+        .showSnackBar(SnackBar(
+      duration: Duration(milliseconds: 400),
+      content: Text("URL copied"),
+    ));
+  }
+
+  void _copyPassword(){
+    Clipboard.setData(
+        ClipboardData(text: _url));
+    _key.currentState
+        .showSnackBar(SnackBar(
+      duration: Duration(milliseconds: 400),
+      content: Text("Password copied"),
+    ));
+  }
+
+  void _finishButton(BuildContext context){
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        '/root', (Route<dynamic> route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _key,
       appBar: AppBar(
-        title: new Text("Upload Complete"),
+        title: Text("Upload Complete"),
         actions: <Widget>[
           EncryptShareMenu(_choiceAction),
         ],
@@ -67,18 +93,11 @@ class _SecondEncryptState extends State<SecondEncrypt> {
                                   child: GestureDetector(
                                       child: CustomText(
                                           text: _url,
-                                          icon: new Icon(Icons.cloud_download),
+                                          icon: Icon(Icons.cloud_download),
                                           fontSize: 20,
                                           width: 200),
-                                      onTap: () {
-                                        Clipboard.setData(
-                                            new ClipboardData(text: _url));
-                                        _key.currentState
-                                            .showSnackBar(new SnackBar(
-                                          duration: Duration(milliseconds: 400),
-                                          content: new Text("URL copied"),
-                                        ));
-                                      })),
+                                      onTap: _copyUrl
+                                  )),
                               Padding(
                                 padding: EdgeInsets.only(
                                     left: 10, right: 10, top: 20.0),
@@ -88,15 +107,8 @@ class _SecondEncryptState extends State<SecondEncrypt> {
                                         icon: Icon(Icons.lock),
                                         fontSize: 12,
                                         width: 200),
-                                    onTap: () {
-                                      Clipboard.setData(
-                                          new ClipboardData(text: _url));
-                                      _key.currentState
-                                          .showSnackBar(new SnackBar(
-                                        duration: Duration(milliseconds: 400),
-                                        content: new Text("Password copied"),
-                                      ));
-                                    }),
+                                    onTap: _copyPassword
+                                ),
                               ),
                             ],
                           ),
@@ -117,11 +129,8 @@ class _SecondEncryptState extends State<SecondEncrypt> {
             child: Align(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
-                // TODO: when pushing this button reset history stack
-
                 onPressed: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/root', (Route<dynamic> route) => false);
+                  _finishButton(context);
                 },
                 child: Icon(Icons.thumb_up),
                 backgroundColor: Colors.green,

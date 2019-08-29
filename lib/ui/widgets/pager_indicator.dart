@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/ui/screens/my_onboard_screen.dart';
+import 'package:secure_upload/ui/screens/onboard_screen.dart';
 import 'dart:ui';
 
 class PagerIndicator extends StatelessWidget {
@@ -10,13 +10,11 @@ class PagerIndicator extends StatelessWidget {
     this.viewModel,
   });
 
-  @override
-  Widget build(BuildContext context) {
+  List<PageBubble> _createBubbles(){
     List<PageBubble> bubbles = [];
     for (var i = 0; i < viewModel.pages.length; ++i) {
-      final page = viewModel.pages[i];
-
       var percentActive;
+
       if (i == viewModel.activeIndex) {
         percentActive = 1.0 - viewModel.slidePercent;
       } else if (i == viewModel.activeIndex - 1 &&
@@ -34,8 +32,8 @@ class PagerIndicator extends StatelessWidget {
               viewModel.slideDirection == SlideDirection.leftToRight);
 
       bubbles.add(
-        new PageBubble(
-          viewModel: new PagerBubbleViewModel(
+        PageBubble(
+          viewModel: PagerBubbleViewModel(
             const Color(0x88FFFFFF),
             isHollow,
             percentActive,
@@ -43,6 +41,13 @@ class PagerIndicator extends StatelessWidget {
         ),
       );
     }
+
+    return bubbles;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var bubbles = _createBubbles();
 
     return Container(
             child: Row(
@@ -82,22 +87,21 @@ class PageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return new Container(
+    return Container(
         width: globals.paperIndicatorWidth,
-        child: new Center(
-            child: new Container(
+        child: Center(
+            child: Container(
           width: lerpDouble(globals.indicatorMinWidth,
               globals.indicatorMaxWidth, viewModel.activePercent),
           height: lerpDouble(globals.indicatorMinHeight,
               globals.indicatorMaxHeight, viewModel.activePercent),
-          decoration: new BoxDecoration(
+          decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: viewModel.isHollow
                   ? viewModel.color
                       .withAlpha((0x88 * viewModel.activePercent).round())
                   : viewModel.color,
-              border: new Border.all(
+              border: Border.all(
                 color: viewModel.isHollow
                     ? viewModel.color.withAlpha(
                         (0x88 * (1 - viewModel.activePercent)).round())

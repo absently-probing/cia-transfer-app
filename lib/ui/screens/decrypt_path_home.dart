@@ -4,20 +4,19 @@ import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/ui/screens/decrypt_path_qr.dart';
 import 'package:secure_upload/ui/screens/decrypt_progress_bar.dart';
-import 'package:secure_upload/ui/widgets/custom_buttons.dart';
+import 'package:secure_upload/ui/custom/text_field.dart';
 import 'package:secure_upload/ui/custom/icons.dart';
-import 'dart:async';
 
 class DecryptScreen extends StatefulWidget {
   @override
-  _DecryptScreen createState() => new _DecryptScreen();
+  _DecryptScreen createState() => _DecryptScreen();
 }
 
 class _DecryptScreen extends State<DecryptScreen> {
-  final _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final _stateKey = new GlobalKey<FormState>();
-  final _focusNodeUrl = new FocusNode();
-  final _focusNodePassword = new FocusNode();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _stateKey = GlobalKey<FormState>();
+  final _focusNodeUrl = FocusNode();
+  final _focusNodePassword = FocusNode();
 
   var _urlController = TextEditingController();
   var _passwordController = TextEditingController();
@@ -27,7 +26,7 @@ class _DecryptScreen extends State<DecryptScreen> {
 
   bool _focusInit = true;
   bool _submitted = false;
-  bool _qr_scanner = false;
+  bool _qrScanner = false;
 
   String _urlValidationResult;
   String _passwordValidationResult;
@@ -97,7 +96,7 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   _openQRCodeScanner(BuildContext context) async {
-    _qr_scanner = true;
+    _qrScanner = true;
     _focusNodeUrl.unfocus();
     _focusNodePassword.unfocus();
     FocusScope.of(context).unfocus();
@@ -121,7 +120,7 @@ class _DecryptScreen extends State<DecryptScreen> {
       }
     }
 
-    _qr_scanner = false;
+    _qrScanner = false;
   }
 
   void _performLogin(BuildContext context) async {
@@ -142,15 +141,7 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   void _handleUrlTextField() {
-    if (_submitted){
-      if (_focusNodeUrl.hasFocus) {
-        _focusNodeUrl.unfocus();
-      }
-
-      return;
-    }
-
-    if (_qr_scanner){
+    if (_submitted || _qrScanner){
       if (_focusNodeUrl.hasFocus) {
         _focusNodeUrl.unfocus();
       }
@@ -169,15 +160,7 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   void _handlePassworTextField() {
-    if (_submitted){
-      if (_focusNodePassword.hasFocus) {
-        _focusNodePassword.unfocus();
-      }
-
-      return;
-    }
-
-    if (_qr_scanner){
+    if (_submitted || _qrScanner){
       if (_focusNodePassword.hasFocus) {
         _focusNodePassword.unfocus();
       }
@@ -196,28 +179,6 @@ class _DecryptScreen extends State<DecryptScreen> {
     }
   }
 
-  //button widgets
-  Widget filledButton(String text, Color splashColor, Color highlightColor,
-      Color fillColor, Color textColor, void function()) {
-    return RaisedButton(
-      highlightElevation: 0.0,
-      splashColor: splashColor,
-      highlightColor: highlightColor,
-      elevation: 0.0,
-      color: fillColor,
-      shape:
-          RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-      child: Text(
-        text,
-        style: TextStyle(
-            fontWeight: FontWeight.bold, color: textColor, fontSize: 20),
-      ),
-      onPressed: () {
-        function();
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (_focusInit) {
@@ -225,11 +186,11 @@ class _DecryptScreen extends State<DecryptScreen> {
       FocusScope.of(context).requestFocus(_focusNodeUrl);
     }
 
-    return new Scaffold(
+    return Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(
+        appBar: AppBar(
           centerTitle: true,
-          title: new Text(Strings.appTitle),
+          title: Text(Strings.appTitle),
           actions: [
             IconButton(
               icon: Icon(CustomIcons.qrcode_scanner),

@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/ui/screens/my_onboard_screen.dart';
+import 'package:secure_upload/ui/screens/onboard_screen.dart';
 import 'package:secure_upload/ui/widgets/pager_indicator.dart';
 import 'package:secure_upload/ui/widgets/page_dragger.dart';
 import 'package:secure_upload/ui/widgets/page_reveal.dart';
@@ -9,30 +8,30 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class MyWalkthroughScreen extends StatefulWidget {
+class WalkthroughScreen extends StatefulWidget {
   final SharedPreferences prefs;
 
-  MyWalkthroughScreen({this.prefs});
+  WalkthroughScreen({this.prefs});
 
-  _MyWalkthroughScreenState createState() => new _MyWalkthroughScreenState();
+  _WalkthroughScreenState createState() => _WalkthroughScreenState();
 }
 
-class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
+class _WalkthroughScreenState extends State<WalkthroughScreen>
     with TickerProviderStateMixin {
-  StreamController<SlideUpdate> slideUpdateStream;
-  AnimatedPageDragger animatedPageDragger;
-  GlobalKey _keyLogoSize = GlobalKey();
+  OnboardingPages _onboarding = OnboardingPages();
+  StreamController<SlideUpdate> _slideUpdateStream;
+  AnimatedPageDragger _animatedPageDragger;
 
   int activeIndex = 0;
   int nextPageIndex = 0;
   SlideDirection slideDirection = SlideDirection.none;
   double slidePercent = 0.0;
 
-  _MyWalkthroughScreenState() {
-    slideUpdateStream = new StreamController<SlideUpdate>();
+  _WalkthroughScreenState() {
+    _slideUpdateStream = StreamController<SlideUpdate>();
     ;
 
-    slideUpdateStream.stream.listen((SlideUpdate event) {
+    _slideUpdateStream.stream.listen((SlideUpdate event) {
       setState(() {
         if (event.updateType == UpdateType.dragging) {
           slideDirection = event.direction;
@@ -47,26 +46,26 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
           }
         } else if (event.updateType == UpdateType.doneDragging) {
           if (slidePercent > 0.5) {
-            animatedPageDragger = new AnimatedPageDragger(
+            _animatedPageDragger = AnimatedPageDragger(
               slideDirection: slideDirection,
               transitionGoal: TransitionGoal.open,
               slidePercent: slidePercent,
-              slideUpdateStream: slideUpdateStream,
+              slideUpdateStream: _slideUpdateStream,
               vSync: this,
             );
           } else {
-            animatedPageDragger = new AnimatedPageDragger(
+            _animatedPageDragger = AnimatedPageDragger(
               slideDirection: slideDirection,
               transitionGoal: TransitionGoal.close,
               slidePercent: slidePercent,
-              slideUpdateStream: slideUpdateStream,
+              slideUpdateStream: _slideUpdateStream,
               vSync: this,
             );
 
             nextPageIndex = activeIndex;
           }
 
-          animatedPageDragger.run();
+          _animatedPageDragger.run();
         } else if (event.updateType == UpdateType.animating) {
           slideDirection = event.direction;
           slidePercent = event.slidePercent;
@@ -76,7 +75,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
           slideDirection = SlideDirection.none;
           slidePercent = 0.0;
 
-          animatedPageDragger.dispose();
+          _animatedPageDragger.dispose();
         }
       });
     });
@@ -96,7 +95,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
               children: [
                 Expanded (
                     child: Page(
-                      viewModel: createStaticPageViewModels(context)[activeIndex],
+                      viewModel: _onboarding.createStaticPageViewModels(context)[activeIndex],
                     ),
                 ),
                Align(
@@ -106,8 +105,8 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
                         top: globals.onboardIndicatorTopPadding,
                         bottom: globals.onboardIndicatorBottomPadding),
                     child: PagerIndicator(
-                      viewModel: new PagerIndicatorViewModel(
-                        createStaticPageViewModels(context),
+                      viewModel: PagerIndicatorViewModel(
+                        _onboarding.createStaticPageViewModels(context),
                         activeIndex,
                         slideDirection,
                         slidePercent,
@@ -124,7 +123,7 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
                 child: Padding(
                   padding: EdgeInsets.only(bottom: globals.indicatorMaxHeight + globals.onboardIndicatorBottomPadding + globals.onboardIndicatorTopPadding),
                   child: Page(
-                  viewModel: createStaticPageViewModels(context)[nextPageIndex],
+                  viewModel: _onboarding.createStaticPageViewModels(context)[nextPageIndex],
                   iconPercentVisible: slidePercent * 0.5,
                   textPercentVisible: slidePercent * 0.75,
                   titlePercentVisible: slidePercent,
@@ -134,8 +133,8 @@ class _MyWalkthroughScreenState extends State<MyWalkthroughScreen>
             ),
             PageDragger(
               canDragLeftToRight: activeIndex > 0,
-              canDragRightToLeft: activeIndex < createStaticPageViewModels(context).length - 1,
-              slideUpdateStream: this.slideUpdateStream,
+              canDragRightToLeft: activeIndex < _onboarding.createStaticPageViewModels(context).length - 1,
+              slideUpdateStream: _slideUpdateStream,
             ),
           ],
         ),

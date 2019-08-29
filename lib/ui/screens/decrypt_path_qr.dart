@@ -15,50 +15,48 @@ class _DecryptQrState extends State<DecryptQr> {
   _DecryptQrState();
 
   @override
-  dispose(){
+  dispose() {
     controller.dispose();
     super.dispose();
   }
 
+  void _qrViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((qrCode) {
+      String url;
+      String password;
+
+      // split qr code in url and optional password at first space
+      var i = qrCode.indexOf(' ');
+      if (i < 0) {
+        url = qrCode;
+      } else {
+        url = qrCode.substring(0, i);
+        password = qrCode.substring(i + 1);
+      }
+
+      if (_isValidUrl(url)) {
+        controller.pauseCamera();
+        controller.dispose();
+        Navigator.of(context, rootNavigator: true).pop([url, password]);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: <Widget>[
-          Expanded(
-            child: QRView(
-              key: _qrKey,
-              onQRViewCreated: (controller) {
-                this.controller = controller;
-                controller.scannedDataStream.listen((qrCode) {
-                  String url;
-                  String password;
-
-                  // split qr code in url and optional password at first space
-                  var i = qrCode.indexOf(' ');
-                  if (i < 0) {
-                    url = qrCode;
-                  } else {
-                    url = qrCode.substring(0, i);
-                    password = qrCode.substring(i + 1);
-                  }
-
-                  if (_isValidUrl(url)) {
-                    controller.pauseCamera();
-                    controller.dispose();
-                    Navigator.of(context, rootNavigator: true).pop([url, password]);
-                  }
-                });
-              },
-              overlay: QrScannerOverlayShape(
-                borderColor: Colors.red,
-                borderRadius: 10,
-                borderLength: 30,
-                borderWidth: 10,
-                cutOutSize: 300,
-              ),
-            )
+    return Center(
+        child: QRView(
+          key: _qrKey,
+          onQRViewCreated: _qrViewCreated,
+          overlay: QrScannerOverlayShape(
+            borderColor: Colors.red,
+            borderRadius: 10,
+            borderLength: 30,
+            borderWidth: 10,
+            cutOutSize: 300,
           ),
-        ],
+        ),
     );
   }
 
