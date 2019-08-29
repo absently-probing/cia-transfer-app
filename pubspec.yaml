@@ -42,6 +42,8 @@ dependencies:
   # Android and MTBBarcode scanner in iOS.
   qr_code_scanner: ^0.0.12
 
+  flutter_launcher_icons: ^0.7.2+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
