@@ -4,12 +4,12 @@ import 'package:secure_upload/data/strings.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
-import 'package:secure_upload/backend/cloud/google/googleDriveClient.dart';
 import 'package:secure_upload/backend/cloud/google/mobileStorage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
 
 import 'dart:io';
+
 
 
 class EncryptScreen extends StatefulWidget {
@@ -58,7 +58,7 @@ class _EncryptScreen extends State<EncryptScreen> {
 
 	Storage storage = MobileStorage();
 	Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-	CloudClient client = GoogleDriveClient(storage);
+	CloudClient client = CloudClientFactory.create(CloudProvider.GoogleDrive, storage);
 	if(!(await client.hasCredentials())) {
 		await client.authenticate(utils.openURL);
 	}
