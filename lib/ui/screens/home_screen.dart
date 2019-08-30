@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
 
   HomeScreen();
 
-  void _menuAction(String input, BuildContext context){
+  void _menuAction(String input, BuildContext context) {
     if (input == Strings.mainContextMenuOnboarding) {
       Navigator.push(
         context,
@@ -22,14 +22,14 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
-  void _encryptButtonAction(BuildContext context){
+  void _encryptButtonAction(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => EncryptScreen()),
     );
   }
 
-  void _decryptButtonAction(BuildContext context){
+  void _decryptButtonAction(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => DecryptScreen()),
@@ -48,8 +48,7 @@ class HomeScreen extends StatelessWidget {
           MainContextMenu(_menuAction),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView (
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -101,47 +100,43 @@ class HomeScreen extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.only(
                     top: 15.0, bottom: 10.0, left: 20.00, right: 20.00),
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: SizedBox(
-                          width: globals.rootButtonWidth(context),
-                          height: globals.rootButtonHeight(context),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: SizedBox(
+                        width: globals.rootButtonWidth(context),
+                        height: globals.rootButtonHeight(context),
 
-                          //Adding Correct Button depending on Prefs-Setting
-                          child: RaisedButton(
-                            onPressed: (){
-                              _encryptButtonAction(context);
-                            },
-                            child:
-                            const Text(Strings.homeScreenEncryptLabel, style: TextStyle(fontSize: 20)),
-                          ),
+                        //Adding Correct Button depending on Prefs-Setting
+                        child: RaisedButton(
+                          onPressed: () {
+                            _encryptButtonAction(context);
+                          },
+                          child: const Text(Strings.homeScreenEncryptLabel,
+                              style: TextStyle(fontSize: 20)),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: SizedBox(
-                          width: globals.rootButtonWidth(context),
-                          height: globals.rootButtonHeight(context),
-                          child: RaisedButton(
-                            onPressed: () {
-                              _decryptButtonAction(context);
-                            },
-                            child: const Text(Strings.homeScreenDecryptLabel, style: TextStyle(fontSize: 20)),
-                          ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: SizedBox(
+                        width: globals.rootButtonWidth(context),
+                        height: globals.rootButtonHeight(context),
+                        child: RaisedButton(
+                          onPressed: () {
+                            _decryptButtonAction(context);
+                          },
+                          child: const Text(Strings.homeScreenDecryptLabel,
+                              style: TextStyle(fontSize: 20)),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ],
-        ),
         ),
       ),
     );
