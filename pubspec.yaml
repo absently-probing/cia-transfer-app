@@ -20,11 +20,21 @@ dependencies:
   flutter:
     sdk: flutter
 
+  googleapis: '>=0.54.0'
+  googleapis_auth: any
+  http: any
+  flutter_secure_storage: ^3.2.1+1
+  permission_handler: any
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   shared_preferences: ^0.5.3+4
   url_launcher: ^5.1.2
+  share: ^0.6.2+1
+
+  # String validation and sanitization for Dart.
+  validators: ^2.0.0
 
   # A package that allows you to use a native file explorer to pick single or multiple absolute file
   # paths, with extensions filtering support.
@@ -33,6 +43,13 @@ dependencies:
   # QR.Flutter is a Flutter library for simple and fast QR code rendering via a Widget or custom
   # painter.
   qr_flutter: ^3.0.1
+
+  # QR code scanner that can be embedded inside flutter. It uses zxing in
+  # Android and MTBBarcode scanner in iOS.
+  qr_code_scanner: ^0.0.12
+
+  #Package to use custom app launcher icons.
+  flutter_launcher_icons: ^0.7.2+1
 
 dev_dependencies:
   flutter_test:
@@ -80,3 +97,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  fonts:
+    - family: qrcode_scanner
+      fonts:
+        - asset: assets/fonts/qrcode_scanner.ttf
