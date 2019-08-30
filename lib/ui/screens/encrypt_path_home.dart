@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
 import 'package:secure_upload/backend/cloud/google/googleDriveClient.dart';
-import 'package:secure_upload/backend/cloud/google/simpleStorage.dart';
+import 'package:secure_upload/backend/cloud/google/mobileStorage.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:secure_upload/ui/screens/my_onboard_screen.dart';
 
 import 'dart:io';
@@ -134,15 +135,11 @@ class _EncryptScreen extends State<EncryptScreen>{
                     //TODO add navigation screen for cloud file path
                     //TODO encrypt and upload after naviagetion screen
                     //TODO add loading screen for encrypt and upload
-                    var file_1 = File("/data/data/secure_upload_app/abc");
-                    //
-                    var file_2 = File("/data/local/tmp/stored");
-                    await file_1.writeAsString("Test");
-                    await file_2.writeAsString("");
-                    Storage storage = SimpleStorage("/data/local/tmp/stored");
+                    Storage storage = MobileStorage();
+                    Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
                     CloudClient client = GoogleDriveClient(storage);
-                    await client.authenticate(launchURL);
-                    var localFile = File("/data/local/tmp/abc");
+                    //await client.authenticate(launchURL);
+                    var localFile = File("/storage/emulated/0/Download/flower.jpg");
                     var fileID = await client.createFile("myupload", localFile);
                     Navigator.push(
                         context,
