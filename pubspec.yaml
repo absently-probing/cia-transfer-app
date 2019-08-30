@@ -20,18 +20,43 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # google drive
   googleapis: '>=0.54.0'
+
+  # google drive
   googleapis_auth: any
+
+  # http/https client
   http: any
+
+  # secure storage
   flutter_secure_storage: ^3.2.1+1
+
+  # handle permission
   permission_handler: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+
+  # store shared preferences
   shared_preferences: ^0.5.3+4
+
+  # open urls
   url_launcher: ^5.1.2
+
+  # share button
   share: ^0.6.2+1
+
+  # get App directories
+  path_provider: ^1.2.0
+
+  # ffi for libsodium
+  libsodium:
+    path: packages/libsodium
+
+  # archive to create zip files
+  archive: ^2.0.10
 
   # String validation and sanitization for Dart.
   validators: ^2.0.0

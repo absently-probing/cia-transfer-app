@@ -3,13 +3,6 @@ import 'package:secure_upload/ui/screens/encrypt/encrypt_path_progress_bar.dart'
 import 'package:secure_upload/data/strings.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
-import 'package:secure_upload/backend/cloud/google/googleDriveClient.dart';
-import 'package:secure_upload/backend/cloud/google/mobileStorage.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:secure_upload/data/utils.dart' as utils;
-
-import 'dart:io';
 
 
 class EncryptScreen extends StatefulWidget {
@@ -55,13 +48,6 @@ class _EncryptScreen extends State<EncryptScreen> {
 	for (String key in _path.keys){
 	  files.add(key);
 	}
-
-	Storage storage = MobileStorage();
-	Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-	CloudClient client = GoogleDriveClient(storage);
-	await client.authenticate(utils.openURL);
-	var localFile = File("/storage/emulated/0/Download/flower.jpg");
-	var fileID = await client.createFile("myupload", localFile);
 
 	Navigator.push(
 		context,
