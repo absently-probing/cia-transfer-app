@@ -29,4 +29,6 @@ abstract class CloudClient {
 
   void setAccessibility(String fileID, bool accessible);
 
+  Future<bool> hasCredentials();
+
 }

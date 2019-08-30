@@ -59,7 +59,9 @@ class _EncryptScreen extends State<EncryptScreen> {
 	Storage storage = MobileStorage();
 	Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
 	CloudClient client = GoogleDriveClient(storage);
-	await client.authenticate(utils.openURL);
+	if(!(await client.hasCredentials())) {
+		await client.authenticate(utils.openURL);
+	}
 	var localFile = File("/storage/emulated/0/Download/flower.jpg");
 	var fileID = await client.createFile("myupload", localFile);
 
