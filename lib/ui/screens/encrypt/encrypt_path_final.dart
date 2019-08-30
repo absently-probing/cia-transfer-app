@@ -1,28 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:secure_upload/data/global.dart' as globals;
+import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:secure_upload/ui/widgets/custom_buttons.dart';
-import 'package:flutter/services.dart';
+import 'package:secure_upload/ui/custom/text.dart';
+import 'package:secure_upload/ui/custom/menus.dart';
+import 'package:share/share.dart';
+import 'package:secure_upload/data/strings.dart';
 
-class SecondEncrypt extends StatelessWidget {
+class FinalEncrypt extends StatefulWidget {
   final String _url;
   final String _password;
 
-  SecondEncrypt(this._url, this._password);
+  FinalEncrypt(this._url, this._password);
+
+  _FinalEncryptState createState() =>
+      _FinalEncryptState(this._url, this._password);
+}
+
+class _FinalEncryptState extends State<FinalEncrypt> {
+  final String _url;
+  final String _password;
+  final _key = GlobalKey<ScaffoldState>();
+
+
+  _FinalEncryptState(this._url, this._password);
+
+  void _choiceAction(String choice) {
+    //TODO fix encoding
+    if (choice == Strings.encryptSharePassword) {
+      Share.share('Password:' + '' + _password);
+    } else if (choice == Strings.encryptShareUrl) {
+      Share.share('Url:' + '' + _url);
+    } else if (choice == Strings.encryptShareBoth) {
+      Share.share('Link:' + '' + _url + '' + 'Password:' + '' + _password);
+    }
+  }
+
+  void _copyUrl(){
+    Clipboard.setData(
+        ClipboardData(text: _url));
+    _key.currentState
+        .showSnackBar(SnackBar(
+      duration: Duration(milliseconds: 400),
+      content: Text("URL copied"),
+    ));
+  }
+
+  void _copyPassword(){
+    Clipboard.setData(
+        ClipboardData(text: _url));
+    _key.currentState
+        .showSnackBar(SnackBar(
+      duration: Duration(milliseconds: 400),
+      content: Text("Password copied"),
+    ));
+  }
+
+  void _finishButton(BuildContext context){
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        '/root', (Route<dynamic> route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    final key = new GlobalKey<ScaffoldState>();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     return Scaffold(
-      key: key,
+      key: _key,
       appBar: AppBar(
-        title: new Text("Upload Complete"),
+        title: Text("Upload Complete"),
+        actions: <Widget>[
+          EncryptShareMenu(_choiceAction),
+        ],
       ),
       body: Container(
         child: Stack(children: [
@@ -46,17 +93,11 @@ class SecondEncrypt extends StatelessWidget {
                                   child: GestureDetector(
                                       child: CustomText(
                                           text: _url,
-                                          icon: new Icon(Icons.cloud_download),
+                                          icon: Icon(Icons.cloud_download),
                                           fontSize: 20,
                                           width: 200),
-                                      onLongPress: () {
-                                        Clipboard.setData(
-                                            new ClipboardData(text: _url));
-                                        key.currentState
-                                            .showSnackBar(new SnackBar(
-                                          content: new Text("URL copied"),
-                                        ));
-                                      })),
+                                      onTap: _copyUrl
+                                  )),
                               Padding(
                                 padding: EdgeInsets.only(
                                     left: 10, right: 10, top: 20.0),
@@ -66,14 +107,8 @@ class SecondEncrypt extends StatelessWidget {
                                         icon: Icon(Icons.lock),
                                         fontSize: 12,
                                         width: 200),
-                                    onLongPress: () {
-                                      Clipboard.setData(
-                                          new ClipboardData(text: _url));
-                                      key.currentState
-                                          .showSnackBar(new SnackBar(
-                                        content: new Text("Password copied"),
-                                      ));
-                                    }),
+                                    onTap: _copyPassword
+                                ),
                               ),
                             ],
                           ),
@@ -83,7 +118,7 @@ class SecondEncrypt extends StatelessWidget {
                     QrImage(
                       data: _url + " " + _password,
                       version: QrVersions.auto,
-                      size: globals.maxWidth / 2,
+                      size: utils.screenWidth(context) / 2,
                     ),
                   ]),
             ),
@@ -94,11 +129,8 @@ class SecondEncrypt extends StatelessWidget {
             child: Align(
               alignment: Alignment.bottomRight,
               child: FloatingActionButton(
-                // TODO: when pushing this button reset history stack
-
                 onPressed: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/root', (Route<dynamic> route) => false);
+                  _finishButton(context);
                 },
                 child: Icon(Icons.thumb_up),
                 backgroundColor: Colors.green,
