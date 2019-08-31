@@ -17,8 +17,8 @@ class Strings {
   static const String scannerUpdatedUrl = "Updated url from scanned QR code!";
   static const String scannerUpdatedUrlAndPasssword = "Updated url and password from scanned QR code!";
 
-  static const String homeScreenEncryptLabel = 'Share file(s)';
-  static const String homeScreenDecryptLabel = 'Receive file(s)';
+  static const String homeScreenEncryptLabel = 'Share files';
+  static const String homeScreenDecryptLabel = 'Receive files';
 
   static const String encryptShareUrl = 'Share URL only';
   static const String encryptSharePassword = 'Share Password only';
@@ -32,7 +32,7 @@ class Strings {
   static const String mainContextMenuSync = 'Synchronization';
   static const String mainContextMneuSettings = 'Settings';
 
-  static const String Sharing = "Share file(s)";
+  static const String Sharing = "Share files";
 
-  static const String Receive = "Receive file(s)";
+  static const String Receive = "Receive files";
 }
