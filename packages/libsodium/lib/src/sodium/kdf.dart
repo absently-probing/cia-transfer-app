@@ -1,6 +1,7 @@
-import '../bindings/bindings.dart';
+import '../bindings/sodiumbindings.dart';
 import '../ffi/carray.dart';
 import 'exception.dart';
+import 'package:c_type_sizes/c_type_sizes.dart';
 
 import 'dart:convert';
 
@@ -15,7 +16,7 @@ class Kdf {
     }
 
     Uint8CArray master = Uint8CArray(masterkeyBytes());
-    bindings.crypto_kdf_keygen(master.ptr);
+    sodiumbindings.crypto_kdf_keygen(master.ptr);
 
     if (masterKey != null){
       for (int i = 0; i < master.length; i++){
@@ -63,7 +64,7 @@ class Kdf {
       ctx[i] = context[i];
     }
 
-    int err = bindings.crypto_kdf_derive_from_key(subkey.ptr, subkey.length, id, ctx.ptr, _masterKey.ptr);
+    int err = sodiumbindings.crypto_kdf_derive_from_key(subkey.ptr, subkey.length, id, ctx.ptr, _masterKey.ptr);
 
     List<int> out = null;
     if (err == 0){
@@ -89,21 +90,21 @@ class Kdf {
   // static methods
   // minimum length of subkey
   static int subkeyMinBytes(){
-    return bindings.crypto_kdf_bytes_min();
+    return sodiumbindings.crypto_kdf_bytes_min();
   }
 
   // maximum length of subkey
   static int subkeyMaxBytes(){
-    return bindings.crypto_kdf_bytes_max();
+    return sodiumbindings.crypto_kdf_bytes_max();
   }
 
   // sizeof context bytes
   static int contextBytes(){
-    return bindings.crypto_kdf_contextbytes();
+    return sodiumbindings.crypto_kdf_contextbytes();
   }
 
   static int masterkeyBytes() {
-    return bindings.crypto_kdf_keybytes();
+    return sodiumbindings.crypto_kdf_keybytes();
   }
 
   static List<int> convertStringToCTX(String str){

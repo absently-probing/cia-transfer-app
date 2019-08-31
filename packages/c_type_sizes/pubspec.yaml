@@ -1,5 +1,5 @@
-name: libsodium
-description: libsodium bindings
+name: c_type_sizes
+description: get sizeof c types
 version: 0.0.1
 author:
 homepage:
@@ -11,13 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  c_type_sizes:
-    path: '../c_type_sizes'
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -6,7 +6,7 @@ import 'package:libsodium/libsodium.dart';
 import 'package:libsodium/src/ffi/constant.dart';
 import "package:libsodium/src/ffi/cstring.dart";
 import "package:libsodium/src/ffi/carray.dart";
-import "package:libsodium/src/bindings/bindings.dart";
+import "package:libsodium/src/bindings/sodiumbindings.dart";
 
 void main(){
   group("random test", () {
@@ -23,11 +23,11 @@ void main(){
       var msg2 = "split into";
       var msg3 = "three messages";
 
-      int stateSize = bindings.crypto_secretstream_xchacha20poly1305_statebytes();
-      int keySize = bindings.crypto_secretstream_xchacha20poly1305_keybytes();
-      int headerSize = bindings.crypto_secretstream_xchacha20poly1305_headerbytes();
-      int aBytes = bindings.crypto_secretstream_xchacha20poly1305_abytes();
-      int tagFinal = bindings.crypto_secretstream_xchacha20poly1305_tag_final();
+      int stateSize = sodiumbindings.crypto_secretstream_xchacha20poly1305_statebytes();
+      int keySize = sodiumbindings.crypto_secretstream_xchacha20poly1305_keybytes();
+      int headerSize = sodiumbindings.crypto_secretstream_xchacha20poly1305_headerbytes();
+      int aBytes = sodiumbindings.crypto_secretstream_xchacha20poly1305_abytes();
+      int tagFinal = sodiumbindings.crypto_secretstream_xchacha20poly1305_tag_final();
 
       Uint8CArray state = Uint8CArray(stateSize);
       Uint8CArray key = Uint8CArray(keySize);
@@ -40,27 +40,27 @@ void main(){
       UCString m2 = UCString(msg2);
       UCString m3 = UCString(msg3);
 
-      bindings.crypto_secretstream_xchacha20poly1305_keygen(key.ptr);
+      sodiumbindings.crypto_secretstream_xchacha20poly1305_keygen(key.ptr);
 
-      int err = bindings.crypto_secretstream_xchacha20poly1305_init_push(state.ptr, header.ptr, key.ptr);
+      int err = sodiumbindings.crypto_secretstream_xchacha20poly1305_init_push(state.ptr, header.ptr, key.ptr);
       if (err != 0){
         print("push_init failed");
         success = false;
       }
 
-      err = bindings.crypto_secretstream_xchacha20poly1305_push(state.ptr, c1.ptr, const_ptr.uint64_null, m1.str.ptr, m1.strlen(), const_ptr.uint8_null, 0, 0);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_push(state.ptr, c1.ptr, const_ptr.uint64_null, m1.str.ptr, m1.strlen(), const_ptr.uint8_null, 0, 0);
       if (err != 0){
         print("push1 failed");
         success = false;
       }
 
-      err = bindings.crypto_secretstream_xchacha20poly1305_push(state.ptr, c2.ptr, const_ptr.uint64_null, m2.str.ptr, m2.strlen(), const_ptr.uint8_null, 0, 0);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_push(state.ptr, c2.ptr, const_ptr.uint64_null, m2.str.ptr, m2.strlen(), const_ptr.uint8_null, 0, 0);
       if (err != 0){
         print("push2 failed");
         success = false;
       }
 
-      err = bindings.crypto_secretstream_xchacha20poly1305_push(state.ptr, c3.ptr, const_ptr.uint64_null, m3.str.ptr, m3.strlen(), const_ptr.uint8_null, 0, tagFinal);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_push(state.ptr, c3.ptr, const_ptr.uint64_null, m3.str.ptr, m3.strlen(), const_ptr.uint8_null, 0, tagFinal);
       if (err != 0){
         print("push3 failed");
         success = false;
@@ -73,26 +73,26 @@ void main(){
       Uint8CArray tag = Uint8CArray(1);
       tag[0] = 0;
 
-      err = bindings.crypto_secretstream_xchacha20poly1305_init_pull(state.ptr, header.ptr, key.ptr);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_init_pull(state.ptr, header.ptr, key.ptr);
       if (err != 0) {
         print("init_pull failed");
         success = false;
       }
 
 
-      err = bindings.crypto_secretstream_xchacha20poly1305_pull(state.ptr, m21.str.ptr, const_ptr.uint64_null, tag.ptr, c1.ptr, c1.length, const_ptr.uint8_null, 0);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_pull(state.ptr, m21.str.ptr, const_ptr.uint64_null, tag.ptr, c1.ptr, c1.length, const_ptr.uint8_null, 0);
       if (err != 0 || tag[0] != 0) {
         print("pull1 fail");
         success = false;
       }
 
-      err = bindings.crypto_secretstream_xchacha20poly1305_pull(state.ptr, m22.str.ptr, const_ptr.uint64_null, tag.ptr, c2.ptr, c2.length, const_ptr.uint8_null, 0);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_pull(state.ptr, m22.str.ptr, const_ptr.uint64_null, tag.ptr, c2.ptr, c2.length, const_ptr.uint8_null, 0);
       if (err != 0 || tag[0] != 0) {
         print("pull2 fail");
         success = false;
       }
 
-      err = bindings.crypto_secretstream_xchacha20poly1305_pull(state.ptr, m23.str.ptr, const_ptr.uint64_null, tag.ptr, c3.ptr, c3.length, const_ptr.uint8_null, 0);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_pull(state.ptr, m23.str.ptr, const_ptr.uint64_null, tag.ptr, c3.ptr, c3.length, const_ptr.uint8_null, 0);
       if (err != 0 || tag[0] != tagFinal) {
         print("pull3 fail");
         success = false;

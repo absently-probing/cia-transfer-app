@@ -1,4 +1,4 @@
-import '../bindings/bindings.dart';
+import '../bindings/sodiumbindings.dart';
 import '../ffi/carray.dart';
 import 'exception.dart';
 
@@ -11,7 +11,7 @@ class Secretbox {
     _key = Uint8CArray(keybytes());
     _nonce = Uint8CArray(noncebytes());
 
-    bindings.crypto_secretbox_keygen(_key.ptr);
+    sodiumbindings.crypto_secretbox_keygen(_key.ptr);
   }
 
   factory Secretbox([List<int> k = null]){
@@ -77,13 +77,13 @@ class Secretbox {
 
     Uint8CArray c = Uint8CArray(m.length + macbytes());
     Uint8CArray msg = Uint8CArray(m.length);
-    bindings.randombytes_buf(_nonce.ptr, _nonce.length);
+    sodiumbindings.randombytes_buf(_nonce.ptr, _nonce.length);
 
     for (int i = 0; i < m.length; i++){
       msg[i] =  m[i];
     }
 
-    int err = bindings.crypto_secretbox_easy(c.ptr, msg.ptr, msg.length, _nonce.ptr, _key.ptr);
+    int err = sodiumbindings.crypto_secretbox_easy(c.ptr, msg.ptr, msg.length, _nonce.ptr, _key.ptr);
     List<List<int>> out = null;
 
     // encrypt call was successful
@@ -134,7 +134,7 @@ class Secretbox {
       cnonce[i] = n[i];
     }
 
-    int err = bindings.crypto_secretbox_open_easy(msg.ptr, cipher.ptr, cipher.length, cnonce.ptr, _key.ptr);
+    int err = sodiumbindings.crypto_secretbox_open_easy(msg.ptr, cipher.ptr, cipher.length, cnonce.ptr, _key.ptr);
     List<int> out = null;
 
     // decrypt call was successful
@@ -163,7 +163,7 @@ class Secretbox {
       throw CryptoException("Secretbox was cleared");
     }
 
-    bindings.crypto_secretbox_keygen(_key.ptr);
+    sodiumbindings.crypto_secretbox_keygen(_key.ptr);
   }
 
   // zero memory and free it
@@ -180,14 +180,14 @@ class Secretbox {
 
   // static methods
   static int keybytes(){
-    return bindings.crypto_secretbox_keybytes();
+    return sodiumbindings.crypto_secretbox_keybytes();
   }
 
   static int noncebytes(){
-    return bindings.crypto_secretbox_noncebytes();
+    return sodiumbindings.crypto_secretbox_noncebytes();
   }
 
   static int macbytes(){
-    return bindings.crypto_secretbox_macbytes();
+    return sodiumbindings.crypto_secretbox_macbytes();
   }
 }

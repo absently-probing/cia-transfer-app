@@ -1,4 +1,4 @@
-import '../bindings/bindings.dart';
+import '../bindings/sodiumbindings.dart';
 import '../ffi/carray.dart';
 import '../ffi/constant.dart';
 import 'exception.dart';
@@ -25,7 +25,7 @@ class Secretstream {
     Uint8CArray key = Uint8CArray(keybytes());
     Uint8CArray state = Uint8CArray(statebytes());
 
-    bindings.crypto_secretstream_xchacha20poly1305_keygen(key.ptr);
+    sodiumbindings.crypto_secretstream_xchacha20poly1305_keygen(key.ptr);
 
     if (k != null){
       for (int i = 0; i < key.length; i++){
@@ -49,7 +49,7 @@ class Secretstream {
       throw CryptoException("Secretstream was cleared");
     }
 
-    bindings.crypto_secretstream_xchacha20poly1305_rekey(_key.ptr);
+    sodiumbindings.crypto_secretstream_xchacha20poly1305_rekey(_key.ptr);
   }
 
   // get methods
@@ -85,7 +85,7 @@ class Secretstream {
       hdr[i] = header[i];
     }
 
-    int err = bindings.crypto_secretstream_xchacha20poly1305_init_pull(_state.ptr, hdr.ptr, _key.ptr);
+    int err = sodiumbindings.crypto_secretstream_xchacha20poly1305_init_pull(_state.ptr, hdr.ptr, _key.ptr);
     hdr.zfree();
 
     if (err != 0){
@@ -135,9 +135,9 @@ class Secretstream {
     // with or without additional data
     int err = 0;
     if (additional == null){
-      err = bindings.crypto_secretstream_xchacha20poly1305_pull(_state.ptr, m.ptr, const_ptr.uint64_null, tag.ptr, cipher.ptr, cipher.length, const_ptr.uint8_null, 0);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_pull(_state.ptr, m.ptr, const_ptr.uint64_null, tag.ptr, cipher.ptr, cipher.length, const_ptr.uint8_null, 0);
     } else {
-      err = bindings.crypto_secretstream_xchacha20poly1305_pull(_state.ptr, m.ptr, const_ptr.uint64_null, tag.ptr, cipher.ptr, cipher.length, additional.ptr, additional.length);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_pull(_state.ptr, m.ptr, const_ptr.uint64_null, tag.ptr, cipher.ptr, cipher.length, additional.ptr, additional.length);
     }
 
     // create result
@@ -174,7 +174,7 @@ class Secretstream {
 
     Uint8CArray hdr = Uint8CArray(headerbytes());
 
-    int err = bindings.crypto_secretstream_xchacha20poly1305_init_push(_state.ptr, hdr.ptr, _key.ptr);
+    int err = sodiumbindings.crypto_secretstream_xchacha20poly1305_init_push(_state.ptr, hdr.ptr, _key.ptr);
     List<int> out = new List<int>(hdr.length);
     for (int i = 0; i < out.length; i++){
       out[i] = hdr[i];
@@ -225,9 +225,9 @@ class Secretstream {
     // with or without additional data
     int err = 0;
     if (additional == null) {
-      err = bindings.crypto_secretstream_xchacha20poly1305_push(_state.ptr, c.ptr, const_ptr.uint64_null, msg.ptr, msg.length, const_ptr.uint8_null, 0, tag);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_push(_state.ptr, c.ptr, const_ptr.uint64_null, msg.ptr, msg.length, const_ptr.uint8_null, 0, tag);
     } else {
-      err = bindings.crypto_secretstream_xchacha20poly1305_push(_state.ptr, c.ptr, const_ptr.uint64_null, msg.ptr, msg.length, additional.ptr, additional.length, tag);
+      err = sodiumbindings.crypto_secretstream_xchacha20poly1305_push(_state.ptr, c.ptr, const_ptr.uint64_null, msg.ptr, msg.length, additional.ptr, additional.length, tag);
     }
 
     // create result
@@ -262,31 +262,31 @@ class Secretstream {
   }
   // static methods
   static int keybytes(){
-    return bindings.crypto_secretstream_xchacha20poly1305_keybytes();
+    return sodiumbindings.crypto_secretstream_xchacha20poly1305_keybytes();
   }
 
   static int headerbytes(){
-    return bindings.crypto_secretstream_xchacha20poly1305_headerbytes();
+    return sodiumbindings.crypto_secretstream_xchacha20poly1305_headerbytes();
   }
 
   static int abytes(){
-    return bindings.crypto_secretstream_xchacha20poly1305_abytes();
+    return sodiumbindings.crypto_secretstream_xchacha20poly1305_abytes();
   }
 
   static int statebytes(){
-    return bindings.crypto_secretstream_xchacha20poly1305_statebytes();
+    return sodiumbindings.crypto_secretstream_xchacha20poly1305_statebytes();
   }
 
   // The maximum length of an individual message is
   // crypto_secretstream_xchacha20poly1305_MESSAGEBYTES_MAX bytes (~ 256 GB)
   static int messagebytesMax() {
-    return bindings.crypto_secretstream_xchacha20poly1305_messagebytes_max();
+    return sodiumbindings.crypto_secretstream_xchacha20poly1305_messagebytes_max();
   }
 
   // 0, or crypto_secretstream_xchacha20poly1305_TAG_MESSAGE: the most common
   // tag, that doesn't add any information about the nature of the message.
   static int tagMessage(){
-    return bindings.crypto_secretstream_xchacha20poly1305_tag_message();
+    return sodiumbindings.crypto_secretstream_xchacha20poly1305_tag_message();
   }
 
   // crypto_secretstream_xchacha20poly1305_TAG_PUSH: indicates that the message
@@ -295,19 +295,19 @@ class Secretstream {
   // indicate to the application that the string is complete and that it can be
   // decoded. But the stream itself is not closed, and more data may follow.
   static int tagPush(){
-    return bindings.crypto_secretstream_xchacha20poly1305_tag_push();
+    return sodiumbindings.crypto_secretstream_xchacha20poly1305_tag_push();
   }
 
   // crypto_secretstream_xchacha20poly1305_TAG_REKEY: "forget" the key used to
   // encrypt this message and the previous ones, and derive a new secret key.
   static int tagRekey() {
-    return bindings.crypto_secretstream_xchacha20poly1305_tag_rekey();
+    return sodiumbindings.crypto_secretstream_xchacha20poly1305_tag_rekey();
   }
 
   // crypto_secretstream_xchacha20poly1305_TAG_FINAL: indicates that the message
   // marks the end of the stream, and erases the secret key used to encrypt the
   // previous sequence.
   static int tagFinal() {
-    return bindings.crypto_secretstream_xchacha20poly1305_tag_final();
+    return sodiumbindings.crypto_secretstream_xchacha20poly1305_tag_final();
   }
 }
