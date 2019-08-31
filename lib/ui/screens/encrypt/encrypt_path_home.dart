@@ -75,7 +75,7 @@ class _EncryptScreen extends State<EncryptScreen> {
 	  key: _scaffoldKey,
 	  appBar: AppBar(
 		centerTitle: true,
-		title: Text(Strings.appTitle),
+		title: Text(Strings.Sharing),
 	  ),
 	  body: Container(key: _stateKey,
 		  child: Stack(children: <Widget>[
