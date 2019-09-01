@@ -6,7 +6,7 @@ import 'package:secure_upload/data/isolate_messages.dart';
 import 'package:secure_upload/data/isolate_storage.dart';
 import 'package:secure_upload/ui/custom/progress_indicator.dart';
 import 'package:secure_upload/ui/screens/encrypt/encrypt_path_final.dart';
-import '../../../backend/cloud/cloudClient.dart' as prefix0;
+import '../../../backend/cloud/cloudClient.dart';
 import '../../../backend/storage/storage.dart';
 import 'package:secure_upload/backend/storage/mobileStorage.dart';
 import 'package:secure_upload/backend/crypto/cryptapi/cryptapi.dart';
@@ -14,6 +14,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:convert';
+
+import '../../../data/isolate_messages.dart' as prefix0;
 
 
 class IsolateEncryptInitData {
@@ -187,13 +189,15 @@ class _EncryptProgressState extends State<EncryptProgress> {
       _updateProgress(message.progress);
 
       if (message.finished){
+        var url = message.data;
         _isolateUpload.kill();
+
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) =>
                     FinalEncrypt(
-                        "dropbox.com/asdjio1231",
+                        url,
                         _key)));
       }
     }
@@ -250,14 +254,16 @@ class _EncryptProgressState extends State<EncryptProgress> {
     IsolateVoidFunctions voidFunctions = IsolateVoidFunctions(comm);
     // TODO remove it
     // TODO create ProcessObject for updating CircleProcessbar
-    message.sendPort.send(IsolateMessage<String, String>(1.0, true, false, null, null));
     //Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-    prefix0.CloudClient client = prefix0.CloudClientFactory.create(prefix0.CloudProvider.GoogleDrive, storage);
+    CloudClient client = await CloudClientFactory.create(CloudProvider.GoogleDrive, storage);
     if(!(await client.hasCredentials())) {
       await client.authenticate(voidFunctions.openURL);
     }
 
     var fileID = await client.createFile(Filecrypt.randomFilename(), targetFile);
+    await client.setAccessibility(fileID, true);
+    var url = await client.getURL(fileID);
+    message.sendPort.send(IsolateMessage<String, String>(1.0, true, false, null, url));
   }
 
   Widget build(BuildContext context) {
