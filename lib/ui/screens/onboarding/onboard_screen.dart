@@ -12,7 +12,7 @@ class OnboardingPages {
       PageViewModel(
         Strings.appTitle,
         Text(
-          Strings.appTitle,
+          Strings.appDescription,
           softWrap: true,
           textAlign: TextAlign.center,
           style: TextStyle(
