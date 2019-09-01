@@ -17,9 +17,21 @@ Future<void> main() async {
     },
     home: showWalkthrough ? WalkthroughScreen() : HomeScreen(),
     theme: ThemeData(
-      primaryColor: Colors.blueGrey,
-      primarySwatch: Colors.grey,
-      hintColor: Colors.black,
+      colorScheme: ColorScheme(
+        primary: Colors.cyan[600],
+        primaryVariant: Colors.cyan[700],
+        secondary: Colors.redAccent[100],
+        secondaryVariant: Colors.redAccent[200],
+        surface: Colors.grey[800],
+        background: Colors.grey[900],
+        error: Colors.purple[300],
+        onPrimary: Colors.black,
+        onSecondary: Colors.black,
+        onSurface: Colors.white,
+        onBackground: Colors.grey[700],
+        onError: Colors.white,
+        brightness: Brightness.light
+      ),
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(),
         labelStyle: TextStyle(
