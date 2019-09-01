@@ -32,6 +32,9 @@ dependencies:
   # secure storage
   flutter_secure_storage: ^3.2.1+1
 
+  # oauth (dropbox/onedrive)
+  oauth2: ^1.3.0
+
   # handle permission
   permission_handler: any
 
