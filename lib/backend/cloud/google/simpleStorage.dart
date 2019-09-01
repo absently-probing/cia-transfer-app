@@ -1,9 +1,9 @@
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart' as cloudClient;
+import 'package:secure_upload/backend/storage/storage.dart';
 
 import 'dart:convert';
 import "dart:io"; //not usable in webApps
 
-class SimpleStorage extends cloudClient.Storage {
+class SimpleStorage extends Storage {
   
   Map<String, dynamic> dict = {};
   String filename;

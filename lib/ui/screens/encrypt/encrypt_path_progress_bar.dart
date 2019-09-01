@@ -6,15 +6,15 @@ import 'package:secure_upload/data/isolate_messages.dart';
 import 'package:secure_upload/data/isolate_storage.dart';
 import 'package:secure_upload/ui/custom/progress_indicator.dart';
 import 'package:secure_upload/ui/screens/encrypt/encrypt_path_final.dart';
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
-import 'package:secure_upload/backend/cloud/google/googleDriveClient.dart';
-import 'package:secure_upload/backend/cloud/google/mobileStorage.dart';
-import 'package:permission_handler/permission_handler.dart';
+import '../../../backend/cloud/cloudClient.dart' as prefix0;
+import '../../../backend/storage/storage.dart';
+import 'package:secure_upload/backend/storage/mobileStorage.dart';
 import 'package:secure_upload/backend/crypto/cryptapi/cryptapi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:convert';
+
 
 class IsolateEncryptInitData {
   final String file;
@@ -238,7 +238,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
     Storage storage = IsolateStorage(comm);
     IsolateVoidFunctions voidFunctions = IsolateVoidFunctions(comm);
     //Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-    CloudClient client = GoogleDriveClient(storage);
+    prefix0.CloudClient client = prefix0.CloudClientFactory.create(prefix0.CloudProvider.GoogleDrive, storage);
     if(!(await client.hasCredentials())) {
       await client.authenticate(voidFunctions.openURL);
     }

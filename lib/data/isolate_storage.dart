@@ -1,8 +1,8 @@
 
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart' as cloudClient;
+import '../backend/storage/storage.dart';
 import 'package:secure_upload/data/isolate_messages.dart';
 
-class IsolateStorage extends cloudClient.Storage {
+class IsolateStorage extends Storage {
   final IsolateCommunication comm;
   IsolateStorage(this.comm);
 

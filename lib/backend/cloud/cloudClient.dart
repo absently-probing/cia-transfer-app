@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'googleDriveClient.dart';
+import '../storage/storage.dart';
+import 'google/googleDriveClient.dart';
 
 enum CloudProvider {
   GoogleDrive,
@@ -7,9 +8,12 @@ enum CloudProvider {
   OneDrive
 }
 
-abstract class Storage {
-  Future<String> get(String key);
-  void set(String key, String value);
+String providerToString(CloudProvider provider) {
+  switch(provider) {
+    case CloudProvider.GoogleDrive: return "Google Drive";
+    case CloudProvider.DropBox: return "Dropbox";
+    case CloudProvider.OneDrive: return "OneDrive";
+  }
 }
 
 abstract class CloudClient {
