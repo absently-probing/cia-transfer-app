@@ -14,6 +14,7 @@ import "package:googleapis/drive/v3.dart" as drive;
 class GoogleDriveClient extends cloudClient.CloudClient {
   cloudClient.CloudProvider provider = cloudClient.CloudProvider.GoogleDrive;
   cloudClient.Storage storage;
+  final CREDENTIALS_KEY = "credentials_google-drive";
 
   var _id = new auth.ClientId("368297135935-n553e3fd9k3smbti9rp7uv95k235gjv8.apps.googleusercontent.com", "r3MI47zrje3SnwSUKW_J8LIm");
   var _scopes = ["https://www.googleapis.com/auth/drive.file"];
@@ -27,7 +28,7 @@ class GoogleDriveClient extends cloudClient.CloudClient {
     await auth.obtainAccessCredentialsViaUserConsent(_id, _scopes, client, callback).then((auth.AccessCredentials credentials) {
       print("into it");
       client.close();
-      storage.set("credentials", _serializeAccessCredentials(credentials));
+      storage.set(CREDENTIALS_KEY, _serializeAccessCredentials(credentials));
     });
   }
 
@@ -58,7 +59,7 @@ class GoogleDriveClient extends cloudClient.CloudClient {
     }
   }
 
-  Future _writeFile(String name, Stream<List<int>> content, int contentSize, http.Client client) async {
+  Future<String> _writeFile(String name, Stream<List<int>> content, int contentSize, http.Client client) async {
     var api = drive.DriveApi(client);
     var data = drive.Media(content, contentSize);
     var driveFile = drive.File()..name = name;
@@ -68,8 +69,22 @@ class GoogleDriveClient extends cloudClient.CloudClient {
 
   Future<http.Client> _getAuthorizedClient() async {
     var client = http.Client();
-    var credentials = _unserializeAccessCredentials(await storage.get("credentials"));
+    var credentials = _unserializeAccessCredentials(await storage.get(CREDENTIALS_KEY));
     return auth.autoRefreshingClient(_id, credentials, client);//Future.value(auth.autoRefreshingClient(_id, credentials, client));
+  }
+
+  @override
+  Future<bool> hasCredentials() async {
+    var encoded = await storage.get(CREDENTIALS_KEY);
+    if(encoded == null) {
+      return false;
+    }
+    try {
+      var credentials = _unserializeAccessCredentials(encoded);
+    } catch(e) {
+      return false;
+    }
+    return true;
   }
 
   // ***
