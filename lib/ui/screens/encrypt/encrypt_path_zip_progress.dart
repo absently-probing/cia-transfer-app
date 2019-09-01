@@ -47,6 +47,8 @@ class _ZipProgressState extends State<ZipProgress> {
         //handle error;
       }
 
+      // remove zip progress from navigation
+      Navigator.of(context).pop();
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => EncryptProgress(file: data)));
     });

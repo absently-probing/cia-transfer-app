@@ -16,6 +16,7 @@ class EncryptScreen extends StatefulWidget {
 class _EncryptScreen extends State<EncryptScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _stateKey = GlobalKey<FormState>();
+  Color _buttonColor = Colors.grey;
 
   String _password;
   String _url;
@@ -34,13 +35,19 @@ class _EncryptScreen extends State<EncryptScreen> {
 
 	setState(() {
 	  if (_tmp_paths != null) {
-		for (String key in _tmp_paths.keys) {
-		  if (!_path.containsKey(_tmp_paths[key])) {
-			_paths.add([key, _tmp_paths[key]]);
-			_path[_tmp_paths[key]] = key;
-		  }
-		}
+	  	for (String key in _tmp_paths.keys) {
+	  		if (!_path.containsKey(_tmp_paths[key])) {
+	  			_paths.add([key, _tmp_paths[key]]);
+	  			_path[_tmp_paths[key]] = key;
+	  		}
+	  	}
 	  }
+
+	  if (_paths.length > 0){
+			_buttonColor = Colors.blue;
+		} else {
+			_buttonColor = Colors.grey;
+		}
 	});
   }
 
@@ -119,6 +126,7 @@ class _EncryptScreen extends State<EncryptScreen> {
 			  child: Align(
 				alignment: Alignment.bottomRight,
 				child: FloatingActionButton(
+					backgroundColor: _buttonColor,
 				  heroTag: "upload",
 				  onPressed: () {
 					_openEncryptLoadingScreen(context);
