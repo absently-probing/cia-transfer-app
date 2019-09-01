@@ -1,8 +1,11 @@
-import 'package:secure_upload/backend/storage/storage.dart' as storage;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'storage.dart';
 
-class MobileStorage extends storage.Storage {
+
+
+
+class MobileStorage extends Storage {
 
   FlutterSecureStorage _storage;
 
