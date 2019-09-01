@@ -113,7 +113,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
     _isolateEncrypt.kill(priority: Isolate.immediate);
 
     if (_uploadStarted){
-      _isolateUpload.kill();
+      _isolateUpload.kill(priority: Isolate.immediate);
     }
 
     _receiveEncrypt.close();
@@ -257,7 +257,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
       await client.authenticate(voidFunctions.openURL);
     }
 
-    var fileID = await client.createFile(base64.encode(Random.randomBytes(6)), targetFile);
+    var fileID = await client.createFile(Filecrypt.randomFilename(), targetFile);
   }
 
   Widget build(BuildContext context) {

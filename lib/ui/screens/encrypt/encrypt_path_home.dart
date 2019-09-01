@@ -16,10 +16,10 @@ class EncryptScreen extends StatefulWidget {
 class _EncryptScreen extends State<EncryptScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _stateKey = GlobalKey<FormState>();
-  Color _buttonColor = Colors.grey;
+  final Color _buttonColorUnusable = Colors.grey;
+  final Color _buttonColorUsable = Colors.blue;
+	Color _buttonColor = Colors.grey;
 
-  String _password;
-  String _url;
   List<List<String>> _paths = [];
   Map<String, String> _path = {};
 
@@ -44,9 +44,9 @@ class _EncryptScreen extends State<EncryptScreen> {
 	  }
 
 	  if (_paths.length > 0){
-			_buttonColor = Colors.blue;
+			_buttonColor = _buttonColorUsable;
 		} else {
-			_buttonColor = Colors.grey;
+			_buttonColor = _buttonColorUnusable;
 		}
 	});
   }
@@ -90,6 +90,12 @@ class _EncryptScreen extends State<EncryptScreen> {
 							setState(() {
 							  _path.remove(_paths[index][1]);
 							  _paths.removeAt(index);
+
+								if (_paths.length > 0){
+									_buttonColor = _buttonColorUsable;
+								} else {
+									_buttonColor = _buttonColorUnusable;
+								}
 							});
 						  },
 						  child: Card(
