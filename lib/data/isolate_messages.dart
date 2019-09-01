@@ -1,4 +1,7 @@
 import 'dart:isolate';
+import 'dart:collection';
+
+import 'package:googleapis/docs/v1.dart';
 
 class IsolateMessage<S,T> {
   final double progress;
@@ -33,11 +36,12 @@ class IsolateResponse<T> {
 class IsolateCommunication {
   ReceivePort _receive;
   final SendPort sendPort;
-  int _counter = 0;
+  Stream<dynamic> _stream;
 
   IsolateCommunication(this.sendPort){
     _receive = ReceivePort();
     sendPort.send(IsolateRequest(".", _receive.sendPort));
+    _stream = _receive.asBroadcastStream();
   }
 
   void send(IsolateRequest request){
@@ -45,9 +49,9 @@ class IsolateCommunication {
   }
 
   Future<IsolateResponse> receive() async {
-    IsolateResponse response = await _receive.elementAt(_counter);
-    _counter++;
-    return response;
+    await for (IsolateResponse response in _stream){
+      return response;
+    }
   }
 }
 
