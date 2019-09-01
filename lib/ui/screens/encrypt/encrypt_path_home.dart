@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/ui/screens/encrypt/encrypt_path_progress_bar.dart';
+import 'package:secure_upload/ui/screens/encrypt/encrypt_path_zip_progress.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -44,16 +44,18 @@ class _EncryptScreen extends State<EncryptScreen> {
   }
 
   void _openEncryptLoadingScreen(BuildContext context) async {
-	List<String> files = [];
-	for (String key in _path.keys){
-	  files.add(key);
-	}
+		List<String> files = [];
+		for (String key in _path.keys) {
+			files.add(key);
+		}
 
-	Navigator.push(
-		context,
-		MaterialPageRoute(
-			builder: (context) => EncryptProgress(files: files)));
-  }
+		if (files.length > 0) {
+			Navigator.push(
+					context,
+					MaterialPageRoute(
+							builder: (context) => ZipProgress(files: files)));
+		}
+	}
 
   @override
   Widget build(BuildContext context) {

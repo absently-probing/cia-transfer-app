@@ -9,8 +9,6 @@ import 'package:secure_upload/ui/screens/onboarding/walkthrough_screen.dart';
 import 'package:libsodium/libsodium.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'dart:io';
-
 class HomeScreen extends StatefulWidget {
   final double _iconPercentVisible = 0.5;
   final double _titlePercentVisible = 1.0;
