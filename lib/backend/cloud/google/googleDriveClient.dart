@@ -1,7 +1,8 @@
 import 'dart:core';
 import 'dart:io';
 
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart' as cloudClient;
+import '../cloudClient.dart' as cloudClient;
+import '../../storage/storage.dart';
 
 import "dart:async";
 import "dart:convert";
@@ -13,13 +14,13 @@ import "package:googleapis/drive/v3.dart" as drive;
 
 class GoogleDriveClient extends cloudClient.CloudClient {
   cloudClient.CloudProvider provider = cloudClient.CloudProvider.GoogleDrive;
-  cloudClient.Storage storage;
-  final CREDENTIALS_KEY = "credentials_google-drive";
+  Storage storage;
+  static const CREDENTIALS_KEY = "credentials_google-drive";
 
   var _id = new auth.ClientId("368297135935-n553e3fd9k3smbti9rp7uv95k235gjv8.apps.googleusercontent.com", "r3MI47zrje3SnwSUKW_J8LIm");
   var _scopes = ["https://www.googleapis.com/auth/drive.file"];
 
-  GoogleDriveClient(cloudClient.Storage storage) {
+  GoogleDriveClient(Storage storage) {
     this.storage = storage;
   }
 

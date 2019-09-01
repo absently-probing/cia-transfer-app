@@ -4,14 +4,15 @@ import 'package:secure_upload/data/constants.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/ui/custom/progress_indicator.dart';
 import 'package:secure_upload/ui/screens/encrypt/encrypt_path_final.dart';
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
-import 'package:secure_upload/backend/cloud/google/googleDriveClient.dart';
-import 'package:secure_upload/backend/cloud/google/mobileStorage.dart';
+import 'package:secure_upload/backend/cloud/cloudClient.dart';
+import 'package:secure_upload/backend/storage/mobileStorage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:secure_upload/backend/crypto/cryptapi/cryptapi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:isolate';
+
+import '../../../backend/cloud/cloudClient.dart' as prefix0;
 
 class IsolateEncryptInitMessage {
   final String file;
@@ -176,9 +177,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
   static void upload(IsolateUploadInitMessage message) async {
     File targetFile = File(message.file);
     WidgetsFlutterBinding.ensureInitialized();
-    Storage storage = MobileStorage();
+    MobileStorage storage = MobileStorage();
     //Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-    CloudClient client = GoogleDriveClient(storage);
+    CloudClient client = CloudClientFactory.create(CloudProvider.GoogleDrive, storage);
     if(!(await client.hasCredentials())) {
       await client.authenticate(utils.openURL);
     }
