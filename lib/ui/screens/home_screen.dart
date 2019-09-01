@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (!_libsodium) {
       return AlertDialog(
-        content: Text("Libsodium is not supported"),
+        content: Text("Sorry your Device is not supported yet."),
         actions: [
           FlatButton(
             child: Text("close"),
