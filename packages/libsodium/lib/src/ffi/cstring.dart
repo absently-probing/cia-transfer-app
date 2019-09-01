@@ -12,7 +12,6 @@ class CString {
 	factory CString(String dartStr){
 		List<int> units = Utf8Encoder().convert(dartStr);
 		Int8CArray str = Int8CArray(units.length + 1);
-		print("${units.length}");
 		for (int i = 0; i < units.length; ++i) {
 			str[i] = units[i];
 		}

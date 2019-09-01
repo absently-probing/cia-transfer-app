@@ -11,4 +11,12 @@ class Ctypes {
   static int sizeofInt(){
     return bindings.get_size_of_int();
   }
+
+  static int sizeofUnsignedChar(){
+    return bindings.get_size_of_unsigned_char();
+  }
+
+  static int sizeofUnsignedLongLong(){
+    return bindings.get_size_of_unsigned_long_long();
+  }
 }

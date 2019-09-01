@@ -89,7 +89,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
   void start() async {
     ReceivePort listenPort= ReceivePort(); //port for this main isolate to receive messages.
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    _isolate = await Isolate.spawn(runTimer, IsolateMessage(files, listenPort.sendPort, appDocDir));
+    _isolate = await Isolate.spawn(encryptAndUpload, IsolateMessage(files, listenPort.sendPort, appDocDir));
     listenPort.listen((data) {
 
       _updateProgress(data);
@@ -120,11 +120,16 @@ class _EncryptProgressState extends State<EncryptProgress> {
   }
 
   // TODO start encryption and upload
-  static void runTimer(IsolateMessage message) async {
+  static void encryptAndUpload(IsolateMessage message) async {
     Storage storage = MobileStorage();
     //Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
     CloudClient client = GoogleDriveClient(storage);
     //await client.authenticate(utils.openURL);
+
+    // check if libsodium is supported for platform
+    if (!Libsodium.supported()){
+      throw FormatException("Libsodium not supported");
+    }
 
     // start encryption
     File sourceFile = null;
@@ -132,13 +137,13 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
     if (message.files.length > 1){
       var encoder = ZipFileEncoder();
-      encoder.create(Consts.encryptZipFile);
+      encoder.open(message.appDir.path + "/" + Consts.encryptZipFile);
       for (String file in message.files){
         encoder.addFile(File(file));
       }
 
       encoder.close();
-      sourceFile = File(Consts.encryptZipFile);
+      sourceFile = File(message.appDir.path + "/" + Consts.encryptZipFile);
     } else {
       sourceFile = File(message.files[0]);
     }
@@ -148,6 +153,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
     Filecrypt encFile = Filecrypt();
     encFile.init(sourceFile, CryptoMode.enc);
     bool success = encFile.writeIntoFile(targetFile, callback: progress.progress);
+    print("Success? ${success}");
   }
 
   Widget build(BuildContext context) {
