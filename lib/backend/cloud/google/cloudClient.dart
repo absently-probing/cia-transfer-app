@@ -6,6 +6,14 @@ enum CloudProvider {
   OneDrive
 }
 
+String providerToString(CloudProvider provider) {
+  switch(provider) {
+    case CloudProvider.GoogleDrive: return "Google Drive";
+    case CloudProvider.DropBox: return "Dropbox";
+    case CloudProvider.OneDrive: return "OneDrive";
+  }
+}
+
 abstract class Storage {
   Future<String> get(String key);
   void set(String key, String value);
