@@ -1,6 +1,7 @@
 import 'dart:io';
 import '../storage/storage.dart';
 import 'google/googleDriveClient.dart';
+import 'dropbox/dropboxClient.dart';
 
 enum CloudProvider {
   GoogleDrive,
@@ -36,14 +37,16 @@ abstract class CloudClient {
 
   Future<bool> hasCredentials();
 
+  Future<String> getURL(String fileID);
+
 }
 
 class CloudClientFactory {
   static CloudClient create(CloudProvider provider, Storage storage) {
     switch(provider) {
-      /*case CloudProvider.GoogleDrive: new GoogleDriveClient(storage); break;
-      case CloudProvider.DropBox : new DropboxClient(storage); break;
-      case CloudProvider.OneDrive: new OneDriveClient(storage); break;*/
+      case CloudProvider.GoogleDrive: return GoogleDriveClient(storage);
+      case CloudProvider.DropBox : return DropboxClient(storage);
+      //case CloudProvider.OneDrive: return OneDriveClient(storage);
       default: return GoogleDriveClient(storage);
     }
   }

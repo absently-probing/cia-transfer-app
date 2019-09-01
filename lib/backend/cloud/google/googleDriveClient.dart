@@ -77,15 +77,13 @@ class GoogleDriveClient extends cloudClient.CloudClient {
   @override
   Future<bool> hasCredentials() async {
     var encoded = await storage.get(CREDENTIALS_KEY);
-    if(encoded == null) {
-      return false;
+    if(encoded != null) {
+      try {
+        var _ = _unserializeAccessCredentials(encoded);
+        return true;
+      } catch (e) {}
     }
-    try {
-      var credentials = _unserializeAccessCredentials(encoded);
-    } catch(e) {
-      return false;
-    }
-    return true;
+    return false;
   }
 
   // ***
@@ -138,6 +136,15 @@ class GoogleDriveClient extends cloudClient.CloudClient {
     var permissions = await _getAccessibilityPermissions(fileID);
 
     return permissions.length > 0;
+  }
+  
+  @override
+  Future<String> getURL(String fileID) async {
+    var client = await _getAuthorizedClient();
+    var api = drive.DriveApi(client);
+    var url = await api.files.get(fileID, $fields: "webContentLink");
+    client.close();
+    return url;
   }
 
   Future<List<drive.Permission>> _getAccessibilityPermissions(String fileID) async {
