@@ -55,6 +55,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  #Additional Package for flutter_launcher_icons. To Use: Set the path to your App Icon image and run
+  #flutter pub pub run flutter_launcher_icons:main
+flutter_icons:
+  android: "app_icon"
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  adaptive_icon_background: "#667C89"
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
