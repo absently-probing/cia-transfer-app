@@ -39,7 +39,7 @@ class GoogleDriveClient extends cloudClient.CloudClient {
       return fileID;
   }
 
-  void setAccessibility(String fileID, bool accessible) async {
+  Future<void> setAccessibility(String fileID, bool accessible) async {
     var client = await _getAuthorizedClient();
     var api = drive.DriveApi(client);
     var permission = drive.Permission();
@@ -142,9 +142,10 @@ class GoogleDriveClient extends cloudClient.CloudClient {
   Future<String> getURL(String fileID) async {
     var client = await _getAuthorizedClient();
     var api = drive.DriveApi(client);
-    var url = await api.files.get(fileID, $fields: "webContentLink");
+    drive.File file = await api.files.get(fileID, $fields: "webContentLink");
     client.close();
-    return url;
+
+    return file.webContentLink;
   }
 
   Future<List<drive.Permission>> _getAccessibilityPermissions(String fileID) async {
