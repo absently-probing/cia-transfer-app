@@ -190,7 +190,7 @@ class _DecryptScreen extends State<DecryptScreen> {
         key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
-          title: Text(Strings.appTitle),
+          title: Text(Strings.Receive),
           actions: [
             IconButton(
               icon: Icon(CustomIcons.qrcode_scanner),
