@@ -21,6 +21,22 @@ class IsolateEncryptInitMessage {
   IsolateEncryptInitMessage(this.file, this.sendPort, this.appDir);
 }
 
+class IsolateEncryptMessage {
+  final double progress;
+  final List<int> key;
+  final bool finished;
+  final bool error;
+
+  IsolateEncryptMessage(this.progress, this.key, this.finished, this.error);
+}
+
+class IsolateUploadInitMessage {
+  final String file;
+  final SendPort sendPort;
+
+  IsolateUploadInitMessage(this.file, this.sendPort);
+}
+
 class ProgressOject {
   final SendPort sendPort;
   double _start;
@@ -53,7 +69,7 @@ class ProgressOject {
       progress = 0.99;
     }
 
-    sendPort.send(progress);
+    sendPort.send(IsolateEncryptMessage(progress, null, false, false));
   }
 }
 
@@ -72,6 +88,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
   Isolate _isolate;
   double _progress = 0.0;
   String _progressString = "0%";
+  bool _encryptError = false;
 
   _EncryptProgressState({this.file}) {
     startEncryptAndUpload();
@@ -85,18 +102,29 @@ class _EncryptProgressState extends State<EncryptProgress> {
   void startEncryptAndUpload() async {
     ReceivePort listenPort = ReceivePort(); //port for this main isolate to receive messages.
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    _isolate = await Isolate.spawn(encryptAndUpload, IsolateEncryptInitMessage(file, listenPort.sendPort, appDocDir));
+    _isolate = await Isolate.spawn(encrypt, IsolateEncryptInitMessage(file, listenPort.sendPort, appDocDir));
     listenPort.listen((data) {
 
-      _updateProgress(data);
+      IsolateEncryptMessage message = data;
 
-      if (_progress == 1.0){
-        _isolate.kill();
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => FinalEncrypt(
-                    "dropbox.com/asdjio1231", "password1111117890123890127301270371203790127390127903120937890")));
+      if (message.error){
+        // handle error
+        _encryptError = true;
+      }
+
+      if (!_encryptError) {
+        _updateProgress(message.progress);
+
+        if (message.finished) {
+          _isolate.kill();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      FinalEncrypt(
+                          "dropbox.com/asdjio1231",
+                          message.key.toString())));
+        }
       }
     });
   }
@@ -115,34 +143,49 @@ class _EncryptProgressState extends State<EncryptProgress> {
     });
   }
 
-  // TODO start encryption and upload
-  static void encryptAndUpload(IsolateEncryptInitMessage message) async {
-    // check if libsodium is supported for platform
-    if (!Libsodium.supported()){
-      throw FormatException("Libsodium not supported");
-    }
+  static void encrypt(IsolateEncryptInitMessage message) async {
+    try {
+      // check if libsodium is supported for platform
+      if (!Libsodium.supported()) {
+        throw FormatException("Libsodium not supported");
+      }
 
-    // start encryption
-    File sourceFile = File(message.file);
-    File targetFile =  File(message.appDir.path + "/" + Consts.encryptTargetFile);
+      // start encryption
+      File sourceFile = File(message.file);
+      File targetFile = File(
+          message.appDir.path + "/" + Consts.encryptTargetFile);
 
-    ProgressOject progress = ProgressOject(message.sendPort, 0.0, 0.5);
-    Filecrypt encFile = Filecrypt();
-    encFile.init(sourceFile, CryptoMode.enc);
-    bool success = encFile.writeIntoFile(targetFile, callback: progress.progress);
-    if (success){
-      WidgetsFlutterBinding.ensureInitialized();
-      Storage storage = MobileStorage();
-      //Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-      CloudClient client = GoogleDriveClient(storage);
-      //await client.authenticate(utils.openURL);
-      var fileID = await client.createFile("myupload", targetFile);
+      ProgressOject progress = ProgressOject(message.sendPort, 0.0, 0.5);
+      Filecrypt encFile = Filecrypt();
+      encFile.init(sourceFile, CryptoMode.enc);
+      bool success = encFile.writeIntoFile(
+          targetFile, callback: progress.progress);
+      if (!success) {
+        message.sendPort.send(IsolateEncryptMessage(0.0, null, true, true));
+      } else {
+        message.sendPort.send(
+            IsolateEncryptMessage(0.0, encFile.getKey(), true, false));
+      }
+    } catch (e){
+      print(e.toString());
+      message.sendPort.send(IsolateEncryptMessage(0.0, null, true, true));
     }
+  }
+
+  // TODO implement upload
+  static void upload(IsolateUploadInitMessage message) async {
+    File targetFile = File(message.file);
+    WidgetsFlutterBinding.ensureInitialized();
+    Storage storage = MobileStorage();
+    //Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    CloudClient client = GoogleDriveClient(storage);
+    //await client.authenticate(utils.openURL);
+    var fileID = await client.createFile("myupload", targetFile);
   }
 
   Widget build(BuildContext context) {
     return WillPopScope(
-        //onWillPop: () async => false,
+        onWillPop: () async => false,
         child: Container(
           color: Theme.of(context).primaryColor,
           child: CircularPercentIndicator(
