@@ -71,7 +71,7 @@ class _ZipProgressState extends State<ZipProgress> {
 
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false,
+      //onWillPop: () async => false,
       child: Container(
         color: Theme.of(context).primaryColor,
         child: Center(

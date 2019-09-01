@@ -178,14 +178,25 @@ class _EncryptProgressState extends State<EncryptProgress> {
     }
   }
 
-  void _communicateUpload(data){
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                FinalEncrypt(
-                    "dropbox.com/asdjio1231",
-                    _key)));
+  void _communicateUpload(IsolateMessage<String, String> message){
+    if (message.error){
+      _uploadError = true;
+    }
+
+    if (!_uploadError){
+      _updateProgress(message.progress);
+
+      if (message.finished){
+        _isolateUpload.kill();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    FinalEncrypt(
+                        "dropbox.com/asdjio1231",
+                        _key)));
+      }
+    }
   }
 
   void _updateProgress(double progress){
@@ -237,18 +248,21 @@ class _EncryptProgressState extends State<EncryptProgress> {
     IsolateCommunication comm = IsolateCommunication(message.data.send);
     Storage storage = IsolateStorage(comm);
     IsolateVoidFunctions voidFunctions = IsolateVoidFunctions(comm);
+    // TODO remove it
+    // TODO create ProcessObject for updating CircleProcessbar
+    message.sendPort.send(IsolateMessage<String, String>(1.0, true, false, null, null));
     //Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
     prefix0.CloudClient client = prefix0.CloudClientFactory.create(prefix0.CloudProvider.GoogleDrive, storage);
     if(!(await client.hasCredentials())) {
       await client.authenticate(voidFunctions.openURL);
     }
 
-    var fileID = await client.createFile("myupload", targetFile);
+    var fileID = await client.createFile(base64.encode(Random.randomBytes(6)), targetFile);
   }
 
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async => false,
+        //onWillPop: () async => false,
         child: Container(
           color: Theme.of(context).primaryColor,
           child: CircularPercentIndicator(
