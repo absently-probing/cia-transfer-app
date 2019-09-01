@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_libsodium){
+    if (!_libsodium) {
       return AlertDialog(
         content: Text("Libsodium is not supported"),
         actions: [
@@ -86,102 +86,95 @@ class _HomeScreenState extends State<HomeScreen> {
           MainContextMenu(_menuAction),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Opacity(
-                  opacity: _iconPercentVisible,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10.0, bottom: 0.0, left: 0),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          child: Icon(
-                            Icons.cloud_queue,
-                            size: globals.cloudIcon(context),
-                            color: Colors.white,
-                          ),
-                        ),
-                        Container(
-                          child: Icon(
-                            Icons.lock_outline,
-                            size: globals.lockIcon(context),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ]),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Opacity(
-                  opacity: _titlePercentVisible,
-                  child: Padding(
-                      padding:
-                          EdgeInsets.only(top: 10.0, bottom: 15.0, right: 0),
-                      child: Text(
-                        Strings.appTitle,
-                        softWrap: true,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          decoration: TextDecoration.none,
-                          fontFamily: Strings.titleTextFont,
-                          fontWeight: FontWeight.w700,
-                          fontSize: globals.logoFontSize,
-                        ),
-                      )),
-                ),
-              ]),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Opacity(
-                opacity: _titlePercentVisible,
+                opacity: _iconPercentVisible,
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      top: 15.0, bottom: 10.0, left: 20.00, right: 20.00),
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: SizedBox(
-                            width: globals.rootButtonWidth(context),
-                            height: globals.rootButtonHeight(context),
-
-                            //Adding Correct Button depending on Prefs-Setting
-                            child: RaisedButton(
-                              onPressed: () {
-                                _encryptButtonAction(context);
-                              },
-                              child: const Text(Strings.homeScreenEncryptLabel,
-                                  style: TextStyle(fontSize: 20)),
-                            ),
-                          ),
+                  padding: EdgeInsets.only(top: 10.0, bottom: 0.0, left: 0),
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        child: Icon(
+                          Icons.cloud_queue,
+                          size: globals.cloudIcon(context),
+                          color: Colors.white,
                         ),
-                        Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: SizedBox(
-                            width: globals.rootButtonWidth(context),
-                            height: globals.rootButtonHeight(context),
-                            child: RaisedButton(
-                              onPressed: () {
-                                _decryptButtonAction(context);
-                              },
-                              child: const Text(Strings.homeScreenDecryptLabel,
-                                  style: TextStyle(fontSize: 20)),
-                            ),
-                          ),
+                      ),
+                      Container(
+                        child: Icon(
+                          Icons.lock_outline,
+                          size: globals.lockIcon(context),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ]),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Opacity(
+                opacity: _titlePercentVisible,
+                child: Padding(
+                    padding: EdgeInsets.only(top: 10.0, bottom: 15.0, right: 0),
+                    child: Text(
+                      Strings.appTitle,
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        decoration: TextDecoration.none,
+                        fontFamily: Strings.titleTextFont,
+                        fontWeight: FontWeight.w700,
+                        fontSize: globals.logoFontSize,
+                      ),
+                    )),
+              ),
+            ]),
+            Opacity(
+              opacity: _titlePercentVisible,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    top: 15.0, bottom: 10.0, left: 20.00, right: 20.00),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: SizedBox(
+                        width: globals.rootButtonWidth(context),
+                        height: globals.rootButtonHeight(context),
+
+                        //Adding Correct Button depending on Prefs-Setting
+                        child: RaisedButton(
+                          onPressed: () {
+                            _encryptButtonAction(context);
+                          },
+                          child: const Text(Strings.homeScreenEncryptLabel,
+                              style: TextStyle(fontSize: 20)),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: SizedBox(
+                        width: globals.rootButtonWidth(context),
+                        height: globals.rootButtonHeight(context),
+                        child: RaisedButton(
+                          onPressed: () {
+                            _decryptButtonAction(context);
+                          },
+                          child: const Text(Strings.homeScreenDecryptLabel,
+                              style: TextStyle(fontSize: 20)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

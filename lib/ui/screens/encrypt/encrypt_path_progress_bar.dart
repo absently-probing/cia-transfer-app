@@ -179,7 +179,10 @@ class _EncryptProgressState extends State<EncryptProgress> {
     Storage storage = MobileStorage();
     //Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
     CloudClient client = GoogleDriveClient(storage);
-    //await client.authenticate(utils.openURL);
+    if(!(await client.hasCredentials())) {
+      await client.authenticate(utils.openURL);
+    }
+
     var fileID = await client.createFile("myupload", targetFile);
   }
 

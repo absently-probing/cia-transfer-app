@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'googleDriveClient.dart';
 
 enum CloudProvider {
   GoogleDrive,
@@ -37,4 +38,17 @@ abstract class CloudClient {
 
   void setAccessibility(String fileID, bool accessible);
 
+  Future<bool> hasCredentials();
+
+}
+
+class CloudClientFactory {
+  static CloudClient create(CloudProvider provider, Storage storage) {
+    switch(provider) {
+      /*case CloudProvider.GoogleDrive: new GoogleDriveClient(storage); break;
+      case CloudProvider.DropBox : new DropboxClient(storage); break;
+      case CloudProvider.OneDrive: new OneDriveClient(storage); break;*/
+      default: return GoogleDriveClient(storage);
+    }
+  }
 }
