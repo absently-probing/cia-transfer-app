@@ -1,7 +1,8 @@
 import 'dart:core';
 import 'dart:io';
 
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart' as cloudClient;
+import '../cloudClient.dart' as cloudClient;
+import '../../storage/storage.dart';
 
 import "dart:async";
 import "dart:convert";
@@ -13,13 +14,13 @@ import "package:googleapis/drive/v3.dart" as drive;
 
 class GoogleDriveClient extends cloudClient.CloudClient {
   cloudClient.CloudProvider provider = cloudClient.CloudProvider.GoogleDrive;
-  cloudClient.Storage storage;
-  final CREDENTIALS_KEY = "credentials_google-drive";
+  Storage storage;
+  static const CREDENTIALS_KEY = "credentials_google-drive";
 
   var _id = new auth.ClientId("368297135935-n553e3fd9k3smbti9rp7uv95k235gjv8.apps.googleusercontent.com", "r3MI47zrje3SnwSUKW_J8LIm");
   var _scopes = ["https://www.googleapis.com/auth/drive.file"];
 
-  GoogleDriveClient(cloudClient.Storage storage) {
+  GoogleDriveClient(Storage storage) {
     this.storage = storage;
   }
 
@@ -38,7 +39,7 @@ class GoogleDriveClient extends cloudClient.CloudClient {
       return fileID;
   }
 
-  void setAccessibility(String fileID, bool accessible) async {
+  Future<void> setAccessibility(String fileID, bool accessible) async {
     var client = await _getAuthorizedClient();
     var api = drive.DriveApi(client);
     var permission = drive.Permission();
@@ -76,15 +77,13 @@ class GoogleDriveClient extends cloudClient.CloudClient {
   @override
   Future<bool> hasCredentials() async {
     var encoded = await storage.get(CREDENTIALS_KEY);
-    if(encoded == null) {
-      return false;
+    if(encoded != null) {
+      try {
+        var _ = _unserializeAccessCredentials(encoded);
+        return true;
+      } catch (e) {}
     }
-    try {
-      var credentials = _unserializeAccessCredentials(encoded);
-    } catch(e) {
-      return false;
-    }
-    return true;
+    return false;
   }
 
   // ***
@@ -137,6 +136,16 @@ class GoogleDriveClient extends cloudClient.CloudClient {
     var permissions = await _getAccessibilityPermissions(fileID);
 
     return permissions.length > 0;
+  }
+  
+  @override
+  Future<String> getURL(String fileID) async {
+    var client = await _getAuthorizedClient();
+    var api = drive.DriveApi(client);
+    drive.File file = await api.files.get(fileID, $fields: "webContentLink");
+    client.close();
+
+    return file.webContentLink;
   }
 
   Future<List<drive.Permission>> _getAccessibilityPermissions(String fileID) async {

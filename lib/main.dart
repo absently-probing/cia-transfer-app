@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
+import 'package:secure_upload/backend/cloud/cloudClient.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:secure_upload/ui/screens/onboarding/walkthrough_screen.dart';

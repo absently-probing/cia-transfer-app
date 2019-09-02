@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
-import 'package:secure_upload/backend/cloud/google/mobileStorage.dart';
+import 'package:secure_upload/backend/cloud/cloudClient.dart';
+import 'package:secure_upload/backend/storage/mobileStorage.dart';
 import 'package:secure_upload/main.dart';
 import 'package:secure_upload/ui/screens/encrypt/encrypt_path_cloud_credentials.dart';
 import 'package:secure_upload/data/strings.dart';
-import 'package:secure_upload/ui/screens/encrypt/encrypt_path_progress_bar.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
+import 'package:secure_upload/ui/screens/encrypt/encrypt_path_zip_progress.dart';
 
 class EncryptCloud extends StatefulWidget {
   final List<String> files;
@@ -22,7 +22,7 @@ class _EncryptCloudState extends State<EncryptCloud> {
 
   void _cloudProviderTapAction(
       BuildContext context, CloudProvider cloudProvider) async {
-    Storage storage = MobileStorage();
+    MobileStorage storage = MobileStorage();
 
     // TODO: is this needed?
     // Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
@@ -34,7 +34,7 @@ class _EncryptCloudState extends State<EncryptCloud> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  EncryptProgress(files: files, cloudClient: client)));
+                  ZipProgress(files: files, cloudProvider: cloudProvider)));
       await client.authenticate(utils.openURL);
     } else {
       Navigator.push(

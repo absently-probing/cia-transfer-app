@@ -1,8 +1,11 @@
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart' as cloudClient;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'storage.dart';
 
-class MobileStorage extends cloudClient.Storage {
+
+
+
+class MobileStorage extends Storage {
 
   FlutterSecureStorage _storage;
 

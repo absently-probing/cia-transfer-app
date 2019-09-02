@@ -1,17 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:secure_upload/ui/custom/menus.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/ui/screens/decrypt/decrypt_path_home.dart';
 import 'package:secure_upload/ui/screens/encrypt/encrypt_path_home.dart';
 import 'package:secure_upload/ui/screens/onboarding/walkthrough_screen.dart';
+import 'package:libsodium/libsodium.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final double _iconPercentVisible = 1.0;
   final double _titlePercentVisible = 1.0;
 
   HomeScreen();
+
+  @override
+  State<StatefulWidget> createState() =>
+      _HomeScreenState(_iconPercentVisible, _titlePercentVisible);
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final double _iconPercentVisible;
+  final double _titlePercentVisible;
+  bool _libsodium;
+
+  _HomeScreenState(this._iconPercentVisible, this._titlePercentVisible);
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLibsodium();
+  }
+
+  Future<void> _checkLibsodium() async {
+    _libsodium = Libsodium.supported();
+  }
 
   void _menuAction(String input, BuildContext context) {
     if (input == Strings.mainContextMenuOnboarding) {
@@ -38,6 +62,20 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!_libsodium) {
+      return AlertDialog(
+        content: Text("Sorry your Device is not supported yet."),
+        actions: [
+          FlatButton(
+            child: Text("close"),
+            onPressed: () async {
+              await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+            },
+          )
+        ],
+      );
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       resizeToAvoidBottomPadding: false,
@@ -119,8 +157,11 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () {
                             _encryptButtonAction(context);
                           },
-                          icon: Icon(Icons.cloud_upload,),
-                          label: Text(Strings.homeScreenEncryptLabel.toUpperCase(),
+                          icon: Icon(
+                            Icons.cloud_upload,
+                          ),
+                          label: Text(
+                              Strings.homeScreenEncryptLabel.toUpperCase(),
                               style: TextStyle(fontSize: 20)),
                         ),
                       ),
@@ -140,7 +181,8 @@ class HomeScreen extends StatelessWidget {
                             _decryptButtonAction(context);
                           },
                           icon: Icon(Icons.cloud_download),
-                          label: Text(Strings.homeScreenDecryptLabel.toUpperCase(),
+                          label: Text(
+                              Strings.homeScreenDecryptLabel.toUpperCase(),
                               style: TextStyle(fontSize: 20)),
                         ),
                       ),

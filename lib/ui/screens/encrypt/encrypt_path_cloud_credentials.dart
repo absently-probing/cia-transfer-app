@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
+import 'package:secure_upload/backend/cloud/cloudClient.dart';
 import 'package:secure_upload/ui/screens/encrypt/encrypt_path_progress_bar.dart';
 import 'package:secure_upload/data/strings.dart';
+import 'package:secure_upload/ui/screens/encrypt/encrypt_path_zip_progress.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
 
@@ -26,8 +27,8 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => EncryptProgress(
-                files: files, cloudClient: cloudClient)));
+            builder: (context) =>
+                ZipProgress(files: files, cloudProvider: cloudClient.provider)));
   }
 
   @override
