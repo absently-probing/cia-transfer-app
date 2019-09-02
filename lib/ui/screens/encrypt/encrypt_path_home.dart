@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/ui/screens/encrypt/encrypt_path_progress_bar.dart';
+import 'package:secure_upload/ui/screens/encrypt/encrypt_path_cloud_selection.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -56,19 +56,10 @@ class _EncryptScreen extends State<EncryptScreen> {
 	  files.add(key);
 	}
 
-	Storage storage = MobileStorage();
-	Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-	CloudClient client = CloudClientFactory.create(CloudProvider.GoogleDrive, storage);
-	if(!(await client.hasCredentials())) {
-		await client.authenticate(utils.openURL);
-	}
-	var localFile = File("/storage/emulated/0/Download/flower.jpg");
-	var fileID = await client.createFile("myupload", localFile);
-
 	Navigator.push(
 		context,
 		MaterialPageRoute(
-			builder: (context) => EncryptProgress(files: files)));
+			builder: (context) => EncryptCloud(files: files)));
   }
 
   @override

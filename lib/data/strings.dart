@@ -23,6 +23,7 @@ class Strings {
   static const String encryptShareUrl = 'Share URL only';
   static const String encryptSharePassword = 'Share Password only';
   static const String encryptShareBoth = 'Share both';
+  static const String encryptSelectCloudProvider = 'Please select a cloud storage!';
 
   static const String decryptUrlTextField = 'URL';
   static const String decryptPasswordTextField = 'Password';

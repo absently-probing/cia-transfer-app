@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:secure_upload/ui/custom/progress_indicator.dart';
 import 'package:secure_upload/ui/screens/encrypt/encrypt_path_final.dart';
@@ -8,22 +9,33 @@ import 'dart:async';
 
 class EncryptProgress extends StatefulWidget {
   final List<String> files;
+  final CloudClient cloudClient;
 
-  EncryptProgress({@required this.files});
+  EncryptProgress({@required this.files, @required this.cloudClient});
 
   _EncryptProgressState createState() =>
-      _EncryptProgressState(files: files);
+      _EncryptProgressState(files: files, cloudClient: cloudClient);
 }
 
 class _EncryptProgressState extends State<EncryptProgress> {
   final List<String> files;
+  final CloudClient cloudClient;
 
   Isolate _isolate;
   double _progress = 0.0;
   String _progressString = "0%";
 
-  _EncryptProgressState({this.files}) {
+  _EncryptProgressState({this.files, this.cloudClient}) {
     start();
+    // TODO: real encryption here or in start()
+    /*
+
+    // TODO: is this needed?
+    // Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+
+    var localFile = File("/storage/emulated/0/Download/flower.jpg");
+    var fileID = await client.createFile("myupload", localFile);
+     */
   }
 
   void dispose(){
