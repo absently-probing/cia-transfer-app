@@ -2,6 +2,6 @@
 
 <resources>
 
-    <color name="bluegrey">#667C89</color>
+    <color name="splash_screen_background">#07ACC0</color>
 
 </resources>
