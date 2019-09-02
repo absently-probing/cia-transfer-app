@@ -3,7 +3,6 @@ import 'package:secure_upload/backend/cloud/google/cloudClient.dart';
 import 'package:secure_upload/ui/screens/encrypt/encrypt_path_progress_bar.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/data/utils.dart' as utils;
 
 class EncryptCloudCredentials extends StatefulWidget {
@@ -36,7 +35,7 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(Strings.appTitle),
+        title: Text(Strings.encryptCloudCredentials),
       ),
       body: Container(
         child: Center(
