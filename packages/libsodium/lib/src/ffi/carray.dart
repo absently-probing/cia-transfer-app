@@ -2,20 +2,26 @@ import 'dart:collection';
 
 import 'dart:ffi';
 
+import 'dart:typed_data';
+
 
 abstract class CArray<NT extends NativeType, DT extends num>
 	extends IterableBase<DT> {
   final Pointer<NT> ptr;
+  TypedData data;
   final int length;
   bool freed = false;
 
   CArray(this.length)
 	  : assert(length >= 0),
-		ptr = Pointer<NT>.allocate(count: length);
+		ptr = Pointer<NT>.allocate(count: length){
+    data = ptr.asExternalTypedData(count: length);
+  }
 
   CArray.from(Iterable<DT> bytes)
 	  : length = bytes.length,
 		ptr = Pointer.allocate(count: bytes.length) {
+    data = ptr.asExternalTypedData();
 	final it = bytes.iterator;
 	int index = 0;
 	while (it.moveNext()) {
@@ -24,13 +30,17 @@ abstract class CArray<NT extends NativeType, DT extends num>
 	}
   }
 
-  CArray.fromPointer(this.ptr, this.length);
+  CArray.fromPointer(this.ptr, this.length){
+    data = ptr.asExternalTypedData();
+  }
 
+  /*
   List<DT> get bytes => List<DT>.unmodifiable(() sync* {
 		for (int i = 0; i < length; i++) {
 		  yield this[i];
 		}
-	  }());
+	  }());*/
+  ByteBuffer get bytes => data.buffer;
 
   @override
   Iterator<DT> get iterator => CArrayIterator<NT, DT>(this);
@@ -50,6 +60,7 @@ abstract class CArray<NT extends NativeType, DT extends num>
   @override
   String toString() => '$bytes';
 }
+
 
 class CArrayIterator<NT extends NativeType, DT extends num>
 	extends Iterator<DT> {
@@ -80,7 +91,7 @@ abstract class _IntCArray<NT extends NativeType> extends CArray<NT, int> {
 	  : super.fromPointer(ptr, length);
 
   @override
-  String toString() => _IntCArray.HexString(bytes);
+  String toString() => _IntCArray.HexString(bytes.asUint8List());
 
   static String HexString(List<int> bytes) {
     String hexstr = "0123456789abcdef";
@@ -97,27 +108,39 @@ abstract class _IntCArray<NT extends NativeType> extends CArray<NT, int> {
 }
 
 class Uint8CArray extends _IntCArray<Uint8> {
-  Uint8CArray(int length) : super(length);
+  Uint8List _list;
 
-  Uint8CArray.from(Iterable<int> bytes) : super.from(bytes);
+  Uint8CArray(int length) : super(length){
+    _list = data.buffer.asUint8List();
+  }
+
+  Uint8CArray.from(Iterable<int> bytes) : super.from(bytes){
+    _list = data.buffer.asUint8List();
+  }
 
   Uint8CArray.fromPointer(Pointer<Uint8> ptr, int length)
-	  : super.fromPointer(ptr, length);
+	  : super.fromPointer(ptr, length){
+    _list = data.buffer.asUint8List();
+  }
+
 
   @override
   int operator [](int index) {
-	return ptr.elementAt(index).load<int>();
+	  //return ptr.elementAt(index).load<int>();
+    return _list[index];
   }
 
   @override
   void operator []=(int index, int value) {
-	return ptr.elementAt(index).store(value);
+    //ptr.elementAt(index).store(value);
+    _list[index] = value;
   }
 
   zfree(){
     if (!freed) {
       for (int i = 0; i < this.length; i++){
-        ptr.elementAt(i).store(0);
+        //ptr.elementAt(i).store(0);
+        _list[i] = 0;
       }
       ptr.free();
     }
@@ -127,27 +150,38 @@ class Uint8CArray extends _IntCArray<Uint8> {
 }
 
 class Uint16CArray extends _IntCArray<Uint16> {
-  Uint16CArray(int length) : super(length);
+  Uint16List _list;
 
-  Uint16CArray.from(Iterable<int> bytes) : super.from(bytes);
+  Uint16CArray(int length) : super(length){
+    _list = data.buffer.asUint16List();
+  }
+
+  Uint16CArray.from(Iterable<int> bytes) : super.from(bytes){
+    _list = data.buffer.asUint16List();
+  }
 
   Uint16CArray.fromPointer(Pointer<Uint16> ptr, int length)
-	  : super.fromPointer(ptr, length);
+	  : super.fromPointer(ptr, length){
+    _list = data.buffer.asUint16List();
+  }
 
   @override
   int operator [](int index) {
-	return ptr.elementAt(index).load<int>();
+	  //return ptr.elementAt(index).load<int>();
+    return _list[index];
   }
 
   @override
   void operator []=(int index, int value) {
-	return ptr.elementAt(index).store(value);
+	  //return ptr.elementAt(index).store(value);
+    _list[index] = value;
   }
 
   zfree(){
     if (!freed) {
       for (int i = 0; i < this.length; i++){
-        ptr.elementAt(i).store(0);
+        //ptr.elementAt(i).store(0);
+        _list[i] = 0;
       }
       ptr.free();
     }
@@ -157,27 +191,37 @@ class Uint16CArray extends _IntCArray<Uint16> {
 }
 
 class Uint32CArray extends _IntCArray<Uint32> {
-  Uint32CArray(int length) : super(length);
+  Uint32List _list;
+  Uint32CArray(int length) : super(length){
+    _list = data.buffer.asUint32List();
+  }
 
-  Uint32CArray.from(Iterable<int> bytes) : super.from(bytes);
+  Uint32CArray.from(Iterable<int> bytes) : super.from(bytes){
+    _list = data.buffer.asUint32List();
+  }
 
   Uint32CArray.fromPointer(Pointer<Uint32> ptr, int length)
-	  : super.fromPointer(ptr, length);
+	  : super.fromPointer(ptr, length){
+    _list = data.buffer.asUint32List();
+  }
 
   @override
   int operator [](int index) {
-	return ptr.elementAt(index).load<int>();
+	  //return ptr.elementAt(index).load<int>();
+    return _list[index];
   }
 
   @override
   void operator []=(int index, int value) {
-	return ptr.elementAt(index).store(value);
+	  //return ptr.elementAt(index).store(value);
+    _list[index] = value;
   }
 
   zfree(){
     if (!freed) {
       for (int i = 0; i < this.length; i++){
-        ptr.elementAt(i).store(0);
+        //ptr.elementAt(i).store(0);
+        _list[i] = 0;
       }
       ptr.free();
     }
@@ -187,27 +231,38 @@ class Uint32CArray extends _IntCArray<Uint32> {
 }
 
 class Uint64CArray extends _IntCArray<Uint64> {
-  Uint64CArray(int length) : super(length);
+  Uint64List _list;
 
-  Uint64CArray.from(Iterable<int> bytes) : super.from(bytes);
+  Uint64CArray(int length) : super(length){
+    _list = data.buffer.asUint64List();
+  }
+
+  Uint64CArray.from(Iterable<int> bytes) : super.from(bytes){
+    _list = data.buffer.asUint64List();
+  }
 
   Uint64CArray.fromPointer(Pointer<Uint64> ptr, int length)
-	  : super.fromPointer(ptr, length);
+	  : super.fromPointer(ptr, length){
+    _list = data.buffer.asUint64List();
+  }
 
   @override
   int operator [](int index) {
-	return ptr.elementAt(index).load<int>();
+	  //return ptr.elementAt(index).load<int>();
+    return _list[index];
   }
 
   @override
   void operator []=(int index, int value) {
-	return ptr.elementAt(index).store(value);
+	  //return ptr.elementAt(index).store(value);
+    _list[index] = value;
   }
 
   zfree(){
     if (!freed) {
       for (int i = 0; i < this.length; i++){
-        ptr.elementAt(i).store(0);
+        //ptr.elementAt(i).store(0);
+        _list[i] = 0;
       }
       ptr.free();
     }
@@ -217,27 +272,38 @@ class Uint64CArray extends _IntCArray<Uint64> {
 }
 
 class Int8CArray extends _IntCArray<Int8> {
-  Int8CArray(int length) : super(length);
+  Int8List _list;
 
-  Int8CArray.from(Iterable<int> bytes) : super.from(bytes);
+  Int8CArray(int length) : super(length){
+    _list = data.buffer.asInt8List();
+  }
+
+  Int8CArray.from(Iterable<int> bytes) : super.from(bytes){
+    _list = data.buffer.asInt8List();
+  }
 
   Int8CArray.fromPointer(Pointer<Int8> ptr, int length)
-	  : super.fromPointer(ptr, length);
+	  : super.fromPointer(ptr, length){
+    _list = data.buffer.asInt8List();
+  }
 
   @override
   int operator [](int index) {
-	return ptr.elementAt(index).load<int>();
+	  //return ptr.elementAt(index).load<int>();
+    return _list[index];
   }
 
   @override
   void operator []=(int index, int value) {
-	return ptr.elementAt(index).store(value);
+	  //return ptr.elementAt(index).store(value);
+	  _list[index] = value;
   }
 
   zfree(){
     if (!freed) {
       for (int i = 0; i < this.length; i++){
-        ptr.elementAt(i).store(0);
+        //ptr.elementAt(i).store(0);
+        _list[i] = 0;
       }
       ptr.free();
     }
@@ -247,27 +313,38 @@ class Int8CArray extends _IntCArray<Int8> {
 }
 
 class Int16CArray extends _IntCArray<Int16> {
-  Int16CArray(int length) : super(length);
+  Int16List _list;
 
-  Int16CArray.from(Iterable<int> bytes) : super.from(bytes);
+  Int16CArray(int length) : super(length){
+    _list = data.buffer.asInt16List();
+  }
+
+  Int16CArray.from(Iterable<int> bytes) : super.from(bytes){
+    _list = data.buffer.asInt16List();
+  }
 
   Int16CArray.fromPointer(Pointer<Int16> ptr, int length)
-	  : super.fromPointer(ptr, length);
+	  : super.fromPointer(ptr, length){
+    _list = data.buffer.asInt16List();
+  }
 
   @override
   int operator [](int index) {
-	return ptr.elementAt(index).load<int>();
+	  //return ptr.elementAt(index).load<int>();
+    return _list[index];
   }
 
   @override
   void operator []=(int index, int value) {
-	return ptr.elementAt(index).store(value);
+	  //return ptr.elementAt(index).store(value);
+    _list[index] = value;
   }
 
   zfree(){
     if (!freed) {
       for (int i = 0; i < this.length; i++){
-        ptr.elementAt(i).store(0);
+        //ptr.elementAt(i).store(0);
+        _list[i] = 0;
       }
       ptr.free();
     }
@@ -277,27 +354,38 @@ class Int16CArray extends _IntCArray<Int16> {
 }
 
 class Int32CArray extends _IntCArray<Int32> {
-  Int32CArray(int length) : super(length);
+  Int32List _list;
 
-  Int32CArray.from(Iterable<int> bytes) : super.from(bytes);
+  Int32CArray(int length) : super(length){
+    _list = data.buffer.asInt32List();
+  }
+
+  Int32CArray.from(Iterable<int> bytes) : super.from(bytes){
+    _list = data.buffer.asInt32List();
+  }
 
   Int32CArray.fromPointer(Pointer<Int32> ptr, int length)
-	  : super.fromPointer(ptr, length);
+	  : super.fromPointer(ptr, length){
+    _list = data.buffer.asInt32List();
+  }
 
   @override
   int operator [](int index) {
-	return ptr.elementAt(index).load<int>();
+	  //return ptr.elementAt(index).load<int>();
+    return _list[index];
   }
 
   @override
   void operator []=(int index, int value) {
-	return ptr.elementAt(index).store(value);
+	  //return ptr.elementAt(index).store(value);
+    _list[index] = value;
   }
 
   zfree(){
     if (!freed) {
       for (int i = 0; i < this.length; i++){
-        ptr.elementAt(i).store(0);
+        //ptr.elementAt(i).store(0);
+        _list[i] = 0;
       }
       ptr.free();
     }
@@ -307,27 +395,38 @@ class Int32CArray extends _IntCArray<Int32> {
 }
 
 class Int64CArray extends _IntCArray<Int64> {
-  Int64CArray(int length) : super(length);
+  Int64List _list;
 
-  Int64CArray.from(Iterable<int> bytes) : super.from(bytes);
+  Int64CArray(int length) : super(length){
+    _list = data.buffer.asInt64List();
+  }
+
+  Int64CArray.from(Iterable<int> bytes) : super.from(bytes){
+    _list = data.buffer.asInt64List();
+  }
 
   Int64CArray.fromPointer(Pointer<Int64> ptr, int length)
-	  : super.fromPointer(ptr, length);
+	  : super.fromPointer(ptr, length){
+    _list = data.buffer.asInt64List();
+  }
 
   @override
   int operator [](int index) {
-	return ptr.elementAt(index).load<int>();
+	  //return ptr.elementAt(index).load<int>();
+    return _list[index];
   }
 
   @override
   void operator []=(int index, int value) {
-	return ptr.elementAt(index).store(value);
+	  //return ptr.elementAt(index).store(value);
+    _list[index] = value;
   }
 
   zfree(){
     if (!freed) {
       for (int i = 0; i < this.length; i++){
-        ptr.elementAt(i).store(0);
+        //ptr.elementAt(i).store(0);
+        _list[i] = 0;
       }
       ptr.free();
     }

@@ -2,6 +2,7 @@ import "package:test/test.dart";
 
 import 'dart:convert';
 import 'dart:math';
+import 'dart:io';
 import 'package:libsodium/libsodium.dart';
 import 'package:libsodium/src/ffi/constant.dart';
 import "package:libsodium/src/ffi/cstring.dart";
@@ -373,6 +374,39 @@ void main(){
       sb.clear();
       expect(success, isTrue);
     });
+    test("secretbox large file encrypt/decrypt test", (){
+      int bufferSizePlain = 1024 * 1024;
+      int bufferSizeCipher = bufferSizePlain + Secretstream.abytes();
+      File sfile = File("testfile");
+      File tfile = File("testfile.crypt");
+      Secretstream sb = Secretstream();
+      var plain = sfile.openSync(mode: FileMode.read);
+      var cipher = tfile.openSync(mode: FileMode.write);
+      List<int> content = [];
+      List<int> header = sb.pushInit();
+      do {
+        content = plain.readSync(bufferSizePlain);
+        List<int> ctext = sb.push(content, content.length == bufferSizePlain ? Secretstream.tagMessage(): Secretstream.tagFinal());
+        cipher.writeFromSync(ctext);
+      } while (content.length == bufferSizePlain);
+
+
+      plain.closeSync();
+      cipher.closeSync();
+      File sfile2 = File("testfile.crypt");
+      File tfile2 = File("testfile.after");
+      cipher = sfile2.openSync(mode: FileMode.read);
+      plain = tfile2.openSync(mode: FileMode.write);
+      sb.pullInit(header);
+      do {
+        content = cipher.readSync(bufferSizeCipher);
+        plain.writeFromSync(sb.pull(content, content.length == bufferSizeCipher ? Secretstream.tagMessage(): Secretstream.tagFinal()));
+      } while (content.length == bufferSizeCipher);
+
+      plain.close();
+      cipher.close();
+      sb.clear();
+    }, skip: "you can run this test, if you created test/testfile");
   });
   group("kdf high level test", () {
     test("kdf high level simple test", () {

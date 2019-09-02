@@ -110,7 +110,7 @@ class Secretstream {
       return null;
     }
 
-    if (c.length <= abytes() || c.length > messagebytesMax() + abytes()){
+    if (c.length < abytes() || c.length > messagebytesMax() + abytes()){
       throw InvalidCiphertext("Secretstream: decryption failed");
     }
 
@@ -201,7 +201,7 @@ class Secretstream {
     bool legit_tag = (tag == tagMessage() || tag == tagPush()
         || tag == tagRekey() || tag == tagFinal());
 
-    if (m == null || m.length == 0 || m.length > messagebytesMax() || !legit_tag || _mode != Mode.push){
+    if (m == null || m.length > messagebytesMax() || !legit_tag || _mode != Mode.push){
       return null;
     }
 
