@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/backend/cloud/cloudClient.dart';
-import 'package:secure_upload/backend/storage/mobileStorage.dart';
-import 'package:secure_upload/ui/screens/encrypt/encrypt_path_cloud_credentials.dart';
-import 'package:secure_upload/data/strings.dart';
-import 'package:secure_upload/data/utils.dart' as utils;
-import 'package:secure_upload/ui/screens/encrypt/encrypt_path_zip_progress.dart';
+import '../../../backend/cloud/cloudClient.dart';
+import '../../../backend/storage/mobileStorage.dart';
+import 'encrypt_path_cloud_credentials.dart';
+import '../../../data/strings.dart';
+import '../../../data/global.dart' as globals;
+import 'encrypt_path_zip_progress.dart';
 
 class EncryptCloud extends StatefulWidget {
   final List<String> files;
@@ -43,32 +43,52 @@ class _EncryptCloudState extends State<EncryptCloud> {
     }
   }
 
+  List<Widget> _createCloudProviderList() {
+    List<Widget> entries = List<Widget>();
+    for (int i = 0; i < CloudProvider.values.length; i++) {
+      entries.add(Padding(
+        padding: EdgeInsets.only(right: 40, left: 40, top: 20, bottom: 20),
+        child: SizedBox(
+          width: globals.rootButtonWidth(context),
+          height: globals.rootButtonHeight(context),
+
+          //Adding Correct Button depending on Prefs-Setting
+          child: OutlineButton(
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            hoverColor: Theme.of(context).colorScheme.primary,
+            textColor: Theme.of(context).colorScheme.primary,
+            onPressed: () {
+              _cloudProviderTapAction(context, CloudProvider.values[i]);
+            },
+            //icon: Icon(
+            //  Icons.cloud_upload,
+            //),
+            child: Text(
+                '${providerToString(CloudProvider.values[i])}',
+                style: TextStyle(fontSize: 20)),
+          ),
+        ),
+      ),);
+    }
+
+    return entries;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(Strings.encryptCloudSelection),
-        ),
-        body: Container(
-            child: ListView.builder(
-          itemCount: CloudProvider.values.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(
-                '${providerToString(CloudProvider.values[index])}',
-                style: TextStyle(fontSize: 20),
-              ),
-              trailing: Icon(
-                Icons.keyboard_arrow_right,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              onTap: () {
-                _cloudProviderTapAction(
-                    context, CloudProvider.values[index]);
-              },
-            );
-          },
-        )));
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(Strings.encryptCloudSelection),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+            child: Column(
+          children: _createCloudProviderList(),
+        )),
+      ),
+    );
   }
 }

@@ -1,7 +1,7 @@
-import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/data/utils.dart' as utils;
+import '../../../data/strings.dart';
+import '../../../data/global.dart' as globals;
+import '../../custom/logo.dart';
 import 'package:flutter/material.dart';
-import 'package:secure_upload/data/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingPages {
@@ -79,22 +79,7 @@ class Page extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(top: globals.onboardIconTopPadding),
               child: Stack(
-                children: <Widget>[
-                  Container(
-                    child: Icon(
-                      Icons.cloud_queue,
-                      size: globals.cloudIcon(context),
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                  Container(
-                    child: Icon(
-                      Icons.lock_outline,
-                      size: globals.lockIcon(context),
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                ],
+                children: SecureUploadLogoSecondary().draw(context),
               ),
             ),
           ),
