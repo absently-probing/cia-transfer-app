@@ -100,8 +100,18 @@ class _EncryptScreen extends State<EncryptScreen> {
 						  },
 						  child: Card(
 							  child: ListTile(
-							title: Text(_paths[index][0]),
-							subtitle: Text(_paths[index][1]),
+							title: Text(
+								_paths[index][0],
+								style: TextStyle(
+									color: Theme.of(context).colorScheme.secondary
+								)
+							),
+							subtitle: Text(
+								_paths[index][1],
+								style: TextStyle(
+									color: Theme.of(context).colorScheme.onSurface
+								)
+							),
 						  )));
 					}),
 			  ),

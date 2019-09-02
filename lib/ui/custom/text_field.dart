@@ -38,6 +38,7 @@ class CustomTextField extends StatelessWidget {
           controller: controller,
           style: TextStyle(
             fontSize: 20,
+            color: Theme.of(context).colorScheme.onSurface
           ),
           decoration: InputDecoration(
               hintStyle: TextStyle(

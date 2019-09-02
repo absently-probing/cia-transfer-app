@@ -51,13 +51,12 @@ Future<void> main() async {
       ),
       textTheme: TextTheme(
         body1: TextStyle(color: Colors.white, fontFamily: "Didactic Gothic"),
+        body2: TextStyle(color: Colors.white),
         title: TextStyle(color: Colors.cyan[700]),
         subtitle: TextStyle(color: Colors.redAccent[100]),
         subhead: TextStyle(color: Colors.white),
         button: TextStyle(color: Colors.black)
       ),
-      scaffoldBackgroundColor: Colors.black,
-      cardColor: Colors.grey[900],
       primaryColor: Colors.cyan[600],
       primaryTextTheme: TextTheme(
         body1: TextStyle(fontFamily: "Didactic Gothic"),
@@ -68,7 +67,12 @@ Future<void> main() async {
       accentTextTheme: TextTheme(
         button: TextStyle(color: Colors.black)
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey[900],
+      scaffoldBackgroundColor: Colors.grey[900],
+      cardTheme: CardTheme(
+          color: Colors.grey[800]
+      ),
+      cardColor: Colors.grey[800],
       primaryIconTheme: IconThemeData(
         color: Colors.black
       ),

@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                         child: Icon(
                           Icons.lock_outline,
                           size: globals.lockIcon(context),
-                          color: Theme.of(context).colorScheme.secondary
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -87,7 +87,7 @@ class HomeScreen extends StatelessWidget {
                       softWrap: true,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                         decoration: TextDecoration.none,
                         fontFamily: Strings.titleTextFont,
                         fontWeight: FontWeight.w700,

@@ -105,7 +105,7 @@ class Page extends StatelessWidget {
 
   Page({
     this.viewModel,
-    this.iconPercentVisible = 0.5,
+    this.iconPercentVisible = 1.0,
     this.titlePercentVisible = 1.0,
     this.textPercentVisible = 0.75,
   });
@@ -127,13 +127,14 @@ class Page extends StatelessWidget {
                     child: Icon(
                       Icons.cloud_queue,
                       size: globals.cloudIcon(context),
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
                   Container(
                     child: Icon(
                       Icons.lock_outline,
                       size: globals.lockIcon(context),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -147,7 +148,7 @@ class Page extends StatelessWidget {
               softWrap: true,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSurface,
                 decoration: TextDecoration.none,
                 fontFamily: Strings.titleTextFont,
                 fontWeight: FontWeight.w700,
