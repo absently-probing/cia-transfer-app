@@ -115,7 +115,6 @@ class _EncryptScreen extends State<EncryptScreen> {
 			  alignment: Alignment.bottomCenter,
 			  child: FloatingActionButton(
 				heroTag: "addFile",
-				backgroundColor: Colors.blue,
 				onPressed: () => _openFileExplorer(),
 				child: Container(
 				  child: Transform.scale(
@@ -139,8 +138,7 @@ class _EncryptScreen extends State<EncryptScreen> {
 				  child: Stack(children: <Widget>[
 					Container(
 					  child: Icon(
-						Icons.cloud_queue,
-						color: Colors.white,
+							Icons.cloud_queue,
 					  ),
 					),
 				  ]),

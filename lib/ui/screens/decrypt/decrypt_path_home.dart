@@ -205,7 +205,6 @@ class _DecryptScreen extends State<DecryptScreen> {
             child: Container(
           width: utils.screenWidth(context),
           alignment: Alignment.center,
-          color: Theme.of(context).primaryColor,
           child: SingleChildScrollView(
               child: Form(
                   key: _stateKey,

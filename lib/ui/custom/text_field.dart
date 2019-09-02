@@ -26,8 +26,8 @@ class CustomTextField extends StatelessWidget {
       padding: EdgeInsets.only(left: 20, right: 20),
       child: Theme(
         data: ThemeData(
-          primaryColor: Colors.black,
-          hintColor: Colors.black,
+          primaryColor: Theme.of(context).colorScheme.primary,
+          hintColor: Theme.of(context).colorScheme.onBackground,
         ),
         child: TextFormField(
           focusNode: this.focusNode,
@@ -40,23 +40,28 @@ class CustomTextField extends StatelessWidget {
             fontSize: 20,
           ),
           decoration: InputDecoration(
-              hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              hintStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
               hintText: hint,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide(
-                  width: 2,
+                  color: Theme.of(context).colorScheme.onBackground,
+                  width: 1,
                 ),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide(
-                  width: 3,
+                  color: Theme.of(context).colorScheme.onBackground,
+                  width: 2,
                 ),
               ),
               prefixIcon: Padding(
                 child: IconTheme(
-                  data: IconThemeData(color: Theme.of(context).buttonColor),
+                  data: IconThemeData(color: Theme.of(context).colorScheme.onBackground),
                   child: icon,
                 ),
                 padding: EdgeInsets.only(left: 30, right: 10),
