@@ -43,7 +43,7 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
           child: Column(
             children: <Widget>[
               Text(
-                "You are using ${cloudClient.provider} for the first time. To authorize you against ${cloudClient.provider} you have to log in to the service in a browser window, which is opend when you click on continue.", //TODO: put in strings
+                "You are using ${providerToString(cloudClient.provider)} for the first time. To authorize you against ${providerToString(cloudClient.provider)} you have to log in to the service in a browser window, which is opend when you click on continue.", //TODO: put in strings
                 style: TextStyle(
                   color: Colors.white,
                   decoration: TextDecoration.none,

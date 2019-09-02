@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:secure_upload/backend/cloud/cloudClient.dart';
 import 'package:secure_upload/backend/storage/mobileStorage.dart';
-import 'package:secure_upload/main.dart';
 import 'package:secure_upload/ui/screens/encrypt/encrypt_path_cloud_credentials.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:secure_upload/data/utils.dart' as utils;
@@ -54,11 +53,11 @@ class _EncryptCloudState extends State<EncryptCloud> {
         ),
         body: Container(
             child: ListView.builder(
-          itemCount: cloudStorageProviders.length,
+          itemCount: CloudProvider.values.length,
           itemBuilder: (context, index) {
             return ListTile(
               title: Text(
-                '${cloudStorageProviders[index].name}',
+                '${providerToString(CloudProvider.values[index])}',
                 style: TextStyle(fontSize: 20),
               ),
               trailing: Icon(
@@ -67,7 +66,7 @@ class _EncryptCloudState extends State<EncryptCloud> {
               ),
               onTap: () {
                 _cloudProviderTapAction(
-                    context, cloudStorageProviders[index].provider);
+                    context, CloudProvider.values[index]);
               },
             );
           },

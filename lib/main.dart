@@ -1,29 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/backend/cloud/cloudClient.dart';
 import 'package:secure_upload/data/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:secure_upload/ui/screens/onboarding/walkthrough_screen.dart';
 import 'package:secure_upload/ui/screens/home_screen.dart';
-
-// TODO: put this in the backend?
-
-class CloudStorageProvider {
-  CloudProvider provider;
-  String name;
-
-  CloudStorageProvider(
-      this.provider,
-      this.name,
-      );
-}
-
-final List<CloudStorageProvider> cloudStorageProviders =
-<CloudStorageProvider>[
-  CloudStorageProvider(CloudProvider.DropBox, 'Dropbox'),
-  CloudStorageProvider(CloudProvider.GoogleDrive, 'GoogleDrive'),
-  CloudStorageProvider(CloudProvider.OneDrive, 'OneDrive'),
-];
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
