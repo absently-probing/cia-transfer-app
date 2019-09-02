@@ -10,7 +10,8 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="Secure Sharing"
-        android:icon="@mipmap/app_icon">
+        android:icon="@mipmap/app_icon"
+        android:roundIcon="@mipmap/app_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
