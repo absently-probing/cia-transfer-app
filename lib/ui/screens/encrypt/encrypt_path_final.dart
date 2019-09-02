@@ -28,11 +28,11 @@ class _FinalEncryptState extends State<FinalEncrypt> {
   void _choiceAction(String choice) {
     //TODO fix encoding
     if (choice == Strings.encryptSharePassword) {
-      Share.share('Password:' + '' + _password);
+      Share.share(_password);
     } else if (choice == Strings.encryptShareUrl) {
-      Share.share('Url:' + '' + _url);
+      Share.share(_url);
     } else if (choice == Strings.encryptShareBoth) {
-      Share.share('Link:' + '' + _url + '' + 'Password:' + '' + _password);
+      Share.share(_url + '\n' + _password);
     }
   }
 
