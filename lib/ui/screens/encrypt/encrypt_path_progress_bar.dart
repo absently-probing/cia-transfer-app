@@ -75,8 +75,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
     return WillPopScope(
         //onWillPop: () async => false,
         child: Container(
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).colorScheme.background,
           child: CircularPercentIndicator(
+            progressColor: Theme.of(context).colorScheme.primary,
             radius: utils.screenWidth(context) / 2,
             animation: true,
             animateFromLastPercent: true,
