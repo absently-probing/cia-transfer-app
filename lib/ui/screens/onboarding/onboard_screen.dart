@@ -2,11 +2,9 @@ import 'package:secure_upload/data/global.dart' as globals;
 import 'package:secure_upload/data/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:secure_upload/data/strings.dart';
-import 'package:secure_upload/ui/custom/dropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingPages {
-
   List<PageViewModel> createStaticPageViewModels(BuildContext context) {
     return [
       PageViewModel(
@@ -47,48 +45,7 @@ class OnboardingPages {
           ),
         ),
       ),
-      PageViewModel(
-        Strings.appTitle,
-        SizedBox(
-          height: globals.onboardMaxPageHeight(context),
-          child: Center(
-            child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      'Please Select a Cloud Storage',
-                      style: TextStyle(
-                        color: Colors.white,
-                        decoration: TextDecoration.none,
-                        fontFamily: Strings.titleTextFont,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15.0,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                      child: SelectCloudWithButton(_handleButtonClick),
-                    ),
-                  ],
-                )),
-          ),
-        ),
-      ),
     ];
-  }
-
-  _handleButtonClick(BuildContext context, String sProvider) {
-    _dontShowWalkthroughAgain();
-    if (sProvider == null) {
-      // widget.prefs.setBool('encrypt',false);
-    } else {
-      // widget.prefs.setBool('encrypt',true);
-      String url = "https://www.google.de";
-      utils.openURL(url);
-    }
-
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil("/root", (Route<dynamic> route) => false);
   }
 
   _dontShowWalkthroughAgain() async {

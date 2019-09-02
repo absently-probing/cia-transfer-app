@@ -41,6 +41,11 @@ class _WalkthroughScreenState extends State<WalkthroughScreen>
             nextPageIndex = activeIndex - 1;
           } else if (slideDirection == SlideDirection.rightToLeft) {
             nextPageIndex = activeIndex + 1;
+            if (nextPageIndex ==
+                _onboarding.createStaticPageViewModels(context).length) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  "/root", (Route<dynamic> route) => false);
+            }
           } else {
             nextPageIndex = activeIndex;
           }
@@ -85,7 +90,7 @@ class _WalkthroughScreenState extends State<WalkthroughScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      body: SafeArea (
+      body: SafeArea(
         child: Stack(
           children: [
             Column(
@@ -93,12 +98,13 @@ class _WalkthroughScreenState extends State<WalkthroughScreen>
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Expanded (
-                    child: Page(
-                      viewModel: _onboarding.createStaticPageViewModels(context)[activeIndex],
-                    ),
+                Expanded(
+                  child: Page(
+                    viewModel: _onboarding
+                        .createStaticPageViewModels(context)[activeIndex],
+                  ),
                 ),
-               Align(
+                Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
                     padding: EdgeInsets.only(
@@ -121,19 +127,24 @@ class _WalkthroughScreenState extends State<WalkthroughScreen>
               child: Container(
                 color: Theme.of(context).primaryColor,
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: globals.indicatorMaxHeight + globals.onboardIndicatorBottomPadding + globals.onboardIndicatorTopPadding),
+                  padding: EdgeInsets.only(
+                      bottom: globals.indicatorMaxHeight +
+                          globals.onboardIndicatorBottomPadding +
+                          globals.onboardIndicatorTopPadding),
                   child: Page(
-                  viewModel: _onboarding.createStaticPageViewModels(context)[nextPageIndex],
-                  iconPercentVisible: slidePercent * 0.5,
-                  textPercentVisible: slidePercent * 0.75,
-                  titlePercentVisible: slidePercent,
+                    viewModel: _onboarding
+                        .createStaticPageViewModels(context)[nextPageIndex],
+                    iconPercentVisible: slidePercent * 0.5,
+                    textPercentVisible: slidePercent * 0.75,
+                    titlePercentVisible: slidePercent,
                   ),
                 ),
               ),
             ),
             PageDragger(
               canDragLeftToRight: activeIndex > 0,
-              canDragRightToLeft: activeIndex < _onboarding.createStaticPageViewModels(context).length - 1,
+              canDragRightToLeft: activeIndex <
+                  _onboarding.createStaticPageViewModels(context).length,
               slideUpdateStream: _slideUpdateStream,
             ),
           ],
