@@ -71,7 +71,7 @@ class _EncryptScreen extends State<EncryptScreen> {
 	  key: _scaffoldKey,
 	  appBar: AppBar(
 		centerTitle: true,
-		title: Text(Strings.appTitle),
+		title: Text(Strings.Sharing),
 	  ),
 	  body: Container(key: _stateKey,
 		  child: Stack(children: <Widget>[
@@ -100,8 +100,18 @@ class _EncryptScreen extends State<EncryptScreen> {
 						  },
 						  child: Card(
 							  child: ListTile(
-							title: Text(_paths[index][0]),
-							subtitle: Text(_paths[index][1]),
+							title: Text(
+								_paths[index][0],
+								style: TextStyle(
+									color: Theme.of(context).colorScheme.secondary
+								)
+							),
+							subtitle: Text(
+								_paths[index][1],
+								style: TextStyle(
+									color: Theme.of(context).colorScheme.onSurface
+								)
+							),
 						  )));
 					}),
 			  ),
@@ -115,7 +125,6 @@ class _EncryptScreen extends State<EncryptScreen> {
 			  alignment: Alignment.bottomCenter,
 			  child: FloatingActionButton(
 				heroTag: "addFile",
-				backgroundColor: Colors.blue,
 				onPressed: () => _openFileExplorer(),
 				child: Container(
 				  child: Transform.scale(
@@ -140,8 +149,7 @@ class _EncryptScreen extends State<EncryptScreen> {
 				  child: Stack(children: <Widget>[
 					Container(
 					  child: Icon(
-						Icons.cloud_queue,
-						color: Colors.white,
+							Icons.cloud_queue,
 					  ),
 					),
 				  ]),

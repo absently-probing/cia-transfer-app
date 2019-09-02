@@ -190,7 +190,7 @@ class _DecryptScreen extends State<DecryptScreen> {
         key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
-          title: Text(Strings.appTitle),
+          title: Text(Strings.Receive),
           actions: [
             IconButton(
               icon: Icon(CustomIcons.qrcode_scanner),
@@ -205,7 +205,6 @@ class _DecryptScreen extends State<DecryptScreen> {
             child: Container(
           width: utils.screenWidth(context),
           alignment: Alignment.center,
-          color: Theme.of(context).primaryColor,
           child: SingleChildScrollView(
               child: Form(
                   key: _stateKey,

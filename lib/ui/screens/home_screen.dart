@@ -10,7 +10,7 @@ import 'package:libsodium/libsodium.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
-  final double _iconPercentVisible = 0.5;
+  final double _iconPercentVisible = 1.0;
   final double _titlePercentVisible = 1.0;
 
   HomeScreen();
@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         centerTitle: true,
@@ -100,13 +100,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Icon(
                           Icons.cloud_queue,
                           size: globals.cloudIcon(context),
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       Container(
                         child: Icon(
                           Icons.lock_outline,
                           size: globals.lockIcon(context),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -124,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       softWrap: true,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                         decoration: TextDecoration.none,
                         fontFamily: Strings.titleTextFont,
                         fontWeight: FontWeight.w700,
@@ -147,11 +148,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: globals.rootButtonHeight(context),
 
                         //Adding Correct Button depending on Prefs-Setting
-                        child: RaisedButton(
+                        child: OutlineButton.icon(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          hoverColor: Theme.of(context).colorScheme.primary,
+                          textColor: Theme.of(context).colorScheme.primary,
                           onPressed: () {
                             _encryptButtonAction(context);
                           },
-                          child: const Text(Strings.homeScreenEncryptLabel,
+                          icon: Icon(Icons.cloud_upload,),
+                          label: Text(Strings.homeScreenEncryptLabel.toUpperCase(),
                               style: TextStyle(fontSize: 20)),
                         ),
                       ),
@@ -161,11 +168,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: SizedBox(
                         width: globals.rootButtonWidth(context),
                         height: globals.rootButtonHeight(context),
-                        child: RaisedButton(
+                        child: OutlineButton.icon(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          color: Theme.of(context).colorScheme.primary,
+                          textColor: Theme.of(context).colorScheme.primary,
                           onPressed: () {
                             _decryptButtonAction(context);
                           },
-                          child: const Text(Strings.homeScreenDecryptLabel,
+                          icon: Icon(Icons.cloud_download),
+                          label: Text(Strings.homeScreenDecryptLabel.toUpperCase(),
                               style: TextStyle(fontSize: 20)),
                         ),
                       ),

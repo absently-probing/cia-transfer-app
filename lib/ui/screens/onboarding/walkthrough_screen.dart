@@ -84,7 +84,7 @@ class _WalkthroughScreenState extends State<WalkthroughScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).colorScheme.primary,
       body: SafeArea (
         child: Stack(
           children: [
