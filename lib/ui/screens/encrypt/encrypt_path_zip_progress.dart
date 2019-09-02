@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/backend/cloud/cloudClient.dart';
-import 'package:secure_upload/data/constants.dart';
-import 'package:secure_upload/data/utils.dart' as utils;
-import 'package:secure_upload/ui/screens/encrypt/encrypt_path_progress_bar.dart';
+import '../../../backend/cloud/cloudClient.dart';
+import '../../../data/constants.dart';
+import 'encrypt_path_progress_bar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive_io.dart';
 import 'dart:isolate';
