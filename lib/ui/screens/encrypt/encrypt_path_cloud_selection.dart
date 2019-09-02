@@ -34,7 +34,6 @@ class _EncryptCloudState extends State<EncryptCloud> {
           MaterialPageRoute(
               builder: (context) =>
                   ZipProgress(files: files, cloudProvider: cloudProvider)));
-      await client.authenticate(utils.openURL);
     } else {
       Navigator.push(
           context,
