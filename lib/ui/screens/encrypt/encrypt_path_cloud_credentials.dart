@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:device_apps/device_apps.dart';
+
 import '../../../backend/cloud/cloudClient.dart';
 import '../../../data/strings.dart';
 import 'encrypt_path_zip_progress.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../data/utils.dart' as utils;
-import '../../../data/global.dart' as globals;
+
 
 class EncryptCloudCredentials extends StatefulWidget {
   final List<String> files;
@@ -24,6 +25,8 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
 
   void _onClickContinue(BuildContext context) async {
     await cloudClient.authenticate(utils.openURL);
+    DeviceApps.openApp("de.fuberlin.imp.secure_upload");
+
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -77,27 +80,5 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
             ],
         ),
     );
-  }
-
-  _launchURL() async {
-    const url = 'https://flutter.dev';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  _handleButtonClick(BuildContext context, String sProvider) {
-    if (sProvider == null) {
-      // widget.prefs.setBool('encrypt',false);
-    } else {
-      // widget.prefs.setBool('encrypt',true);
-      String url = "https://www.google.de";
-      _launchURL();
-    }
-
-    Navigator.of(context)
-        .pushNamedAndRemoveUntil("/root", (Route<dynamic> route) => false);
   }
 }
