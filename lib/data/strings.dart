@@ -3,6 +3,7 @@
 class Strings {
   static const String appTitle = "Secure Sharing";
   static const String titleTextFont = "OpenSans";
+  static const String welcome = "Welcome";
   static const String appDescription = "Securely share data with trusted partners over the cloud.";
   static const String appUsing = "This app aims to help you securely share files among members of your instituition. "
       "You can choose to either share or receive files. "
@@ -38,4 +39,6 @@ class Strings {
   static const String Sharing = "Share files";
 
   static const String Receive = "Receive files";
+
+
 }

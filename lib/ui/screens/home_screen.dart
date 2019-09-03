@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Padding(
                     padding: EdgeInsets.only(top: 10.0, bottom: 15.0, right: 0),
                     child: Text(
-                      Strings.appTitle,
+                      Strings.welcome,
                       softWrap: true,
                       textAlign: TextAlign.center,
                       style: TextStyle(
