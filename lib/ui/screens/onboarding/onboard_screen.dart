@@ -9,16 +9,19 @@ class OnboardingPages {
     return [
       PageViewModel(
         Strings.appTitle,
-        Text(
-          Strings.appDescription,
-          softWrap: true,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white,
-            decoration: TextDecoration.none,
-            fontFamily: Strings.titleTextFont,
-            fontWeight: FontWeight.w700,
-            fontSize: 15.0,
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text(
+            Strings.appDescription,
+            softWrap: true,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              decoration: TextDecoration.none,
+              fontFamily: Strings.titleTextFont,
+              fontWeight: FontWeight.w700,
+              fontSize: 15.0,
+            ),
           ),
         ),
       ),

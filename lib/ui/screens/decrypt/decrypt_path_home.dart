@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:secure_upload/data/strings.dart';
-import 'package:secure_upload/data/utils.dart' as utils;
-import 'package:secure_upload/ui/screens/decrypt/decrypt_path_qr.dart';
-import 'package:secure_upload/ui/screens/decrypt/decrypt_path_progress_bar.dart';
-import 'package:secure_upload/ui/custom/text_field.dart';
-import 'package:secure_upload/ui/custom/icons.dart';
+import '../../../data/strings.dart';
+import '../../../data/utils.dart' as utils;
+import '../../../data/global.dart' as globals;
+import 'decrypt_path_qr.dart';
+import 'decrypt_path_progress_bar.dart';
+import '../../custom/text_field.dart';
+import '../../custom/icons.dart';
 
 class DecryptScreen extends StatefulWidget {
   @override
@@ -15,37 +16,16 @@ class DecryptScreen extends StatefulWidget {
 class _DecryptScreen extends State<DecryptScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _stateKey = GlobalKey<FormState>();
-  final _focusNodeUrl = FocusNode();
-  final _focusNodePassword = FocusNode();
+
+  var _urlEnabled = true;
+  var _passwordEnabled = true;
 
   var _urlController = TextEditingController();
   var _passwordController = TextEditingController();
-  bool _urlHasFocus = false;
-  bool _passwordHasFocus = false;
-  bool _passwordHadFocus = false;
-
-  bool _focusInit = true;
-  bool _submitted = false;
-  bool _qrScanner = false;
 
   String _urlValidationResult;
   String _passwordValidationResult;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    _focusNodeUrl.addListener(_handleUrlTextField);
-    _focusNodePassword.addListener(_handlePassworTextField);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _focusNodeUrl.dispose();
-    _focusNodePassword.dispose();
-    super.dispose();
-  }
 
   void _submit(BuildContext context) {
     final form = _stateKey.currentState;
@@ -60,14 +40,6 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   String _urlValidator(String input) {
-    if (_submitted){
-      return null;
-    }
-
-    if (!_passwordHadFocus && input.isEmpty) {
-      return _urlValidationResult;
-    }
-
     if (!input.contains('@')) {
       _urlValidationResult = 'Invalid Link';
     } else {
@@ -78,14 +50,6 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   String _passwordValidator(String input) {
-    if (_submitted){
-      return null;
-    }
-
-    if (!_passwordHadFocus) {
-      return null;
-    }
-
     if (input.isEmpty) {
       _passwordValidationResult = "Required";
     } else {
@@ -96,9 +60,8 @@ class _DecryptScreen extends State<DecryptScreen> {
   }
 
   _openQRCodeScanner(BuildContext context) async {
-    _qrScanner = true;
-    _focusNodeUrl.unfocus();
-    _focusNodePassword.unfocus();
+    _urlEnabled = false;
+    _passwordEnabled = false;
     FocusScope.of(context).unfocus();
     FocusScope.of(context).requestFocus(FocusNode());
 
@@ -120,15 +83,11 @@ class _DecryptScreen extends State<DecryptScreen> {
       }
     }
 
-    _qrScanner = false;
+    _urlEnabled = true;
+    _passwordEnabled = true;
   }
 
   void _performLogin(BuildContext context) async {
-    if (_submitted){
-      return;
-    }
-
-    _submitted = true;
     final String url = _urlController.text;
     final String password = _passwordController.text;
 
@@ -136,56 +95,10 @@ class _DecryptScreen extends State<DecryptScreen> {
       context,
       MaterialPageRoute(builder: (context) => DecryptProgress(url: url, password: password)),
     );
-
-    _submitted = false;
-  }
-
-  void _handleUrlTextField() {
-    if (_submitted || _qrScanner){
-      if (_focusNodeUrl.hasFocus) {
-        _focusNodeUrl.unfocus();
-      }
-
-      return;
-    }
-
-    if (_focusNodeUrl.hasFocus) {
-      _urlHasFocus = true;
-    } else {
-      if (_urlHasFocus) {
-        _urlHasFocus = false;
-        _submit(_focusNodeUrl.context);
-      }
-    }
-  }
-
-  void _handlePassworTextField() {
-    if (_submitted || _qrScanner){
-      if (_focusNodePassword.hasFocus) {
-        _focusNodePassword.unfocus();
-      }
-
-      return;
-    }
-
-    if (_focusNodePassword.hasFocus) {
-      _passwordHasFocus = true;
-    } else {
-      if (_passwordHasFocus) {
-        _passwordHasFocus = false;
-        _passwordHadFocus = true;
-        _submit(_focusNodePassword.context);
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_focusInit) {
-      _focusInit = false;
-      FocusScope.of(context).requestFocus(_focusNodeUrl);
-    }
-
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -215,24 +128,49 @@ class _DecryptScreen extends State<DecryptScreen> {
                         Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
+                              enabled: _urlEnabled,
                               controller: _urlController,
-                              focusNode: _focusNodeUrl,
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
                               hint: Strings.decryptUrlTextField,
-                              autofocus: false,
+                              autofocus: true,
                             )),
                         Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
+                              enabled: _passwordEnabled,
                               controller: _passwordController,
-                              focusNode: _focusNodePassword,
                               obsecure: true,
                               validator: _passwordValidator,
                               hint: Strings.decryptPasswordTextField,
                               icon: Icon(Icons.lock),
                               autofocus: false,
                             )),
+                        Padding(
+                          padding: EdgeInsets.only(right: 40, left: 40, top: 20, bottom: 20),
+                          child: SizedBox(
+                            width: globals.rootButtonWidth(context),
+                            height: globals.rootButtonHeight(context),
+
+                            //Adding Correct Button depending on Prefs-Setting
+                            child: OutlineButton(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              hoverColor: Theme.of(context).colorScheme.primary,
+                              textColor: Theme.of(context).colorScheme.primary,
+                              onPressed: () {
+                                _submit(context);
+                              },
+                              //icon: Icon(
+                              //  Icons.cloud_upload,
+                              //),
+                              child: Text(
+                                  Strings.decryptReceiveButton,
+                                  style: TextStyle(fontSize: 20)),
+                            ),
+                          ),
+                        ),
                         /*Padding(
                           padding: EdgeInsets.only(bottom: 20),
                           child: Container(

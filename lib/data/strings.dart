@@ -26,6 +26,7 @@ class Strings {
   static const String encryptCloudSelection = 'Cloud Storage Selection';
   static const String encryptCloudCredentials = 'Cloud Credentials';
 
+  static const String decryptReceiveButton = 'Receive';
   static const String decryptUrlTextField = 'URL';
   static const String decryptPasswordTextField = 'Password';
 

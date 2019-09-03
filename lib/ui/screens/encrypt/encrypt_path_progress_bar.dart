@@ -218,6 +218,8 @@ class _EncryptProgressState extends State<EncryptProgress> {
   }
 
   static void encrypt(IsolateInitMessage<IsolateEncryptInitData> message) async {
+    Filecrypt encFile = Filecrypt();
+
     try {
       // check if libsodium is supported for platform
       if (!Libsodium.supported()) {
@@ -230,18 +232,23 @@ class _EncryptProgressState extends State<EncryptProgress> {
           message.data.appDir.path + "/" + Consts.encryptTargetFile);
 
       ProgressOject progress = ProgressOject(message.sendPort, 0.0, 0.5);
-      Filecrypt encFile = Filecrypt();
       encFile.init(sourceFile, CryptoMode.enc);
       bool success = encFile.writeIntoFile(
           targetFile, callback: progress.progress);
+      var key = base64.encode(encFile.getKey());
+      encFile.clear();
+      print("finished");
       if (!success) {
         message.sendPort.send(IsolateMessage<String, String>(0.0, true, true, "Encryption failed", null));
       } else {
         message.sendPort.send(
-            IsolateMessage<String, String>(0.0, true, false, null, base64.encode(encFile.getKey())));
+            IsolateMessage<String, String>(0.0, true, false, null, key));
+
+        key = "";
       }
     } catch (e){
       print(e.toString());
+      encFile.clear();
       message.sendPort.send(IsolateMessage<String, String>(0.0, true, true, "File error", null));
     }
   }

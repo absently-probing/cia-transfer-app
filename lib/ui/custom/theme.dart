@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 final themes = {
   "darkBlueTheme": ThemeData(
+    highlightColor: Colors.transparent,
+    splashColor: Colors.transparent,
     colorScheme: ColorScheme(
         primary: Colors.cyan[600],
         primaryVariant: Colors.cyan[700],
@@ -17,6 +19,8 @@ final themes = {
         onError: Colors.white,
         brightness: Brightness.light),
     buttonTheme: ButtonThemeData(
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
         colorScheme: ColorScheme(
             primary: Colors.cyan[600],
             primaryVariant: Colors.cyan[700],
@@ -27,10 +31,11 @@ final themes = {
             error: Colors.purple[300],
             onPrimary: Colors.black,
             onSecondary: Colors.black,
-            onSurface: Colors.white,
+            //onSurface: Colors.white, fixed textfield copy/paste dialog
+            onSurface: Colors.black,
             onBackground: Colors.grey[700],
             onError: Colors.white,
-            brightness: Brightness.dark)),
+            brightness: Brightness.light)),
     textTheme: TextTheme(
         body1: TextStyle(color: Colors.white, fontFamily: "Didactic Gothic"),
         body2: TextStyle(color: Colors.white),

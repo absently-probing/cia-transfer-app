@@ -48,7 +48,7 @@ class _FinalEncryptState extends State<FinalEncrypt> {
 
   void _copyPassword(){
     Clipboard.setData(
-        ClipboardData(text: _url));
+        ClipboardData(text: _password));
     _key.currentState
         .showSnackBar(SnackBar(
       duration: Duration(milliseconds: 400),
