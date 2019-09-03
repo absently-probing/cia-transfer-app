@@ -237,7 +237,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
           targetFile, callback: progress.progress);
       var key = base64.encode(encFile.getKey());
       encFile.clear();
+      sourceFile.deleteSync();
       print("finished");
+
       if (!success) {
         message.sendPort.send(IsolateMessage<String, String>(0.0, true, true, "Encryption failed", null));
       } else {
@@ -270,6 +272,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
     var fileID = await client.createFile(Filecrypt.randomFilename(), targetFile);
     await client.setAccessibility(fileID, true);
     var url = await client.getURL(fileID);
+    targetFile.deleteSync();
     message.sendPort.send(IsolateMessage<String, String>(1.0, true, false, null, url));
   }
 
