@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:secure_upload/data/constants.dart';
-import 'package:secure_upload/data/utils.dart' as utils;
-import 'package:secure_upload/data/isolate_messages.dart';
-import 'package:secure_upload/data/isolate_storage.dart';
-import 'package:secure_upload/ui/custom/progress_indicator.dart';
-import 'package:secure_upload/ui/screens/encrypt/encrypt_path_final.dart';
-import 'package:secure_upload/backend/cloud/cloudClient.dart';
-import 'package:secure_upload/backend/storage/storage.dart';
-import 'package:secure_upload/backend/storage/mobileStorage.dart';
-import 'package:secure_upload/backend/crypto/cryptapi/cryptapi.dart';
+import '../../../data/constants.dart';
+import '../../../data/utils.dart' as utils;
+import '../../../data/isolate_messages.dart';
+import '../../../data/isolate_storage.dart';
+import '../../../ui/custom/progress_indicator.dart';
+import 'encrypt_path_final.dart';
+import '../../../backend/cloud/cloudClient.dart';
+import '../../../backend/storage/storage.dart';
+import '../../../backend/storage/mobileStorage.dart';
+import '../../../backend/crypto/cryptapi/cryptapi.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:archive/archive_io.dart';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:convert';
@@ -28,6 +29,14 @@ class IsolateUploadInitData {
   final CloudProvider cloudProvider;
 
   IsolateUploadInitData(this.file, this.send, this.cloudProvider);
+}
+
+class IsolateZipInitMessage {
+  final List<String> files;
+  final SendPort sendPort;
+  final Directory appDir;
+
+  IsolateZipInitMessage(this.files, this.sendPort, this.appDir);
 }
 
 class IsolateVoidFunctions {
@@ -77,21 +86,23 @@ class ProgressOject {
 }
 
 class EncryptProgress extends StatefulWidget {
-  final String file;
+  final List<String> files;
   final CloudProvider cloudProvider;
 
-  EncryptProgress({@required this.file, @required this.cloudProvider});
+  EncryptProgress({@required this.files, @required this.cloudProvider});
 
   _EncryptProgressState createState() =>
-      _EncryptProgressState(file: file, cloudProvider: cloudProvider);
+      _EncryptProgressState(files: files, cloudProvider: cloudProvider);
 }
 
 class _EncryptProgressState extends State<EncryptProgress> {
-  final String file;
+  final List<String> files;
   final CloudProvider cloudProvider;
 
+  Isolate _isolateZip;
   Isolate _isolateEncrypt;
   Isolate _isolateUpload;
+  ReceivePort _receiveZip = ReceivePort();
   ReceivePort _receiveEncrypt = ReceivePort();
   ReceivePort _receiveUpload = ReceivePort();
   ReceivePort _receiveStorage = ReceivePort();
@@ -107,7 +118,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
   bool _uploadError = false;
   bool _uploadStarted = false;
 
-  _EncryptProgressState({this.file, this.cloudProvider}) {
+  _EncryptProgressState({this.files, this.cloudProvider}) {
     startEncryptAndUpload();
   }
 
@@ -118,6 +129,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
       _isolateUpload.kill(priority: Isolate.immediate);
     }
 
+    _receiveZip.close();
     _receiveEncrypt.close();
     _receiveUpload.close();
     _receiveStorage.close();
@@ -129,9 +141,19 @@ class _EncryptProgressState extends State<EncryptProgress> {
     _handler = IsolateCommunicationHandler(_receiveStorage, _handleRequest);
 
     _appDocDir = await getApplicationDocumentsDirectory();
-    _isolateEncrypt = await Isolate.spawn(encrypt, IsolateInitMessage<IsolateEncryptInitData>(_receiveEncrypt.sendPort, IsolateEncryptInitData(file, _appDocDir)));
-    _receiveEncrypt.listen((data) {
-      _communicateEncrypt(data);
+    _isolateZip = await Isolate.spawn(
+        zip, IsolateZipInitMessage(files, _receiveZip.sendPort, _appDocDir));
+    _receiveZip.listen((data) async {
+      if (data == "") {
+        //handle error;
+      }
+
+      // remove zip progress from navigation
+      _updateProgress(0.1);
+      _isolateEncrypt = await Isolate.spawn(encrypt, IsolateInitMessage<IsolateEncryptInitData>(_receiveEncrypt.sendPort, IsolateEncryptInitData(data, _appDocDir)));
+      _receiveEncrypt.listen((data) {
+        _communicateEncrypt(data);
+      });
     });
   }
 
@@ -217,6 +239,24 @@ class _EncryptProgressState extends State<EncryptProgress> {
     });
   }
 
+  // zip files before encryption
+  static void zip(IsolateZipInitMessage message) {
+    try {
+      var encoder = ZipFileEncoder();
+      encoder.open(message.appDir.path + "/" + Consts.encryptZipFile);
+      for (String file in message.files) {
+        encoder.addFile(File(file));
+      }
+
+      encoder.close();
+
+      message.sendPort.send(message.appDir.path + "/" + Consts.encryptZipFile);
+    } catch (e) {
+      print(e.toString());
+      message.sendPort.send("");
+    }
+  }
+
   static void encrypt(IsolateInitMessage<IsolateEncryptInitData> message) async {
     Filecrypt encFile = Filecrypt();
 
@@ -231,7 +271,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
       File targetFile = File(
           message.data.appDir.path + "/" + Consts.encryptTargetFile);
 
-      ProgressOject progress = ProgressOject(message.sendPort, 0.0, 0.5);
+      ProgressOject progress = ProgressOject(message.sendPort, 0.1, 0.3);
       encFile.init(sourceFile, CryptoMode.enc);
       bool success = encFile.writeIntoFile(
           targetFile, callback: progress.progress);
@@ -273,7 +313,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
     await client.setAccessibility(fileID, true);
     var url = await client.getURL(fileID);
     targetFile.deleteSync();
-    message.sendPort.send(IsolateMessage<String, String>(1.0, true, false, null, url));
+    message.sendPort.send(IsolateMessage<String, String>(0.9, true, false, null, url));
   }
 
   Widget build(BuildContext context) {

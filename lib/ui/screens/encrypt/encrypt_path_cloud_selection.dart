@@ -4,7 +4,7 @@ import '../../../backend/storage/mobileStorage.dart';
 import 'encrypt_path_cloud_credentials.dart';
 import '../../../data/strings.dart';
 import '../../../data/global.dart' as globals;
-import 'encrypt_path_zip_progress.dart';
+import 'encrypt_path_progress_bar.dart';
 
 class EncryptCloud extends StatefulWidget {
   final List<String> files;
@@ -33,7 +33,7 @@ class _EncryptCloudState extends State<EncryptCloud> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  ZipProgress(files: files, cloudProvider: cloudProvider)));
+                  EncryptProgress(files: files, cloudProvider: cloudProvider)));
     } else {
       Navigator.push(
           context,
