@@ -26,7 +26,7 @@ double lockIcon(BuildContext context) {
 
 // page_dragger.dart
   double transitionPixels(BuildContext context) {
-    return utils.screenHeight(context) / 4;
+    return utils.screenHeight(context) / 2.5;
   }
 
 // my_root_screen.dart

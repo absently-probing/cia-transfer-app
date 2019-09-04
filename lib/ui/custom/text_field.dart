@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
   final FormFieldSetter<String> onSaved;
+  final enabled;
   final Icon icon;
   final String hint;
   final bool obsecure;
@@ -12,6 +13,7 @@ class CustomTextField extends StatelessWidget {
 
   CustomTextField(
       {this.icon,
+        this.enabled = true,
         this.hint,
         this.obsecure = false,
         this.validator,
@@ -25,11 +27,13 @@ class CustomTextField extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(left: 20, right: 20),
       child: Theme(
-        data: ThemeData(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent,
           primaryColor: Theme.of(context).colorScheme.primary,
           hintColor: Theme.of(context).colorScheme.onBackground,
         ),
         child: TextFormField(
+          enabled: enabled,
           focusNode: this.focusNode,
           onSaved: onSaved,
           validator: validator,

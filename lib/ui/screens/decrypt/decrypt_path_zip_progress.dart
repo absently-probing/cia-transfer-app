@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../backend/cloud/cloudClient.dart';
 import '../../../data/constants.dart';
-import 'encrypt_path_progress_bar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive_io.dart';
 import 'dart:isolate';
@@ -51,23 +50,19 @@ class _ZipProgressState extends State<ZipProgress> {
 
       // remove zip progress from navigation
       Navigator.of(context).pop();
+      /*
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  EncryptProgress(file: data, cloudProvider: cloudProvider)));
+                  DecryptProgress(file: data));*/
     });
   }
 
   static void zip(IsolateZipInitMessage message) {
     try {
-      var encoder = ZipFileEncoder();
-      encoder.open(message.appDir.path + "/" + Consts.encryptZipFile);
-      for (String file in message.files) {
-        encoder.addFile(File(file));
-      }
-
-      encoder.close();
+      //Decode archive
+      //Archive archive = new ZipDecoder().decodeBuffer(input);
 
       message.sendPort.send(message.appDir.path + "/" + Consts.encryptZipFile);
     } catch (e) {

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:secure_upload/ui/custom/menus.dart';
-import 'package:secure_upload/data/strings.dart';
-import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/ui/screens/decrypt/decrypt_path_home.dart';
-import 'package:secure_upload/ui/screens/encrypt/encrypt_path_home.dart';
-import 'package:secure_upload/ui/screens/onboarding/walkthrough_screen.dart';
+import '../custom/menus.dart';
+import '../../data/strings.dart';
+import '../../data/global.dart' as globals;
+import '../custom/logo.dart';
+import 'decrypt/decrypt_path_home.dart';
+import 'encrypt/encrypt_path_home.dart';
+import 'onboarding/walkthrough_screen.dart';
 import 'package:libsodium/libsodium.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -95,22 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 10.0, bottom: 0.0, left: 0),
                   child: Stack(
-                    children: <Widget>[
-                      Container(
-                        child: Icon(
-                          Icons.cloud_queue,
-                          size: globals.cloudIcon(context),
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                      Container(
-                        child: Icon(
-                          Icons.lock_outline,
-                          size: globals.lockIcon(context),
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                    ],
+                    children: SecureUploadLogoPrimary().draw(context),
                   ),
                 ),
               ),
@@ -121,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Padding(
                     padding: EdgeInsets.only(top: 10.0, bottom: 15.0, right: 0),
                     child: Text(
-                      Strings.appTitle,
+                      Strings.welcome,
                       softWrap: true,
                       textAlign: TextAlign.center,
                       style: TextStyle(
