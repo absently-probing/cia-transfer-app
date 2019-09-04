@@ -27,6 +27,11 @@ class Strings {
   static const String encryptCloudSelection = 'Cloud Storage Selection';
   static const String encryptCloudCredentials = 'Cloud Credentials';
 
+  static const String shareQrTitle = "Share QR Code";
+  static const String shareQrInfo = "Share QR Code";
+  static const String shareSeparateTitle = "Share URL and PW Separatly";
+  static const String shareTogetherTitle = "Share URL and PW Together";
+
   static const String decryptReceiveButton = 'Receive';
   static const String decryptUrlTextField = 'URL';
   static const String decryptPasswordTextField = 'Password';
