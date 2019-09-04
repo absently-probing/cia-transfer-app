@@ -10,6 +10,8 @@ import 'onboarding/walkthrough_screen.dart';
 import 'package:libsodium/libsodium.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'dart:io';
+
 class HomeScreen extends StatefulWidget {
   final double _iconPercentVisible = 1.0;
   final double _titlePercentVisible = 1.0;
@@ -71,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text("close"),
             onPressed: () async {
               await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              exit(1);
             },
           )
         ],
