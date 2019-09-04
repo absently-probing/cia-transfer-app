@@ -50,7 +50,7 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
                 child: Text(
                   "You are using ${providerToString(cloudClient.provider)} for the first time. To authorize you against ${providerToString(cloudClient.provider)} you have to log in to the service in a browser window, which is opend when you click on continue.", //TODO: put in strings
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSurface,
                     decoration: TextDecoration.none,
                     fontFamily: Strings.titleTextFont,
                     fontWeight: FontWeight.w700,
