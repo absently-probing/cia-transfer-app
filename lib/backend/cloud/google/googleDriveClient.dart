@@ -45,7 +45,7 @@ class GoogleDriveClient extends cloudClient.CloudClient {
         progress(uploaded, size, false);
         return chunk;
       });
-      
+
       var fileID = _writeFile(name, stream2, size, client);
       return fileID;
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
+import '../../../data/strings.dart';
 import '../../../data/isolate_messages.dart';
 import '../../../data/isolate_storage.dart';
 import '../../../ui/custom/progress_indicator.dart';
@@ -15,6 +16,7 @@ import 'package:archive/archive_io.dart';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:convert';
+import 'dart:math';
 
 class IsolateEncryptInitData {
   final String file;
@@ -110,7 +112,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
   Storage storage = MobileStorage();
   IsolateCommunicationHandler _handler;
 
-  String _step = "";
+  String _step = Strings.encryptProgressTextZip;
 
   double _progress = 0.0;
   String _progressString = "0%";
@@ -159,6 +161,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
       _encryptStarted = true;
       // remove zip progress from navigation
       _updateProgress(0.1);
+      _step = Strings.encryptProgressTextEncrypt;
       _isolateEncrypt = await Isolate.spawn(
           encrypt,
           IsolateInitMessage<IsolateEncryptInitData>(_receiveEncrypt.sendPort,
@@ -181,6 +184,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
       if (message.finished) {
         _isolateEncrypt.kill();
         _key = message.data;
+        _step = Strings.encryptProgressTextUpload;
         _isolateUpload = await Isolate.spawn(
             upload,
             IsolateInitMessage<IsolateUploadInitData>(
@@ -337,28 +341,41 @@ class _EncryptProgressState extends State<EncryptProgress> {
   }
 
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: WillPopScope(
       //onWillPop: () async => false,
-      child: Column(children: [
-        Padding(
-          padding: EdgeInsets.only(left: 20, right: 20, bottom: 50, top: 50),
-          child: Text(
-            _step,
-          ),
+      child: Center(
+          child: SingleChildScrollView(
+          child: Column(children: [
+            Padding(
+              padding:
+                  EdgeInsets.only(left: 20, right: 20, bottom: 50, top: 50),
+              child: Text(
+                _step,
+                style: TextStyle(
+                  color: Colors.white,
+                  decoration: TextDecoration.none,
+                  fontFamily: Strings.titleTextFont,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20.0,
+                ),
+              ),
+            ),
+            Container(
+              child: CircularPercentIndicator(
+                progressColor: Theme.of(context).colorScheme.primary,
+                radius: min(utils.screenWidth(context) / 2, utils.screenHeight(context) / 2),
+                animation: true,
+                animateFromLastPercent: true,
+                lineWidth: 5.0,
+                percent: _progress,
+                center: Text(_progressString),
+              ),
+            )
+          ]),
         ),
-        Container(
-          color: Theme.of(context).colorScheme.background,
-          child: CircularPercentIndicator(
-            progressColor: Theme.of(context).colorScheme.primary,
-            radius: utils.screenWidth(context) / 2,
-            animation: true,
-            animateFromLastPercent: true,
-            lineWidth: 5.0,
-            percent: _progress,
-            center: Text(_progressString),
-          ),
-        )
-      ]),
-    );
+      ),
+    ),);
   }
 }
