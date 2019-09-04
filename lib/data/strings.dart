@@ -28,7 +28,7 @@ class Strings {
   static const String encryptCloudCredentials = 'Cloud Credentials';
 
   static const String shareQrTitle = "Share QR Code";
-  static const String shareQrInfo = "Share QR Code";
+  static const String shareQrInfo = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
   static const String shareSeparateTitle = "Share URL and PW Separatly";
   static const String shareTogetherTitle = "Share URL and PW Together";
 

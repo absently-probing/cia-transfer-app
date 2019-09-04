@@ -13,9 +13,9 @@ class ShareQr extends StatelessWidget {
 
   ShareQr(this._url, this._password);
 
-  void _finishButton(BuildContext context){
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        '/root', (Route<dynamic> route) => false);
+  void _finishButton(BuildContext context) {
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil('/root', (Route<dynamic> route) => false);
   }
 
   @override
@@ -27,21 +27,41 @@ class ShareQr extends StatelessWidget {
       body: Container(
         child: Stack(children: [
           Container(
-            color: Theme.of(context).colorScheme.background,
-            padding: EdgeInsets.all(45),
-            child: Center(
-              child: Container(
-                child: QrImage(
-                  data: _url + " " + _password,
-                  version: QrVersions.auto,
-                  padding: EdgeInsets.all(25),
-                  //size: utils.screenWidth(context) / 2,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Theme.of(context).colorScheme.primary, width: 7),
-                  borderRadius: BorderRadius.all(Radius.circular(18)),
-                ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Text(
+                      Strings.shareQrInfo,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        decoration: TextDecoration.none,
+                        fontFamily: Strings.titleTextFont,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.only(left: 40, right: 40, bottom: 60),
+                    child: Container(
+                      child: QrImage(
+                        data: _url + " " + _password,
+                        version: QrVersions.auto,
+                        padding: EdgeInsets.all(25),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 7),
+                        borderRadius: BorderRadius.all(Radius.circular(18)),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
