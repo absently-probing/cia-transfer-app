@@ -27,7 +27,7 @@ abstract class CloudClient {
   Future<void> authenticate(void callback(String url));
 
   //returns fileID
-  Future<String> createFile(String name, File localFile);
+  Future<String> createFile(String name, File localFile, {progress(int state, int quota, bool done)});
 
   void deleteFile(String fileID);
 

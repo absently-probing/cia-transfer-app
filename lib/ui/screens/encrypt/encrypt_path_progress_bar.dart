@@ -44,7 +44,7 @@ class IsolateVoidFunctions {
 
   IsolateVoidFunctions(this.comm);
 
-  openURL(String url){
+  openURL(String url) {
     comm.send(IsolateRequest<String>("url.openURL", url));
   }
 }
@@ -54,18 +54,18 @@ class ProgressOject {
   double _start;
   double _end;
 
-  ProgressOject(this.sendPort, startValue, endValue){
+  ProgressOject(this.sendPort, startValue, endValue) {
     double checkStart = startValue;
     double checkEnd = endValue;
-    if (checkStart < 0.0){
+    if (checkStart < 0.0) {
       checkStart = 0.0;
     }
 
-    if (checkEnd > 1.0){
+    if (checkEnd > 1.0) {
       checkEnd = 1.0;
     }
 
-    if (checkStart >= checkEnd){
+    if (checkStart >= checkEnd) {
       checkStart = 0.0;
       checkEnd = 1.0;
     }
@@ -77,11 +77,12 @@ class ProgressOject {
   void progress(int status, int all, bool finished) {
     double progress = _start + (status / all) * (_end - _start);
 
-    if (progress >= 1.0 && !finished){
+    if (progress >= 1.0 && !finished) {
       progress = 0.99;
     }
 
-    sendPort.send(IsolateMessage<String, String>(progress, false, false, null, null));
+    sendPort.send(
+        IsolateMessage<String, String>(progress, false, false, null, null));
   }
 }
 
@@ -109,6 +110,8 @@ class _EncryptProgressState extends State<EncryptProgress> {
   Storage storage = MobileStorage();
   IsolateCommunicationHandler _handler;
 
+  String _step = "";
+
   double _progress = 0.0;
   String _progressString = "0%";
   Directory _appDocDir;
@@ -117,15 +120,20 @@ class _EncryptProgressState extends State<EncryptProgress> {
   bool _encryptError = false;
   bool _uploadError = false;
   bool _uploadStarted = false;
+  bool _encryptStarted = false;
 
   _EncryptProgressState({this.files, this.cloudProvider}) {
     startEncryptAndUpload();
   }
 
-  void dispose(){
-    _isolateEncrypt.kill(priority: Isolate.immediate);
+  void dispose() {
+    _isolateZip.kill(priority: Isolate.immediate);
 
-    if (_uploadStarted){
+    if (_encryptStarted) {
+      _isolateEncrypt.kill(priority: Isolate.immediate);
+    }
+
+    if (_uploadStarted) {
       _isolateUpload.kill(priority: Isolate.immediate);
     }
 
@@ -148,9 +156,13 @@ class _EncryptProgressState extends State<EncryptProgress> {
         //handle error;
       }
 
+      _encryptStarted = true;
       // remove zip progress from navigation
       _updateProgress(0.1);
-      _isolateEncrypt = await Isolate.spawn(encrypt, IsolateInitMessage<IsolateEncryptInitData>(_receiveEncrypt.sendPort, IsolateEncryptInitData(data, _appDocDir)));
+      _isolateEncrypt = await Isolate.spawn(
+          encrypt,
+          IsolateInitMessage<IsolateEncryptInitData>(_receiveEncrypt.sendPort,
+              IsolateEncryptInitData(data, _appDocDir)));
       _receiveEncrypt.listen((data) {
         _communicateEncrypt(data);
       });
@@ -158,7 +170,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
   }
 
   void _communicateEncrypt(IsolateMessage<String, String> message) async {
-    if (message.error){
+    if (message.error) {
       // handle error
       _encryptError = true;
     }
@@ -169,9 +181,14 @@ class _EncryptProgressState extends State<EncryptProgress> {
       if (message.finished) {
         _isolateEncrypt.kill();
         _key = message.data;
-        _isolateUpload = await Isolate.spawn(upload,
+        _isolateUpload = await Isolate.spawn(
+            upload,
             IsolateInitMessage<IsolateUploadInitData>(
-                _receiveUpload.sendPort, IsolateUploadInitData(_appDocDir.path + "/" + Consts.encryptTargetFile, _receiveStorage.sendPort, cloudProvider)));
+                _receiveUpload.sendPort,
+                IsolateUploadInitData(
+                    _appDocDir.path + "/" + Consts.encryptTargetFile,
+                    _receiveStorage.sendPort,
+                    cloudProvider)));
         _uploadStarted = true;
         _handler.start();
         _receiveUpload.listen((data) {
@@ -181,8 +198,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
     }
   }
 
-  void _handleRequest(IsolateRequest request, IsolateCommunicationHandler handler) async {
-    switch (request.method){
+  void _handleRequest(
+      IsolateRequest request, IsolateCommunicationHandler handler) async {
+    switch (request.method) {
       case ".":
         handler.setSend(request.data);
         break;
@@ -202,40 +220,35 @@ class _EncryptProgressState extends State<EncryptProgress> {
     }
   }
 
-  void _communicateUpload(IsolateMessage<String, String> message){
-    if (message.error){
+  void _communicateUpload(IsolateMessage<String, String> message) {
+    if (message.error) {
       _uploadError = true;
     }
 
-    if (!_uploadError){
+    if (!_uploadError) {
       _updateProgress(message.progress);
 
-      if (message.finished){
+      if (message.finished) {
         var url = message.data;
         _isolateUpload.kill();
 
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    FinalEncrypt(
-                        url,
-                        _key)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => FinalEncrypt(url, _key)));
       }
     }
   }
 
-  void _updateProgress(double progress){
+  void _updateProgress(double progress) {
     setState(() {
-      if (progress > _progress){
+      if (progress > _progress) {
         _progress = progress;
       }
 
-      if (_progress > 1.0){
+      if (_progress > 1.0) {
         _progress = 1.0;
       }
 
-        _progressString = "${(_progress * 100).toInt()}%";
+      _progressString = "${(_progress * 100).toInt()}%";
     });
   }
 
@@ -257,7 +270,8 @@ class _EncryptProgressState extends State<EncryptProgress> {
     }
   }
 
-  static void encrypt(IsolateInitMessage<IsolateEncryptInitData> message) async {
+  static void encrypt(
+      IsolateInitMessage<IsolateEncryptInitData> message) async {
     Filecrypt encFile = Filecrypt();
 
     try {
@@ -268,30 +282,32 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
       // start encryption
       File sourceFile = File(message.data.file);
-      File targetFile = File(
-          message.data.appDir.path + "/" + Consts.encryptTargetFile);
+      File targetFile =
+          File(message.data.appDir.path + "/" + Consts.encryptTargetFile);
 
       ProgressOject progress = ProgressOject(message.sendPort, 0.1, 0.3);
       encFile.init(sourceFile, CryptoMode.enc);
-      bool success = encFile.writeIntoFile(
-          targetFile, callback: progress.progress);
+      bool success =
+          encFile.writeIntoFile(targetFile, callback: progress.progress);
       var key = base64.encode(encFile.getKey());
       encFile.clear();
       sourceFile.deleteSync();
       print("finished");
 
       if (!success) {
-        message.sendPort.send(IsolateMessage<String, String>(0.0, true, true, "Encryption failed", null));
+        message.sendPort.send(IsolateMessage<String, String>(
+            0.0, true, true, "Encryption failed", null));
       } else {
-        message.sendPort.send(
-            IsolateMessage<String, String>(0.0, true, false, null, key));
+        message.sendPort
+            .send(IsolateMessage<String, String>(0.0, true, false, null, key));
 
         key = "";
       }
-    } catch (e){
+    } catch (e) {
       print(e.toString());
       encFile.clear();
-      message.sendPort.send(IsolateMessage<String, String>(0.0, true, true, "File error", null));
+      message.sendPort.send(
+          IsolateMessage<String, String>(0.0, true, true, "File error", null));
     }
   }
 
@@ -304,22 +320,33 @@ class _EncryptProgressState extends State<EncryptProgress> {
     // TODO remove it
     // TODO create ProcessObject for updating CircleProcessbar
     //Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-    CloudClient client = await CloudClientFactory.create(message.data.cloudProvider, storage);
-    if(!(await client.hasCredentials())) {
+    CloudClient client =
+        await CloudClientFactory.create(message.data.cloudProvider, storage);
+    if (!(await client.hasCredentials())) {
       await client.authenticate(voidFunctions.openURL);
     }
 
-    var fileID = await client.createFile(Filecrypt.randomFilename(), targetFile);
+    ProgressOject progress = ProgressOject(message.sendPort, 0.3, 0.9);
+    var fileID = await client.createFile(Filecrypt.randomFilename(), targetFile,
+        progress: progress.progress);
     await client.setAccessibility(fileID, true);
     var url = await client.getURL(fileID);
     targetFile.deleteSync();
-    message.sendPort.send(IsolateMessage<String, String>(0.9, true, false, null, url));
+    message.sendPort
+        .send(IsolateMessage<String, String>(0.9, true, false, null, url));
   }
 
   Widget build(BuildContext context) {
     return WillPopScope(
-        //onWillPop: () async => false,
-        child: Container(
+      //onWillPop: () async => false,
+      child: Column(children: [
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20, bottom: 50, top: 50),
+          child: Text(
+            _step,
+          ),
+        ),
+        Container(
           color: Theme.of(context).colorScheme.background,
           child: CircularPercentIndicator(
             progressColor: Theme.of(context).colorScheme.primary,
@@ -329,7 +356,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
             lineWidth: 5.0,
             percent: _progress,
             center: Text(_progressString),
-      ),
-    ));
+          ),
+        )
+      ]),
+    );
   }
 }
