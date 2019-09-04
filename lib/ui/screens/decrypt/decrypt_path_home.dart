@@ -26,7 +26,6 @@ class _DecryptScreen extends State<DecryptScreen> {
   String _urlValidationResult;
   String _passwordValidationResult;
 
-
   void _submit(BuildContext context) {
     final form = _stateKey.currentState;
 
@@ -72,15 +71,7 @@ class _DecryptScreen extends State<DecryptScreen> {
 
     if (result != null && result.length == 2) {
       _urlController.text = result[0];
-
-      if (result[1] == null) {
-        _scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text(Strings.scannerUpdatedUrl)));
-      } else {
-        _passwordController.text = result[1];
-        _scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text(Strings.scannerUpdatedUrlAndPasssword)));
-      }
+      _passwordController.text = result[1];
     }
 
     _urlEnabled = true;
@@ -93,7 +84,8 @@ class _DecryptScreen extends State<DecryptScreen> {
 
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => DecryptProgress(url: url, password: password)),
+      MaterialPageRoute(
+          builder: (context) => DecryptProgress(url: url, password: password)),
     );
   }
 
@@ -147,7 +139,8 @@ class _DecryptScreen extends State<DecryptScreen> {
                               autofocus: false,
                             )),
                         Padding(
-                          padding: EdgeInsets.only(right: 40, left: 40, top: 20, bottom: 20),
+                          padding: EdgeInsets.only(
+                              right: 40, left: 40, top: 20, bottom: 20),
                           child: SizedBox(
                             width: globals.rootButtonWidth(context),
                             height: globals.rootButtonHeight(context),
@@ -165,8 +158,7 @@ class _DecryptScreen extends State<DecryptScreen> {
                               //icon: Icon(
                               //  Icons.cloud_upload,
                               //),
-                              child: Text(
-                                  Strings.decryptReceiveButton,
+                              child: Text(Strings.decryptReceiveButton,
                                   style: TextStyle(fontSize: 20)),
                             ),
                           ),

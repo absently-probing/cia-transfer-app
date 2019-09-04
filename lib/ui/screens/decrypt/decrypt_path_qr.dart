@@ -23,22 +23,13 @@ class _DecryptQrState extends State<DecryptQr> {
   void _qrViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((qrCode) {
-      String url;
-      String password;
-
-      // split qr code in url and optional password at first space
-      var i = qrCode.indexOf(' ');
-      if (i < 0) {
-        url = qrCode;
-      } else {
-        url = qrCode.substring(0, i);
-        password = qrCode.substring(i + 1);
-      }
-
-      if (_isValidUrl(url)) {
-        controller.pauseCamera();
-        controller.dispose();
-        Navigator.of(context, rootNavigator: true).pop([url, password]);
+      var qrSplitted = qrCode.split(' ');
+      if (qrSplitted.length == 2) {
+        if (_isValidUrl(qrSplitted[0])) {
+          controller.pauseCamera();
+          controller.dispose();
+          Navigator.of(context, rootNavigator: true).pop(qrSplitted);
+        }
       }
     });
   }
@@ -46,17 +37,17 @@ class _DecryptQrState extends State<DecryptQr> {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: QRView(
-          key: _qrKey,
-          onQRViewCreated: _qrViewCreated,
-          overlay: QrScannerOverlayShape(
-            borderColor: Colors.red,
-            borderRadius: 10,
-            borderLength: 30,
-            borderWidth: 10,
-            cutOutSize: 300,
-          ),
+      child: QRView(
+        key: _qrKey,
+        onQRViewCreated: _qrViewCreated,
+        overlay: QrScannerOverlayShape(
+          borderColor: Theme.of(context).colorScheme.primary,
+          borderRadius: 10,
+          borderLength: 30,
+          borderWidth: 10,
+          cutOutSize: 300,
         ),
+      ),
     );
   }
 
@@ -66,6 +57,6 @@ class _DecryptQrState extends State<DecryptQr> {
         requireTld: true,
         requireProtocol: true,
         // TODO: logical error in validators lib, maybe do our own validation or delegate to cloud providers
-        hostBlacklist: ['www.google.com', 'www.dropbox.com']);
+        hostBlacklist: ['drive.google.com', 'www.dropbox.com']);
   }
 }
