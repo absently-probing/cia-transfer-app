@@ -17,6 +17,23 @@ String providerToString(CloudProvider provider) {
   }
 }
 
+String providerDomain(CloudProvider provider){
+  switch (provider) {
+    case CloudProvider.GoogleDrive: return "drive.google.com";
+    case CloudProvider.DropBox: return "dropbox.com";
+    case CloudProvider.OneDrive: return "onedrive.com";
+  }
+}
+
+List<String> providerDomains(){
+  List<String> result = [];
+  for (CloudProvider provider in CloudProvider.values){
+    result.add(providerDomain(provider));
+  }
+
+  return result;
+}
+
 abstract class CloudClient {
   CloudProvider provider;
 
