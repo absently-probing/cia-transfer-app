@@ -68,11 +68,12 @@ class _DecryptScreen extends State<DecryptScreen> {
       return _urlValidationResult;
     }
 
-    if (!input.contains('@')) {
+    _urlValidationResult = null;
+    /*if (!input.contains('@')) {
       _urlValidationResult = 'Invalid Link';
     } else {
       _urlValidationResult = null;
-    }
+    }*/
 
     return _urlValidationResult;
   }
