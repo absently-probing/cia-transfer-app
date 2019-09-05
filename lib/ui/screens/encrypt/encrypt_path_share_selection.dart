@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../backend/cloud/cloudClient.dart';
-import '../../../backend/storage/mobileStorage.dart';
-import 'encrypt_path_cloud_credentials.dart';
 import '../../../data/strings.dart';
 import '../../../data/global.dart' as globals;
 import 'encrypt_path_share_qr.dart';
-import 'encrypt_path_zip_progress.dart';
+import 'encrypt_path_share_separate.dart';
+import 'encrypt_path_share_together.dart';
 
 class ShareSelection extends StatelessWidget {
   final String _url;
@@ -15,8 +13,8 @@ class ShareSelection extends StatelessWidget {
 
   List<Widget> _createShareOptionList(BuildContext context) {
     final shareOptions = {
-      Strings.shareSeparateTitle: ShareSelection(_url, _password),
-      Strings.shareTogetherTitle: ShareSelection(_url, _password),
+      Strings.shareSeparateTitle: ShareSeparate(_url, _password),
+      Strings.shareTogetherTitle: ShareTogether(_url, _password),
       Strings.shareQrTitle: ShareQr(_url, _password),
     };
 
@@ -28,7 +26,6 @@ class ShareSelection extends StatelessWidget {
           child: SizedBox(
             width: globals.rootButtonWidth(context),
             height: globals.rootButtonHeight(context),
-            
             child: OutlineButton(
               borderSide: BorderSide(
                 color: Theme.of(context).colorScheme.primary,
@@ -41,8 +38,7 @@ class ShareSelection extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => screen),
                 );
               },
-              child: Text(label,
-                  style: TextStyle(fontSize: 20)),
+              child: Text(label, style: TextStyle(fontSize: 20)),
             ),
           ),
         ),
