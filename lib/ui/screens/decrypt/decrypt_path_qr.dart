@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:validators/validators.dart' as validators;
+import '../../../data/utils.dart' as utils;
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_code_scanner/qr_scanner_overlay_shape.dart';
 
@@ -25,7 +24,7 @@ class _DecryptQrState extends State<DecryptQr> {
     controller.scannedDataStream.listen((qrCode) {
       var qrSplitted = qrCode.split(' ');
       if (qrSplitted.length == 2) {
-        if (_isValidUrl(qrSplitted[0])) {
+        if (utils.isValidUrl(qrSplitted[0])) {
           controller.pauseCamera();
           controller.dispose();
           Navigator.of(context, rootNavigator: true).pop(qrSplitted);
@@ -49,14 +48,5 @@ class _DecryptQrState extends State<DecryptQr> {
         ),
       ),
     );
-  }
-
-  bool _isValidUrl(String str) {
-    return validators.isURL(str,
-        protocols: ['https'],
-        requireTld: true,
-        requireProtocol: true,
-        // TODO: logical error in validators lib, maybe do our own validation or delegate to cloud providers
-        hostBlacklist: ['drive.google.com', 'www.dropbox.com']);
   }
 }

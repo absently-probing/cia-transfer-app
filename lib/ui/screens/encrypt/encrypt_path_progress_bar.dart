@@ -11,18 +11,19 @@ import 'dart:convert';
 import 'dart:math';
 
 import '../../../data/metadata.dart';
+
 import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
 import '../../../data/strings.dart';
 import '../../../data/isolate_messages.dart';
 import '../../../data/isolate_storage.dart';
 import '../../../ui/custom/progress_indicator.dart';
-import 'encrypt_path_final.dart';
 import '../../../backend/cloud/cloudClient.dart';
 import '../../../backend/storage/storage.dart';
 import '../../../backend/storage/mobileStorage.dart';
 import '../../../backend/crypto/cryptapi/cryptapi.dart';
 import '../../../data/progress_object.dart';
+import 'encrypt_path_share_selection.dart';
 
 // zip isolate init data
 class IsolateZipInitMessage {
@@ -304,7 +305,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
         _isolateUpload.kill();
 
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => FinalEncrypt(url, _key)));
+            MaterialPageRoute(builder: (context) => ShareSelection(url, _key)));
       }
     }
   }

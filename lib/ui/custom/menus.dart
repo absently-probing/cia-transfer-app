@@ -31,8 +31,8 @@ class MainContextMenu extends StatelessWidget {
         ),
         const PopupMenuDivider(),
         const PopupMenuItem<String>(
-          value: Strings.mainContextMneuSettings,
-          child: Text(Strings.mainContextMneuSettings),
+          value: Strings.mainContextMenuSettings,
+          child: Text(Strings.mainContextMenuSettings),
         ),
       ],
     );
