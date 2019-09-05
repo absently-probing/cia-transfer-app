@@ -1,23 +1,25 @@
+import 'dart:io';
+import 'dart:isolate';
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:archive/archive_io.dart';
+import 'package:path_provider/path_provider.dart';
+
 import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
 import '../../../data/strings.dart';
 import '../../../data/isolate_messages.dart';
 import '../../../data/isolate_storage.dart';
 import '../../../ui/custom/progress_indicator.dart';
-import 'encrypt_path_final.dart';
 import '../../../backend/cloud/cloudClient.dart';
 import '../../../backend/storage/storage.dart';
 import '../../../backend/storage/mobileStorage.dart';
 import '../../../backend/crypto/cryptapi/cryptapi.dart';
 import '../../../data/progress_object.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:archive/archive_io.dart';
-import 'dart:io';
-import 'dart:isolate';
-import 'dart:convert';
-import 'dart:math';
+import 'encrypt_path_share_selection.dart';
 
 class IsolateEncryptInitData {
   final String file;
@@ -201,7 +203,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
         _isolateUpload.kill();
 
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => FinalEncrypt(url, _key)));
+            MaterialPageRoute(builder: (context) => ShareSelection(url, _key)));
       }
     }
   }
