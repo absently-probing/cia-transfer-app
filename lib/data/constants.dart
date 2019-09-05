@@ -2,5 +2,5 @@ class Consts {
   static const encryptZipFile = "archive.zip";
   static const encryptTargetFile = "efile";
 
-  static const keySize = 43;
+  static const keySize = 44;
 }

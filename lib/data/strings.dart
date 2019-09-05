@@ -35,6 +35,10 @@ class Strings {
   static const String decryptReceiveButton = 'Receive';
   static const String decryptUrlTextField = 'URL';
   static const String decryptPasswordTextField = 'Password';
+  static const String decryptMetadata = 'Downloading encrypted metadata..';
+  static const String decryptProgressTextExtract = 'Extracting archive..';
+  static const String decryptProgressTextDecrypt = 'decrypting..';
+  static const String decryptProgressTextDownload = 'Downloading file..';
 
   static const String mainContextMenuOnboarding = 'OnBoarding';
   static const String mainContextMenuCloudStorage = 'Cloud Storage';
