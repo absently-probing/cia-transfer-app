@@ -33,6 +33,6 @@ class ProgressOject {
       progress = 0.99;
     }
 
-    sendPort.send(IsolateMessage<String, String>(progress, false, false, null, null));
+    sendPort.send(IsolateMessage<String, List<dynamic>>(progress, false, false, null, null));
   }
 }

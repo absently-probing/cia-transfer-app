@@ -81,7 +81,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
     //File(tmpDestination).deleteSync();
   }
 
-  void _communicateDownload(IsolateMessage<String, String> message) async {
+  void _communicateDownload(IsolateMessage<String, List<dynamic>> message) async {
     _updateProgress(message.progress);
     if(message.finished) {
       _downloadIsolate.kill();
@@ -94,7 +94,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
     }
   }
 
-  void _communicateDecrypt(IsolateMessage<String, String> message) async {
+  void _communicateDecrypt(IsolateMessage<String, List<dynamic>> message) async {
     _updateProgress(message.progress);
     if(message.finished) {
       _decryptIsolate.kill();
@@ -145,7 +145,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
     }, onDone: () {
       //sink.close();
       output.closeSync();
-      message.sendPort.send(IsolateMessage<String, String>(0.5, true, false, null, null));
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.5, true, false, null, null));
     }, onError: (e) {
       //sink.close();
       output.closeSync();
@@ -170,14 +170,14 @@ class _DecryptProgressState extends State<DecryptProgress> {
       bool success = encFile.writeIntoFile(
           targetFile, callback: progress.progress);
       if (!success) {
-        message.sendPort.send(IsolateMessage<String, String>(0.0, true, true, "Encryption failed", null));
+        message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, true, true, "Encryption failed", null));
       } else {
         message.sendPort.send(
-            IsolateMessage<String, String>(0.0, true, false, null, null));
+            IsolateMessage<String, List<dynamic>>(0.0, true, false, null, null));
       }
     } catch (e){
       print(e.toString());
-      message.sendPort.send(IsolateMessage<String, String>(0.0, true, true, "File error", null));
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, true, true, "File error", null));
     }
   }
 
