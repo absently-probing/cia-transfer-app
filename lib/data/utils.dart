@@ -28,7 +28,7 @@ void openURL(String url) async {
 }
 
 bool isValidUrl(String url) {
-  if (!val.isURL(input, protocols: ["https"], requireProtocol: true)) {
+  if (!val.isURL(url, protocols: ["https"], requireProtocol: true)) {
     return false;
   }
 

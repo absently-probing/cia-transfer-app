@@ -4,7 +4,6 @@ import '../../../data/strings.dart';
 import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
 import '../../../data/global.dart' as globals;
-import '../../../backend/cloud/cloudClient.dart' as cloud;
 import 'decrypt_path_qr.dart';
 import 'decrypt_path_metadata.dart';
 import '../../custom/text_field.dart';
@@ -37,28 +36,6 @@ class _DecryptScreen extends State<DecryptScreen> {
         _openProgressBar(context);
       }
     }
-  }
-
-  bool _whiteListUrl(String url) {
-    var split = url.split('://');
-
-    if (split.length < 2) {
-      return false;
-    }
-
-    split = split[1].split('/');
-
-    if (split.length < 2) {
-      return false;
-    }
-
-    for (String domain in cloud.providerDomains()) {
-      if (split[0].startsWith(domain)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   String _urlValidator(String input) {
