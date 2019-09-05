@@ -1,25 +1,27 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'dart:convert';
+import 'dart:math';
+import 'dart:io';
+import 'dart:isolate';
+
+import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
 import '../../../data/progress_object.dart';
 import '../../custom/progress_indicator.dart';
 import '../../../data/isolate_messages.dart';
 import '../../../backend/crypto/cryptapi/cryptapi.dart';
-import 'dart:io';
-import 'dart:isolate';
-import 'dart:async';
 import '../../../data/strings.dart';
 
 
 class IsolateDownloadData {
   final String url;
   final String destination;
+  final int size;
 
-  IsolateDownloadData(this.url, this.destination);
+  IsolateDownloadData(this.url, this.destination, this.size);
 }
 
 class IsolateDecryptData {
@@ -33,16 +35,18 @@ class IsolateDecryptData {
 class DecryptProgress extends StatefulWidget {
   final String url;
   final String password;
+  final int size;
 
-  DecryptProgress({@required this.url, @required this.password});
+  DecryptProgress({@required this.url, @required this.password, @required this.size});
 
   _DecryptProgressState createState() =>
-      _DecryptProgressState(url: url, password: password);
+      _DecryptProgressState(url: url, password: password, size: size);
 }
 
 class _DecryptProgressState extends State<DecryptProgress> {
   final String url;
   final String password;
+  final int size;
 
   Isolate _downloadIsolate;
   Isolate _decryptIsolate;
@@ -55,7 +59,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
   String tmpDestination; // = path+'/'+filename;
   String persistentDestination;
 
-  _DecryptProgressState({this.url, this.password}) {
+  _DecryptProgressState({this.url, this.password, this.size}) {
     start();
   }
 
@@ -66,11 +70,11 @@ class _DecryptProgressState extends State<DecryptProgress> {
 
   void start() async {
     ReceivePort receivePort= ReceivePort(); //port for this main isolate to receive messages.
-    filename = 'secureUpload-'+Filecrypt.randomFilename();
+    filename = Consts.decryptEncFile;
     path = (await getTemporaryDirectory()).path;
     tmpDestination = path+'/'+filename;
-    persistentDestination = (await getExternalStorageDirectory()).path+'/'+filename;
-    _downloadIsolate = await Isolate.spawn(downloadFile, IsolateInitMessage<IsolateDownloadData>(receivePort.sendPort, IsolateDownloadData(url, tmpDestination)));
+    persistentDestination = (await getExternalStorageDirectory()).path+'/'+Consts.decryptZipFile;
+    _downloadIsolate = await Isolate.spawn(downloadFile, IsolateInitMessage<IsolateDownloadData>(receivePort.sendPort, IsolateDownloadData(url, tmpDestination, size)));
     receivePort.listen((data) {
       _communicateDownload(data);
     });
@@ -128,12 +132,17 @@ class _DecryptProgressState extends State<DecryptProgress> {
     var file = File(tmpFile);
     //var sink = file.openWrite();
     var output = file.openSync(mode: FileMode.write);
-    var allBytes = await response.contentLength;//50000;//await response.length;
+    //var allBytes = await response.contentLength;//50000;//await response.length;
+    var allBytes = message.data.size;
     var writtenBytes = 0;
     ProgressOject progress = ProgressOject(message.sendPort, 0.0, 0.5);
     response.listen((List event) {
       //var writtenBytesNew = writtenBytes+event.length;
       writtenBytes = writtenBytes + event.length;
+      if (writtenBytes > allBytes){
+        throw FormatException("wrong size");
+      }
+
       output.writeFromSync(event);
       //sink.add(event);
       /*
@@ -149,6 +158,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
     }, onError: (e) {
       //sink.close();
       output.closeSync();
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, e.toString(), null));
     });
     //await Isolate.spawn(encrypt, IsolateInitMessage<IsolateEncryptInitData>(_receiveEncrypt.sendPort, IsolateEncryptInitData(file, _appDocDir)))
   }

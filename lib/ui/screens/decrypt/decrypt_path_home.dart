@@ -7,7 +7,7 @@ import '../../../data/utils.dart' as utils;
 import '../../../data/global.dart' as globals;
 import '../../../backend/cloud/cloudClient.dart' as cloud;
 import 'decrypt_path_qr.dart';
-import 'decrypt_path_progress_bar.dart';
+import 'decrypt_path_metadata.dart';
 import '../../custom/text_field.dart';
 import '../../custom/icons.dart';
 
@@ -116,7 +116,7 @@ class _DecryptScreen extends State<DecryptScreen> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => DecryptProgress(url: url, password: password)),
+          builder: (context) => DecryptMetadata(url, password)),
     );
   }
 

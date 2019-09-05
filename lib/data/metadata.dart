@@ -8,7 +8,7 @@ class FileMetadata {
   FileMetadata(this.filenames, this.size, this.timestamp, this.fileLink, {this.publicKey = ""});
 
   FileMetadata.fromJson(Map<String, dynamic> json)
-      : filenames = json['filenames'],
+      : filenames = List<String>.from(json['filenames']),
         size = json['size'],
         timestamp = json['timestamp'],
         fileLink = json['fileLink'],
@@ -19,7 +19,7 @@ class FileMetadata {
       {
         'filenames': filenames,
         'size' : size,
-        'timestmap' : timestamp,
+        'timestamp' : timestamp,
         'fileLink' : fileLink,
         'publicKey' : publicKey,
       };

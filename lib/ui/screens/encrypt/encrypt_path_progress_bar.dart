@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive_io.dart';
+import 'package:path/path.dart' as p;
 
 import 'dart:io';
 import 'dart:isolate';
@@ -433,8 +434,14 @@ class _EncryptProgressState extends State<EncryptProgress> {
   static void encMetadata(IsolateInitMessage<IsolateEncMetadataInitData> message) async {
     List<int> _rkey = base64.decode(message.data.key);
     int timestamp = DateTime.now().toUtc().millisecondsSinceEpoch;
+    
+    List<String> filenames = [];
+    for (String file in message.data.files){
+      filenames.add(p.basename(file));
+    }
+
     FileMetadata meta = FileMetadata(
-        message.data.files,
+        filenames,
         message.data.size,
         timestamp,
         message.data.fileUrl,

@@ -85,6 +85,9 @@ dependencies:
   #Package to use custom app launcher icons.
   flutter_launcher_icons: ^0.7.2+1
 
+  # get filename from path
+  path: ^1.6.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

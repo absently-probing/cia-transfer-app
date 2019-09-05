@@ -32,14 +32,24 @@ class Strings {
   static const String encryptCloudSelection = 'Cloud Storage Selection';
   static const String encryptCloudCredentials = 'Cloud Credentials';
 
+  // decrypt home
   static const String decryptReceiveButton = 'Receive';
   static const String decryptUrlTextField = 'URL';
   static const String decryptPasswordTextField = 'Password';
+
+  // decrypt metadata
+  static const String decryptMetadataLabel = 'File information';
   static const String decryptMetadata = 'Downloading encrypted metadata..';
+  static const String decryptMetadataInfo = 'File properties:';
+  static const String decryptMetadataCancelButton = 'Cancel';
+  static const String decryptMetadataReceiveButton = 'Receive';
+
+  // decrypt progress bar
   static const String decryptProgressTextExtract = 'Extracting archive..';
   static const String decryptProgressTextDecrypt = 'decrypting..';
   static const String decryptProgressTextDownload = 'Downloading file..';
 
+  // onboarding screens
   static const String mainContextMenuOnboarding = 'OnBoarding';
   static const String mainContextMenuCloudStorage = 'Cloud Storage';
   static const String mainContextMenuSync = 'Synchronization';
