@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:validators/validators.dart' as val;
+import '../backend/cloud/cloudClient.dart' as cloud;
 
 Size screenSize(BuildContext context) {
   return MediaQuery.of(context).size;
@@ -23,4 +25,30 @@ void openURL(String url) async {
   } else {
     throw 'Could not launch $url';
   }
+}
+
+bool isValidUrl(String url) {
+  if (!val.isURL(url, protocols: ["https"], requireProtocol: true)) {
+    return false;
+  }
+
+  var split = url.split('://');
+
+  if (split.length < 2){
+    return false;
+  }
+
+  split = split[1].split('/');
+
+  if (split.length < 2 ){
+    return false;
+  }
+
+  for (String domain in cloud.providerDomains()){
+    if (split[0].startsWith(domain)){
+      return true;
+    }
+  }
+
+  return false;
 }

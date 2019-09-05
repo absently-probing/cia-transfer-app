@@ -1,5 +1,3 @@
-//import 'package:flutter/material.dart';
-
 class Strings {
   static const String appTitle = "Secure Sharing";
   static const String titleTextFont = "OpenSans";
@@ -16,7 +14,7 @@ class Strings {
   static const String onboardingSkip = "Skip";
   static const String scannerTooltip = "Open QR Code scanner";
   static const String scannerUpdatedUrl = "Updated url from scanned QR code!";
-  static const String scannerUpdatedUrlAndPasssword = "Updated url and password from scanned QR code!";
+  static const String scannerUpdatedUrlAndPassword = "Updated url and password from scanned QR code!";
 
   static const String homeScreenEncryptLabel = 'Share files';
   static const String homeScreenDecryptLabel = 'Receive files';
@@ -32,18 +30,41 @@ class Strings {
   static const String encryptCloudSelection = 'Cloud Storage Selection';
   static const String encryptCloudCredentials = 'Cloud Credentials';
 
+  static const String shareSelectionTitle = "Share Files";
+  static const String shareQrTitle = "Share QR Code";
+  static const String shareQrInfo = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+  static const String shareSeparateTitle = "Share URL and PW Separatly";
+  static const String shareSeparateInfoUrl = "URL: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+  static const String shareSeparateButtonLabelUrl = "Share Url";
+  static const String shareSeparateInfoPassword = "PW: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+  static const String shareSeparateButtonLabelPassword = "Share Password";
+  static const String shareTogetherTitle = "Share URL and PW Together";
+  static const String shareTogetherInfo = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+  static const String shareTogetherButtonLabel = "Share";
+
+  // decrypt home
   static const String decryptReceiveButton = 'Receive';
   static const String decryptUrlTextField = 'URL';
   static const String decryptPasswordTextField = 'Password';
 
+  // decrypt metadata
+  static const String decryptMetadataLabel = 'File information';
+  static const String decryptMetadata = 'Downloading encrypted metadata..';
+  static const String decryptMetadataInfo = 'File properties:';
+  static const String decryptMetadataCancelButton = 'Cancel';
+  static const String decryptMetadataReceiveButton = 'Receive';
+
+  // decrypt progress bar
+  static const String decryptProgressTextExtract = 'Extracting archive..';
+  static const String decryptProgressTextDecrypt = 'decrypting..';
+  static const String decryptProgressTextDownload = 'Downloading file..';
+
+  // onboarding screens
   static const String mainContextMenuOnboarding = 'OnBoarding';
   static const String mainContextMenuCloudStorage = 'Cloud Storage';
   static const String mainContextMenuSync = 'Synchronization';
-  static const String mainContextMneuSettings = 'Settings';
+  static const String mainContextMenuSettings = 'Settings';
 
   static const String Sharing = "Share files";
-
   static const String Receive = "Receive files";
-
-
 }

@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:validators/validators.dart' as val;
 
 import '../../../data/strings.dart';
 import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
 import '../../../data/global.dart' as globals;
-import '../../../backend/cloud/cloudClient.dart' as cloud;
 import 'decrypt_path_qr.dart';
-import 'decrypt_path_progress_bar.dart';
+import 'decrypt_path_metadata.dart';
 import '../../custom/text_field.dart';
 import '../../custom/icons.dart';
 
 import 'dart:convert';
-
 
 class DecryptScreen extends StatefulWidget {
   @override
@@ -41,34 +38,8 @@ class _DecryptScreen extends State<DecryptScreen> {
     }
   }
 
-  bool _whiteListUrl(String url){
-    var split = url.split('://');
-
-    if (split.length < 2){
-      return false;
-    }
-
-    split = split[1].split('/');
-
-    if (split.length < 2 ){
-      return false;
-    }
-
-    for (String domain in cloud.providerDomains()){
-      if (split[0].startsWith(domain)){
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   String _urlValidator(String input) {
-    if (!val.isURL(input, protocols: ["https"], requireProtocol: true)) {
-      return 'Invalid Link';
-    }
-
-    if (!_whiteListUrl(input)){
+    if (!utils.isValidUrl(input)) {
       return 'Invalid Link';
     }
 
@@ -82,7 +53,7 @@ class _DecryptScreen extends State<DecryptScreen> {
 
     try {
       base64Decode(input);
-    } catch (e){
+    } catch (e) {
       return "Wrong password";
     }
 
@@ -116,7 +87,7 @@ class _DecryptScreen extends State<DecryptScreen> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => DecryptProgress(url: url, password: password)),
+          builder: (context) => DecryptMetadata(url, password)),
     );
   }
 

@@ -1,60 +1,27 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:secure_upload/data/utils.dart' as utils;
-import 'package:secure_upload/ui/custom/progress_indicator.dart';
-import 'package:secure_upload/data/isolate_messages.dart';
-import 'package:secure_upload/backend/crypto/cryptapi/cryptapi.dart';
+
+import 'dart:convert';
+import 'dart:math';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:async';
+
+import '../../../data/constants.dart';
+import '../../../data/utils.dart' as utils;
+import '../../../data/progress_object.dart';
+import '../../custom/progress_indicator.dart';
+import '../../../data/isolate_messages.dart';
+import '../../../backend/crypto/cryptapi/cryptapi.dart';
 import '../../../data/strings.dart';
-
-class ProgressOject {
-  final SendPort sendPort;
-  double _start;
-  double _end;
-
-  ProgressOject(this.sendPort, startValue, endValue){
-    double checkStart = startValue;
-    double checkEnd = endValue;
-    if (checkStart < 0.0){
-      checkStart = 0.0;
-    }
-
-    if (checkEnd > 1.0){
-      checkEnd = 1.0;
-    }
-
-    if (checkStart >= checkEnd){
-      checkStart = 0.0;
-      checkEnd = 1.0;
-    }
-
-    _start = checkStart;
-    _end = checkEnd;
-  }
-
-  void progress(int status, int all, bool finished) {
-    double progress = _start + (status / all) * (_end - _start);
-
-    if (progress >= 1.0 && !finished){
-      progress = 0.99;
-    }
-
-    sendPort.send(IsolateMessage<String, String>(progress, false, false, null, null));
-  }
-}
 
 
 class IsolateDownloadData {
   final String url;
   final String destination;
+  final int size;
 
-  IsolateDownloadData(this.url, this.destination);
+  IsolateDownloadData(this.url, this.destination, this.size);
 }
 
 class IsolateDecryptData {
@@ -68,28 +35,31 @@ class IsolateDecryptData {
 class DecryptProgress extends StatefulWidget {
   final String url;
   final String password;
+  final int size;
 
-  DecryptProgress({@required this.url, @required this.password});
+  DecryptProgress({@required this.url, @required this.password, @required this.size});
 
   _DecryptProgressState createState() =>
-      _DecryptProgressState(url: url, password: password);
+      _DecryptProgressState(url: url, password: password, size: size);
 }
 
 class _DecryptProgressState extends State<DecryptProgress> {
   final String url;
   final String password;
+  final int size;
 
   Isolate _downloadIsolate;
   Isolate _decryptIsolate;
   double _progress = 0.0;
   String _progressString = "0%";
+  String _step = Strings.decryptProgressTextDownload;
 
   String filename; // = 'secureUpload-'+Filecrypt.randomFilename();
   String path; // = (await getTemporaryDirectory()).path;
   String tmpDestination; // = path+'/'+filename;
   String persistentDestination;
 
-  _DecryptProgressState({this.url, this.password}) {
+  _DecryptProgressState({this.url, this.password, this.size}) {
     start();
   }
 
@@ -100,12 +70,11 @@ class _DecryptProgressState extends State<DecryptProgress> {
 
   void start() async {
     ReceivePort receivePort= ReceivePort(); //port for this main isolate to receive messages.
-    filename = 'secureUpload-'+Filecrypt.randomFilename();
+    filename = Consts.decryptEncFile;
     path = (await getTemporaryDirectory()).path;
     tmpDestination = path+'/'+filename;
-    persistentDestination = (await getExternalStorageDirectory()).path+'/'+filename;
-    _downloadIsolate = await Isolate.spawn(downloadFile, IsolateInitMessage<IsolateDownloadData>(receivePort.sendPort, IsolateDownloadData(url, tmpDestination)));
-    //_isolate = await Isolate.spawn(runTimer, receivePort.sendPort);
+    persistentDestination = (await getExternalStorageDirectory()).path+'/'+Consts.decryptZipFile;
+    _downloadIsolate = await Isolate.spawn(downloadFile, IsolateInitMessage<IsolateDownloadData>(receivePort.sendPort, IsolateDownloadData(url, tmpDestination, size)));
     receivePort.listen((data) {
       _communicateDownload(data);
     });
@@ -116,11 +85,12 @@ class _DecryptProgressState extends State<DecryptProgress> {
     //File(tmpDestination).deleteSync();
   }
 
-  void _communicateDownload(IsolateMessage<String, String> message) async {
+  void _communicateDownload(IsolateMessage<String, List<dynamic>> message) async {
     _updateProgress(message.progress);
     if(message.finished) {
       _downloadIsolate.kill();
       ReceivePort receivePort= ReceivePort();
+      _step = Strings.decryptProgressTextDecrypt;
       _decryptIsolate = await Isolate.spawn(decryptFile, IsolateInitMessage<IsolateDecryptData>(receivePort.sendPort, IsolateDecryptData(tmpDestination, password, persistentDestination)));
       receivePort.listen((data) {
         _communicateDecrypt(data);
@@ -128,10 +98,11 @@ class _DecryptProgressState extends State<DecryptProgress> {
     }
   }
 
-  void _communicateDecrypt(IsolateMessage<String, String> message) async {
+  void _communicateDecrypt(IsolateMessage<String, List<dynamic>> message) async {
     _updateProgress(message.progress);
     if(message.finished) {
       _decryptIsolate.kill();
+      _step = Strings.decryptProgressTextExtract;
       File(tmpDestination).deleteSync();
     }
   }
@@ -161,23 +132,33 @@ class _DecryptProgressState extends State<DecryptProgress> {
     var file = File(tmpFile);
     //var sink = file.openWrite();
     var output = file.openSync(mode: FileMode.write);
-    var allBytes = response.contentLength;//50000;//await response.length;
+    //var allBytes = await response.contentLength;//50000;//await response.length;
+    var allBytes = message.data.size;
     var writtenBytes = 0;
+    ProgressOject progress = ProgressOject(message.sendPort, 0.0, 0.5);
     response.listen((List event) {
-      var writtenBytesNew = writtenBytes+event.length;
+      //var writtenBytesNew = writtenBytes+event.length;
+      writtenBytes = writtenBytes + event.length;
+      if (writtenBytes > allBytes){
+        throw FormatException("wrong size");
+      }
+
       output.writeFromSync(event);
       //sink.add(event);
+      /*
       if(writtenBytesNew % 1024 != writtenBytes % 1024) {
         message.sendPort.send(IsolateMessage<String, String>(writtenBytesNew/(2*allBytes), false, false, null, null));
-      }
-      writtenBytes = writtenBytesNew;
+      }*/
+      progress.progress(writtenBytes, allBytes, false);
+      //writtenBytes = writtenBytesNew;
     }, onDone: () {
       //sink.close();
       output.closeSync();
-      message.sendPort.send(IsolateMessage<String, String>(0.5, true, false, null, null));
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.5, true, false, null, null));
     }, onError: (e) {
       //sink.close();
       output.closeSync();
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, e.toString(), null));
     });
     //await Isolate.spawn(encrypt, IsolateInitMessage<IsolateEncryptInitData>(_receiveEncrypt.sendPort, IsolateEncryptInitData(file, _appDocDir)))
   }
@@ -199,41 +180,53 @@ class _DecryptProgressState extends State<DecryptProgress> {
       bool success = encFile.writeIntoFile(
           targetFile, callback: progress.progress);
       if (!success) {
-        message.sendPort.send(IsolateMessage<String, String>(0.0, true, true, "Encryption failed", null));
+        message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, true, true, "Encryption failed", null));
       } else {
         message.sendPort.send(
-            IsolateMessage<String, String>(0.0, true, false, null, null));
+            IsolateMessage<String, List<dynamic>>(0.0, true, false, null, null));
       }
     } catch (e){
       print(e.toString());
-      message.sendPort.send(IsolateMessage<String, String>(0.0, true, true, "File error", null));
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, true, true, "File error", null));
     }
   }
 
-
-  // TODO start download and decryption
-  static void runTimer(SendPort sendPort) {
-    double progress = 0.0;
-    Timer.periodic(new Duration(seconds: 1), (Timer t) {
-      progress = progress + 0.1;
-      sendPort.send(progress);
-    });
-  }
-
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: WillPopScope(
         //onWillPop: () async => false,
-        child: Container(
-          color: Theme.of(context).colorScheme.background,
-          child: CircularPercentIndicator(
-            progressColor: Theme.of(context).colorScheme.primary,
-            radius: utils.screenWidth(context) / 2,
-            animation: true,
-            animateFromLastPercent: true,
-            lineWidth: 5.0,
-            percent: _progress,
-            center: Text(_progressString),
-      ),
-    ));
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(children: [
+              Padding(
+                padding:
+                EdgeInsets.only(left: 20, right: 20, bottom: 50, top: 50),
+                child: Text(
+                  _step,
+                  style: TextStyle(
+                    color: Colors.white,
+                    decoration: TextDecoration.none,
+                    fontFamily: Strings.titleTextFont,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.0,
+                  ),
+                ),
+              ),
+              Container(
+                child: CircularPercentIndicator(
+                  progressColor: Theme.of(context).colorScheme.primary,
+                  radius: min(utils.screenWidth(context) / 2, utils.screenHeight(context) / 2),
+                  animation: true,
+                  animateFromLastPercent: true,
+                  lineWidth: 5.0,
+                  percent: _progress,
+                  center: Text(_progressString),
+                ),
+              )
+            ]),
+          ),
+        ),
+      ),);
   }
 }
