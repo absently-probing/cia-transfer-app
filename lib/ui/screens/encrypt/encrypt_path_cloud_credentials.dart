@@ -3,7 +3,7 @@ import 'package:device_apps/device_apps.dart';
 
 import '../../../backend/cloud/cloudClient.dart';
 import '../../../data/strings.dart';
-import 'encrypt_path_zip_progress.dart';
+import 'encrypt_path_progress_bar.dart';
 import '../../../data/utils.dart' as utils;
 
 
@@ -30,7 +30,7 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ZipProgress(
+            builder: (context) => EncryptProgress(
                 files: files, cloudProvider: cloudClient.provider)));
   }
 

@@ -4,50 +4,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:secure_upload/data/utils.dart' as utils;
-import 'package:secure_upload/ui/custom/progress_indicator.dart';
-import 'package:secure_upload/data/isolate_messages.dart';
-import 'package:secure_upload/backend/crypto/cryptapi/cryptapi.dart';
+import '../../../data/utils.dart' as utils;
+import '../../../data/progress_object.dart';
+import '../../custom/progress_indicator.dart';
+import '../../../data/isolate_messages.dart';
+import '../../../backend/crypto/cryptapi/cryptapi.dart';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:async';
 import '../../../data/strings.dart';
-
-class ProgressOject {
-  final SendPort sendPort;
-  double _start;
-  double _end;
-
-  ProgressOject(this.sendPort, startValue, endValue){
-    double checkStart = startValue;
-    double checkEnd = endValue;
-    if (checkStart < 0.0){
-      checkStart = 0.0;
-    }
-
-    if (checkEnd > 1.0){
-      checkEnd = 1.0;
-    }
-
-    if (checkStart >= checkEnd){
-      checkStart = 0.0;
-      checkEnd = 1.0;
-    }
-
-    _start = checkStart;
-    _end = checkEnd;
-  }
-
-  void progress(int status, int all, bool finished) {
-    double progress = _start + (status / all) * (_end - _start);
-
-    if (progress >= 1.0 && !finished){
-      progress = 0.99;
-    }
-
-    sendPort.send(IsolateMessage<String, String>(progress, false, false, null, null));
-  }
-}
 
 
 class IsolateDownloadData {
@@ -83,6 +48,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
   Isolate _decryptIsolate;
   double _progress = 0.0;
   String _progressString = "0%";
+  String _step = Strings.decryptProgressTextDownload;
 
   String filename; // = 'secureUpload-'+Filecrypt.randomFilename();
   String path; // = (await getTemporaryDirectory()).path;
@@ -105,7 +71,6 @@ class _DecryptProgressState extends State<DecryptProgress> {
     tmpDestination = path+'/'+filename;
     persistentDestination = (await getExternalStorageDirectory()).path+'/'+filename;
     _downloadIsolate = await Isolate.spawn(downloadFile, IsolateInitMessage<IsolateDownloadData>(receivePort.sendPort, IsolateDownloadData(url, tmpDestination)));
-    //_isolate = await Isolate.spawn(runTimer, receivePort.sendPort);
     receivePort.listen((data) {
       _communicateDownload(data);
     });
@@ -121,6 +86,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
     if(message.finished) {
       _downloadIsolate.kill();
       ReceivePort receivePort= ReceivePort();
+      _step = Strings.decryptProgressTextDecrypt;
       _decryptIsolate = await Isolate.spawn(decryptFile, IsolateInitMessage<IsolateDecryptData>(receivePort.sendPort, IsolateDecryptData(tmpDestination, password, persistentDestination)));
       receivePort.listen((data) {
         _communicateDecrypt(data);
@@ -132,6 +98,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
     _updateProgress(message.progress);
     if(message.finished) {
       _decryptIsolate.kill();
+      _step = Strings.decryptProgressTextExtract;
       File(tmpDestination).deleteSync();
     }
   }
@@ -161,16 +128,20 @@ class _DecryptProgressState extends State<DecryptProgress> {
     var file = File(tmpFile);
     //var sink = file.openWrite();
     var output = file.openSync(mode: FileMode.write);
-    var allBytes = response.contentLength;//50000;//await response.length;
+    var allBytes = await response.contentLength;//50000;//await response.length;
     var writtenBytes = 0;
+    ProgressOject progress = ProgressOject(message.sendPort, 0.0, 0.5);
     response.listen((List event) {
-      var writtenBytesNew = writtenBytes+event.length;
+      //var writtenBytesNew = writtenBytes+event.length;
+      writtenBytes = writtenBytes + event.length;
       output.writeFromSync(event);
       //sink.add(event);
+      /*
       if(writtenBytesNew % 1024 != writtenBytes % 1024) {
         message.sendPort.send(IsolateMessage<String, String>(writtenBytesNew/(2*allBytes), false, false, null, null));
-      }
-      writtenBytes = writtenBytesNew;
+      }*/
+      progress.progress(writtenBytes, allBytes, false);
+      //writtenBytes = writtenBytesNew;
     }, onDone: () {
       //sink.close();
       output.closeSync();
@@ -210,30 +181,42 @@ class _DecryptProgressState extends State<DecryptProgress> {
     }
   }
 
-
-  // TODO start download and decryption
-  static void runTimer(SendPort sendPort) {
-    double progress = 0.0;
-    Timer.periodic(new Duration(seconds: 1), (Timer t) {
-      progress = progress + 0.1;
-      sendPort.send(progress);
-    });
-  }
-
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: WillPopScope(
         //onWillPop: () async => false,
-        child: Container(
-          color: Theme.of(context).colorScheme.background,
-          child: CircularPercentIndicator(
-            progressColor: Theme.of(context).colorScheme.primary,
-            radius: utils.screenWidth(context) / 2,
-            animation: true,
-            animateFromLastPercent: true,
-            lineWidth: 5.0,
-            percent: _progress,
-            center: Text(_progressString),
-      ),
-    ));
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(children: [
+              Padding(
+                padding:
+                EdgeInsets.only(left: 20, right: 20, bottom: 50, top: 50),
+                child: Text(
+                  _step,
+                  style: TextStyle(
+                    color: Colors.white,
+                    decoration: TextDecoration.none,
+                    fontFamily: Strings.titleTextFont,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.0,
+                  ),
+                ),
+              ),
+              Container(
+                child: CircularPercentIndicator(
+                  progressColor: Theme.of(context).colorScheme.primary,
+                  radius: min(utils.screenWidth(context) / 2, utils.screenHeight(context) / 2),
+                  animation: true,
+                  animateFromLastPercent: true,
+                  lineWidth: 5.0,
+                  percent: _progress,
+                  center: Text(_progressString),
+                ),
+              )
+            ]),
+          ),
+        ),
+      ),);
   }
 }

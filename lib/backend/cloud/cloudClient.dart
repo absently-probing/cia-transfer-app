@@ -17,6 +17,23 @@ String providerToString(CloudProvider provider) {
   }
 }
 
+String providerDomain(CloudProvider provider){
+  switch (provider) {
+    case CloudProvider.GoogleDrive: return "drive.google.com";
+    case CloudProvider.DropBox: return "dropbox.com";
+    case CloudProvider.OneDrive: return "onedrive.com";
+  }
+}
+
+List<String> providerDomains(){
+  List<String> result = [];
+  for (CloudProvider provider in CloudProvider.values){
+    result.add(providerDomain(provider));
+  }
+
+  return result;
+}
+
 abstract class CloudClient {
   CloudProvider provider;
 
@@ -27,7 +44,7 @@ abstract class CloudClient {
   Future<void> authenticate(void callback(String url));
 
   //returns fileID
-  Future<String> createFile(String name, File localFile);
+  Future<String> createFile(String name, File localFile, {progress(int state, int quota, bool done)});
 
   void deleteFile(String fileID);
 

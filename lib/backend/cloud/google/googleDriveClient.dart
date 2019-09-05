@@ -1,6 +1,8 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:googleapis/analytics/v3.dart';
+
 import '../cloudClient.dart' as cloudClient;
 import '../../storage/storage.dart';
 
@@ -33,9 +35,18 @@ class GoogleDriveClient extends cloudClient.CloudClient {
     });
   }
 
-  Future<String> createFile(String name, File localFile) async {
+  Future<String> createFile(String name, File localFile, {progress(int state, int quota, bool done)}) async {
       var client = await _getAuthorizedClient();
-      var fileID = _writeFile(name, localFile.openRead(), localFile.lengthSync(), client);
+      Stream<List<int>> stream = localFile.openRead();
+      final int size = localFile.lengthSync();
+      var uploaded = 0;
+      var stream2 = stream.map((chunk) {
+        uploaded += chunk.length;
+        progress(uploaded, size, false);
+        return chunk;
+      });
+
+      var fileID = _writeFile(name, stream2, size, client);
       return fileID;
   }
 

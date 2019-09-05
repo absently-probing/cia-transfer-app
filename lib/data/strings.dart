@@ -19,6 +19,11 @@ class Strings {
   static const String homeScreenEncryptLabel = 'Share files';
   static const String homeScreenDecryptLabel = 'Receive files';
 
+  static const String encryptProgressTextZip = 'Creating archive..';
+  static const String encryptProgressTextEncrypt = 'Encrypting..';
+  static const String encryptProgressTextUpload = 'Uploading file..';
+  static const String encryptProgressTextMetadata = 'Creating encrypted metadata..';
+
   static const String encryptShareUrl = 'Share URL only';
   static const String encryptSharePassword = 'Share Password only';
   static const String encryptShareBoth = 'Share both';
@@ -40,6 +45,10 @@ class Strings {
   static const String decryptReceiveButton = 'Receive';
   static const String decryptUrlTextField = 'URL';
   static const String decryptPasswordTextField = 'Password';
+  static const String decryptMetadata = 'Downloading encrypted metadata..';
+  static const String decryptProgressTextExtract = 'Extracting archive..';
+  static const String decryptProgressTextDecrypt = 'decrypting..';
+  static const String decryptProgressTextDownload = 'Downloading file..';
 
   static const String mainContextMenuOnboarding = 'OnBoarding';
   static const String mainContextMenuCloudStorage = 'Cloud Storage';

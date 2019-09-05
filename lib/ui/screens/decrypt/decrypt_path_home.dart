@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:validators/validators.dart' as val;
 
 import '../../../data/strings.dart';
+import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
 import '../../../data/global.dart' as globals;
+import '../../../backend/cloud/cloudClient.dart' as cloud;
 import 'decrypt_path_qr.dart';
 import 'decrypt_path_progress_bar.dart';
 import '../../custom/text_field.dart';
 import '../../custom/icons.dart';
+
+import 'dart:convert';
+
 
 class DecryptScreen extends StatefulWidget {
   @override
@@ -23,9 +29,6 @@ class _DecryptScreen extends State<DecryptScreen> {
   var _urlController = TextEditingController();
   var _passwordController = TextEditingController();
 
-  String _urlValidationResult;
-  String _passwordValidationResult;
-
   void _submit(BuildContext context) {
     final form = _stateKey.currentState;
 
@@ -33,29 +36,57 @@ class _DecryptScreen extends State<DecryptScreen> {
       form.save();
 
       if (_urlController.text != "" && _passwordController.text != "") {
-        _performLogin(context);
+        _openProgressBar(context);
       }
     }
   }
 
-  String _urlValidator(String input) {
-    /*if (!input.contains('@')) {
-      _urlValidationResult = 'Invalid Link';
-    } else {
-      _urlValidationResult = null;
-    }*/
+  bool _whiteListUrl(String url){
+    var split = url.split('://');
 
-    return _urlValidationResult;
+    if (split.length < 2){
+      return false;
+    }
+
+    split = split[1].split('/');
+
+    if (split.length < 2 ){
+      return false;
+    }
+
+    for (String domain in cloud.providerDomains()){
+      if (split[0].startsWith(domain)){
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  String _urlValidator(String input) {
+    if (!val.isURL(input, protocols: ["https"], requireProtocol: true)) {
+      return 'Invalid Link';
+    }
+
+    if (!_whiteListUrl(input)){
+      return 'Invalid Link';
+    }
+
+    return null;
   }
 
   String _passwordValidator(String input) {
-    if (input.isEmpty) {
-      _passwordValidationResult = "Required";
-    } else {
-      _passwordValidationResult = null;
+    if (input.isEmpty || input.length != Consts.keySize) {
+      return "Invalid password";
     }
 
-    return _passwordValidationResult;
+    try {
+      base64Decode(input);
+    } catch (e){
+      return "Wrong password";
+    }
+
+    return null;
   }
 
   _openQRCodeScanner(BuildContext context) async {
@@ -78,7 +109,7 @@ class _DecryptScreen extends State<DecryptScreen> {
     _passwordEnabled = true;
   }
 
-  void _performLogin(BuildContext context) async {
+  void _openProgressBar(BuildContext context) async {
     final String url = _urlController.text;
     final String password = _passwordController.text;
 
