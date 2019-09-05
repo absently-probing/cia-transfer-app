@@ -6,9 +6,9 @@ import '../../data/global.dart' as globals;
 import '../custom/logo.dart';
 import 'decrypt/decrypt_path_home.dart';
 import 'encrypt/encrypt_path_home.dart';
+import 'encrypt/encrypt_path_share_selection.dart';
 import 'onboarding/walkthrough_screen.dart';
 import 'package:libsodium/libsodium.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:io';
 
@@ -41,10 +41,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _menuAction(String input, BuildContext context) {
+    // TODO: remove from production code, only for testing
     if (input == Strings.mainContextMenuOnboarding) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => WalkthroughScreen()),
+      );
+    }
+    if (input == Strings.shareSelectionTitle) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ShareSelection("testurl", "testpw")),
       );
     }
   }
@@ -67,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (!_libsodium) {
       return AlertDialog(
-        content: Text("Sorry your Device is not supported yet.",
+        content: Text(
+          "Sorry your Device is not supported yet.",
           style: TextStyle(color: Colors.black),
         ),
         actions: [
