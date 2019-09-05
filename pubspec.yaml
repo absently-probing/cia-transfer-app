@@ -94,9 +94,9 @@ dev_dependencies:
 flutter_icons:
   android: "app_icon"
   ios: true
-  image_path: "assets/icons/app_icon.jpg"
-  adaptive_icon_background: "#07ACC0"
-  adaptive_icon_foreground: "assets/icons/adaptive_icon.jpg"
+  image_path: "assets/icons/app_icon.png"
+  adaptive_icon_background: "#00ABC1"
+  adaptive_icon_foreground: "assets/icons/adaptive_icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -111,8 +111,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/icons/app_icon.jpg
-    - assets/icons/adaptive_icon.jpg
+    - assets/icons/app_icon.png
+    - assets/icons/adaptive_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
