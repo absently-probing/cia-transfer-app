@@ -125,42 +125,57 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
     });
   }
 
-  List<TableRow> _createFileInfo() {
-    List<TableRow> showInfo = [];
-
+  ListView _createFileInfo() {
     List table = _metadata.showMetadata();
     List<String> keys = table[0];
+    List<String> rkeys = [];
+    List<String> values = [];
     Map<String, String> map = table[1];
 
     for (String key in keys) {
       if (map[key] != "") {
-        showInfo.add(
-          TableRow(children: [
-            Padding(
-                padding:
-                    EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-                child: Text(
-                  key,
-                  style: Theme.of(context).primaryTextTheme.body1,
-                )),
-            Padding(
-              padding:
-                  EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  map[key],
-                  textAlign: TextAlign.right,
-                  style: Theme.of(context).primaryTextTheme.body1,
-              ),
-              ),
-            ),
-          ]),
-        );
+        rkeys.add(key);
+        values.add(map[key]);
       }
     }
 
-    return showInfo;
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 10.0),
+      itemCount: rkeys.length,
+      itemBuilder: (BuildContext ctxt, int index) {
+        final item = rkeys[index];
+        final itemValue = values[index];
+
+        return Card(
+            key: Key(item),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                    padding: EdgeInsets.only(
+                        left: 20, right: 20, top: 10, bottom: 10),
+                    child: Text(
+                      item,
+                      style: Theme.of(context).primaryTextTheme.body1,
+                    )),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: 20, right: 20, top: 10, bottom: 10),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        itemValue,
+                        textAlign: TextAlign.right,
+                        style: Theme.of(context).primaryTextTheme.body1,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ));
+      },
+    );
   }
 
   void _cancelPressed() {
@@ -281,78 +296,74 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
     }
 
     return Scaffold(
-      appBar: appBar,
-      persistentFooterButtons: [
-        Container(
-          width: utils.screenWidth(context) - 16,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: OutlineButton(
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  hoverColor: Theme.of(context).colorScheme.primary,
-                  textColor: Theme.of(context).colorScheme.primary,
-                  onPressed: () {
-                    _cancelPressed();
-                  },
-                  //icon: Icon(
-                  //  Icons.cloud_upload,
-                  //),
-                  child: Text(
-                    Strings.decryptMetadataCancelButton,
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: OutlineButton(
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  hoverColor: Theme.of(context).colorScheme.primary,
-                  textColor: Theme.of(context).colorScheme.primary,
-                  onPressed: () {
-                    _continuePressed();
-                  },
-                  //icon: Icon(
-                  //  Icons.cloud_upload,
-                  //),
-                  child: Text(
-                    Strings.decryptMetadataReceiveButton,
-                    style: Theme.of(context).textTheme.button,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-      body: SingleChildScrollView(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        appBar: appBar,
+        persistentFooterButtons: [
+          Container(
+            width: utils.screenWidth(context) - 16,
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-            Align(
-              alignment: Alignment.center,
-              child: Padding(
-                  padding:
-                      EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 20),
-                  child: Text(
-                    Strings.decryptMetadataInfo,
-                    style: Theme.of(context).textTheme.headline,
-                  )),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: OutlineButton(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    hoverColor: Theme.of(context).colorScheme.primary,
+                    textColor: Theme.of(context).colorScheme.primary,
+                    onPressed: () {
+                      _cancelPressed();
+                    },
+                    //icon: Icon(
+                    //  Icons.cloud_upload,
+                    //),
+                    child: Text(
+                      Strings.decryptMetadataCancelButton,
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: OutlineButton(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    hoverColor: Theme.of(context).colorScheme.primary,
+                    textColor: Theme.of(context).colorScheme.primary,
+                    onPressed: () {
+                      _continuePressed();
+                    },
+                    //icon: Icon(
+                    //  Icons.cloud_upload,
+                    //),
+                    child: Text(
+                      Strings.decryptMetadataReceiveButton,
+                      style: Theme.of(context).textTheme.button,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Container(
-                child: Table(
-              defaultColumnWidth: IntrinsicColumnWidth(),
-              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-              children: _createFileInfo(),
-            )),
-          ])),
-    );
+          ),
+        ],
+        body:
+            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Align(
+            alignment: Alignment.center,
+            child: Padding(
+                padding:
+                    EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 20),
+                child: Text(
+                  Strings.decryptMetadataInfo,
+                  style: Theme.of(context).textTheme.headline,
+                )),
+          ),
+          //Container(
+          Expanded(
+            child: _createFileInfo(),
+          ) //),
+        ]));
   }
 }
