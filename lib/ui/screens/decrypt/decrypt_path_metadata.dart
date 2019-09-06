@@ -6,7 +6,6 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:convert';
 
-import '../../../data/global.dart' as globals;
 import '../../../data/utils.dart' as utils;
 import '../../../data/strings.dart';
 import '../../../data/constants.dart';
@@ -126,153 +125,77 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
     });
   }
 
-  List<Widget> _createFileInfo() {
-    List<Widget> showInfo = [];
+  List<TableRow> _createFileInfo() {
+    List<TableRow> showInfo = [];
 
-    // file names
-    showInfo.add(Padding(
-        padding: EdgeInsets.only(top: 10, bottom: 10),
-        child: Row(mainAxisSize: MainAxisSize.max, children: [
-          Container(
-            width: (utils.screenWidth(context) / 3.0).floorToDouble(),
-            child: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Text(
-                  'Files:',
-                  style: TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.none,
-                    fontFamily: Strings.titleTextFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0,
-                  ),
-                )),
-          ),
-          Container(
-            width: (utils.screenWidth(context) * 2 / 3.0).floorToDouble(),
-            child: Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: Text(_metadata.filenames.toString(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.none,
-                    fontFamily: Strings.titleTextFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0,
-                  )),
-            ),
-          ),
-        ])));
+    // filenames
+    showInfo.add(
+      TableRow(children: [
+        Padding(
+            padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+            child: Text(
+              'Files:',
+              style: Theme.of(context).primaryTextTheme.body1,
+            )),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+          child: Text(_metadata.filenames.toString(),
+            style: Theme.of(context).primaryTextTheme.body1,),
+        ),
+      ]),
+    );
 
-    // timestmap
-    showInfo.add(Padding(
-        padding: EdgeInsets.only(top: 10, bottom: 10),
-        child: Row(mainAxisSize: MainAxisSize.max, children: [
-          Container(
-            width: (utils.screenWidth(context) / 3.0).floorToDouble(),
-            child: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Text(
-                  'Date:',
-                  style: TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.none,
-                    fontFamily: Strings.titleTextFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0,
-                  ),
-                )),
-          ),
-          Container(
-            width: (utils.screenWidth(context) * 2 / 3.0).floorToDouble(),
-            child: Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: Text(
-                  DateTime.fromMillisecondsSinceEpoch(_metadata.timestamp)
-                      .toIso8601String(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.none,
-                    fontFamily: Strings.titleTextFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0,
-                  )),
-            ),
-          ),
-        ])));
+    // timestamp
+    showInfo.add(TableRow(children: [
+      Padding(
+          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+          child: Text(
+            'Date:',
+            style: Theme.of(context).primaryTextTheme.body1,
+          )),
+      Padding(
+        padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+        child: Text(
+            DateTime.fromMillisecondsSinceEpoch(_metadata.timestamp)
+                .toIso8601String(),
+          style: Theme.of(context).primaryTextTheme.body1,),
+      ),
+    ]));
 
-    // Total size
-    var msize = (_metadata.size.toDouble() / (1000 * 1000)).floor();
-    showInfo.add(Padding(
-        padding: EdgeInsets.only(top: 10, bottom: 10),
-        child: Row(mainAxisSize: MainAxisSize.max, children: [
-          Container(
-            width: (utils.screenWidth(context) / 3.0).floorToDouble(),
-            child: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Text(
-                  'Total size:',
-                  style: TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.none,
-                    fontFamily: Strings.titleTextFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0,
-                  ),
-                )),
-          ),
-          Container(
-            width: (utils.screenWidth(context) * 2 / 3.0).floorToDouble(),
-            child: Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
-              child: Text(msize.toString() + " MB",
-                  style: TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.none,
-                    fontFamily: Strings.titleTextFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0,
-                  )),
-            ),
-          ),
-        ])));
-
+    // public key
     if (_metadata.publicKey != "") {
-      // public key
-      showInfo.add(Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 10),
-          child: Row(mainAxisSize: MainAxisSize.max, children: [
-            Container(
-              width: (utils.screenWidth(context) / 3.0).floorToDouble(),
-              child: Padding(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  child: Text(
-                    'PublicKey:',
-                    style: TextStyle(
-                      color: Colors.white,
-                      decoration: TextDecoration.none,
-                      fontFamily: Strings.titleTextFont,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20.0,
-                    ),
-                  )),
-            ),
-            Container(
-              width: (utils.screenWidth(context) * 2 / 3.0).floorToDouble(),
-              child: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Text(_metadata.publicKey,
-                    style: TextStyle(
-                      color: Colors.white,
-                      decoration: TextDecoration.none,
-                      fontFamily: Strings.titleTextFont,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20.0,
-                    )),
-              ),
-            ),
-          ])));
+      showInfo.add(TableRow(
+        children: [
+          Padding(
+              padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+              child: Text(
+                'PublicKey:',
+                style: Theme.of(context).primaryTextTheme.body1,
+              )),
+          Padding(
+            padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+            child: Text(_metadata.publicKey,
+              style: Theme.of(context).primaryTextTheme.body1,),
+          ),
+        ]
+      ));
     }
+
+    // total size
+    var msize = (_metadata.size.toDouble() / (1000 * 1000)).floor();
+    showInfo.add(TableRow(children: [
+      Padding(
+          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+          child: Text(
+            'Total size:',
+              style: Theme.of(context).primaryTextTheme.body1,
+          )),
+      Padding(
+        padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+        child: Text(msize.toString() + " MB",
+            style: Theme.of(context).primaryTextTheme.body1),
+      ),
+    ]));
 
     return showInfo;
   }
@@ -359,13 +282,7 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
               bottom: 20),
           child: Text(
             Strings.decryptMetadata,
-            style: TextStyle(
-              color: Colors.white,
-              decoration: TextDecoration.none,
-              fontFamily: Strings.titleTextFont,
-              fontWeight: FontWeight.w700,
-              fontSize: 20.0,
-            ),
+            style: Theme.of(context).textTheme.headline,
           ),
         ),
       );
@@ -394,7 +311,7 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
                   //  Icons.cloud_upload,
                   //),
                   child: Text(Strings.decryptMetadataCancelButton,
-                      style: TextStyle(fontSize: 20)),
+                      style: Theme.of(context).textTheme.button,),
                 ),
               ),
               Padding(
@@ -412,7 +329,7 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
                   //  Icons.cloud_upload,
                   //),
                   child: Text(Strings.decryptMetadataReceiveButton,
-                      style: TextStyle(fontSize: 20)),
+                    style: Theme.of(context).textTheme.button,),
                 ),
               ),
             ],
@@ -428,16 +345,12 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
                     EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 20),
                 child: Text(
                   Strings.decryptMetadataInfo,
-                  style: TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.none,
-                    fontFamily: Strings.titleTextFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0,
-                  ),
+                  style: Theme.of(context).textTheme.headline,
                 )),
             Container(
-                child: Column(
+                child: Table(
+                  defaultColumnWidth: IntrinsicColumnWidth(),
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: _createFileInfo(),
             )),
           ])),

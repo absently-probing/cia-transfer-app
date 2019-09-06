@@ -42,7 +42,9 @@ final themes = {
         title: TextStyle(color: Colors.cyan[700]),
         subtitle: TextStyle(color: Colors.redAccent[100]),
         subhead: TextStyle(color: Colors.white),
-        button: TextStyle(color: Colors.black)),
+        button: TextStyle(color: Colors.cyan[600]),
+        headline: TextStyle(color: Colors.white),
+    ),
     primaryColor: Colors.cyan[600],
     primaryTextTheme: TextTheme(
         body1: TextStyle(fontFamily: "Didactic Gothic"),

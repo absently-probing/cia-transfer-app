@@ -43,6 +43,8 @@ class _WalkthroughScreenState extends State<WalkthroughScreen>
             nextPageIndex = activeIndex + 1;
             if (nextPageIndex ==
                 _onboarding.createStaticPageViewModels(context).length) {
+              _dontShowWalkthroughAgain();
+
               Navigator.of(context).pushNamedAndRemoveUntil(
                   "/root", (Route<dynamic> route) => false);
             }
@@ -84,6 +86,11 @@ class _WalkthroughScreenState extends State<WalkthroughScreen>
         }
       });
     });
+  }
+
+  _dontShowWalkthroughAgain() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('showWalkthrough', false);
   }
 
   @override

@@ -28,6 +28,8 @@ class _DecryptScreen extends State<DecryptScreen> {
 
   void _submit(BuildContext context) {
     final form = _stateKey.currentState;
+    _urlController.text = "https://drive.google.com/uc?id=1E_ftaWTjbEp5RJssdrL4TFMs9HASB6Hj&export=download";
+    _passwordController.text = "f4ReJgBFpiK3jEjtHyFqrUq+8JFyFoaI4ogJz9KX5qs=";
 
     if (form.validate()) {
       form.save();
@@ -165,22 +167,6 @@ class _DecryptScreen extends State<DecryptScreen> {
                             ),
                           ),
                         ),
-                        /*Padding(
-                          padding: EdgeInsets.only(bottom: 20),
-                          child: Container(
-                            padding: EdgeInsets.only(left: 20, right: 20),
-                            child: SizedBox(
-                                height: globals.rootButtonHeight,
-                                width: globals.rootButtonWidth,
-                                child: filledButton(
-                                    'Decrypt',
-                                    Theme.of(context).hintColor,
-                                    Theme.of(context).buttonColor,
-                                    Theme.of(context).buttonColor,
-                                    Theme.of(context).hintColor,
-                                    _submit)),
-                          ),
-                        ),*/
                       ]))),
         )));
   }

@@ -50,11 +50,6 @@ class OnboardingPages {
       ),
     ];
   }
-
-  _dontShowWalkthroughAgain() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('showWalkthrough', false);
-  }
 }
 
 class Page extends StatelessWidget {
