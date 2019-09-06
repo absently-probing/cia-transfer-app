@@ -156,6 +156,7 @@ class _DecryptScreen extends State<DecryptScreen> {
                               hint: Strings.decryptPasswordTextField,
                               icon: Icon(Icons.lock),
                               autofocus: false,
+                              maxLength: Consts.keySize,
                             )),
                         Padding(
                           padding: EdgeInsets.only(
