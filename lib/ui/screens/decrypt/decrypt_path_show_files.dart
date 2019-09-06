@@ -42,7 +42,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
     OpenFile.open(file);
   }
 
-  void _saveFile(String file){
+  void _saveFile(String file, int index){
     _saved[file] = true;
     var tmpFile = File(file);
     var filename = p.basename(file);
@@ -50,7 +50,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
     tmpFile.copy(_saveDir+'/'+filename);
 
     final snackBar = SnackBar(
-      duration: Duration(milliseconds: 200),
+      duration: Duration(milliseconds: 100),
       content: Text('saved ${filename}', style: Theme.of(context).textTheme.title),
       backgroundColor: Theme.of(context).colorScheme.primary,
     );
@@ -59,7 +59,9 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
     // it to show a SnackBar.
     _scaffoldKey.currentState.showSnackBar(snackBar);
     setState(() {
-
+      var item = files[index];
+      files.removeAt(index);
+      files.add(item);
     });
   }
 
@@ -87,7 +89,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
               child: ListTile(
                 trailing: IconButton(
                   icon: Icon(Icons.file_download, color: Colors.blue,),
-                  onPressed: () => _saveFile(files[index]),
+                  onPressed: () => _saveFile(files[index], index),
                 ),
                 onTap: () => _callProgramForFile(files[index]),
                 title: Text(filename,

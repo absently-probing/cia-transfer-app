@@ -65,8 +65,7 @@ class _DecryptScreen extends State<DecryptScreen> {
   _openQRCodeScanner(BuildContext context) async {
     _urlEnabled = false;
     _passwordEnabled = false;
-    FocusScope.of(context).unfocus();
-    FocusScope.of(context).requestFocus(FocusNode());
+    _releaseFocus();
 
     final result = await Navigator.push(
       context,
@@ -82,16 +81,31 @@ class _DecryptScreen extends State<DecryptScreen> {
     _passwordEnabled = true;
   }
 
+  void _releaseFocus(){
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
+
   void _openProgressBar(BuildContext context) async {
+    _urlEnabled = false;
+    _passwordEnabled = false;
     final String url = _urlController.text;
     final String password = _passwordController.text;
 
-    FocusScope.of(context).unfocus();
-    FocusScope.of(context).requestFocus(FocusNode());
+
+    _releaseFocus();
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => DecryptMetadata(url, password)),
     );
+
+    _urlEnabled = true;
+    _passwordEnabled = true;
   }
 
   @override
