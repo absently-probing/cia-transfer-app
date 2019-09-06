@@ -3,24 +3,25 @@ import '../storage/storage.dart';
 import 'google/googleDriveClient.dart';
 import 'dropbox/dropboxClient.dart';
 
+// keep alphabetical order
 enum CloudProvider {
-  GoogleDrive,
   DropBox,
+  GoogleDrive,
   OneDrive
 }
 
 String providerToString(CloudProvider provider) {
   switch(provider) {
-    case CloudProvider.GoogleDrive: return "Google Drive";
     case CloudProvider.DropBox: return "Dropbox";
+    case CloudProvider.GoogleDrive: return "Google Drive";
     case CloudProvider.OneDrive: return "OneDrive";
   }
 }
 
 String providerDomain(CloudProvider provider){
   switch (provider) {
-    case CloudProvider.GoogleDrive: return "drive.google.com";
     case CloudProvider.DropBox: return "dropbox.com";
+    case CloudProvider.GoogleDrive: return "drive.google.com";
     case CloudProvider.OneDrive: return "onedrive.com";
   }
 }
@@ -61,8 +62,8 @@ abstract class CloudClient {
 class CloudClientFactory {
   static CloudClient create(CloudProvider provider, Storage storage) {
     switch(provider) {
-      case CloudProvider.GoogleDrive: return GoogleDriveClient(storage);
       case CloudProvider.DropBox : return DropboxClient(storage);
+      case CloudProvider.GoogleDrive: return GoogleDriveClient(storage);
       //case CloudProvider.OneDrive: return OneDriveClient(storage);
       default: return GoogleDriveClient(storage);
     }

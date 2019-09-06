@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/ui/screens/onboarding/onboard_screen.dart';
-import 'package:secure_upload/ui/widgets/pager_indicator.dart';
-import 'package:secure_upload/ui/widgets/page_dragger.dart';
-import 'package:secure_upload/ui/widgets/page_reveal.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../data/global.dart' as globals;
+import 'onboard_screen.dart';
+import '../../widgets/pager_indicator.dart';
+import '../../widgets/page_dragger.dart';
+import '../../widgets/page_reveal.dart';
 
 class WalkthroughScreen extends StatefulWidget {
   final SharedPreferences prefs;

@@ -128,74 +128,29 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
   List<TableRow> _createFileInfo() {
     List<TableRow> showInfo = [];
 
-    // filenames
-    showInfo.add(
-      TableRow(children: [
-        Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-            child: Text(
-              'Files:',
-              style: Theme.of(context).primaryTextTheme.body1,
-            )),
-        Padding(
-          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-          child: Text(_metadata.filenames.toString(),
-            style: Theme.of(context).primaryTextTheme.body1,),
-        ),
-      ]),
-    );
+    List table = _metadata.showMetadata();
+    List<String> keys = table[0];
+    Map<String, String> map = table[1];
 
-    // timestamp
-    showInfo.add(TableRow(children: [
-      Padding(
-          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-          child: Text(
-            'Date:',
-            style: Theme.of(context).primaryTextTheme.body1,
-          )),
-      Padding(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-        child: Text(
-            DateTime.fromMillisecondsSinceEpoch(_metadata.timestamp)
-                .toIso8601String(),
-          style: Theme.of(context).primaryTextTheme.body1,),
-      ),
-    ]));
-
-    // public key
-    if (_metadata.publicKey != "") {
-      showInfo.add(TableRow(
-        children: [
-          Padding(
+    for (String key in keys){
+      if (map[key] != ""){
+        showInfo.add(
+          TableRow(children: [
+            Padding(
+                padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                child: Text(
+                  key,
+                  style: Theme.of(context).primaryTextTheme.body1,
+                )),
+            Padding(
               padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-              child: Text(
-                'PublicKey:',
-                style: Theme.of(context).primaryTextTheme.body1,
-              )),
-          Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-            child: Text(_metadata.publicKey,
-              style: Theme.of(context).primaryTextTheme.body1,),
-          ),
-        ]
-      ));
+              child: Text(map[key],
+                style: Theme.of(context).primaryTextTheme.body1,),
+            ),
+          ]),
+        );
+      }
     }
-
-    // total size
-    var msize = (_metadata.size.toDouble() / (1000 * 1000)).floor();
-    showInfo.add(TableRow(children: [
-      Padding(
-          padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-          child: Text(
-            'Total size:',
-              style: Theme.of(context).primaryTextTheme.body1,
-          )),
-      Padding(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-        child: Text(msize.toString() + " MB",
-            style: Theme.of(context).primaryTextTheme.body1),
-      ),
-    ]));
 
     return showInfo;
   }

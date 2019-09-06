@@ -16,11 +16,6 @@ class MainContextMenu extends StatelessWidget {
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         const PopupMenuItem<String>(
-          value: Strings.mainContextMenuOnboarding,
-          child: Text(Strings.mainContextMenuOnboarding),
-        ),
-        const PopupMenuDivider(),
-        const PopupMenuItem<String>(
           value: Strings.mainContextMenuCloudStorage,
           child: Text(Strings.mainContextMenuCloudStorage),
         ),
@@ -33,6 +28,21 @@ class MainContextMenu extends StatelessWidget {
         const PopupMenuItem<String>(
           value: Strings.mainContextMenuSettings,
           child: Text(Strings.mainContextMenuSettings),
+        ),
+
+        // TODO: remove from production code, only for testing
+        const PopupMenuDivider(height: 32),
+        const PopupMenuItem<String>(
+          value: "TESTING",
+          child: Text("TESTING"),
+        ),
+        const PopupMenuItem<String>(
+          value: Strings.mainContextMenuOnboarding,
+          child: Text(Strings.mainContextMenuOnboarding),
+        ),
+        const PopupMenuItem<String>(
+          value: Strings.shareSelectionTitle,
+          child: Text("share selction screen"),
         ),
       ],
     );
@@ -50,23 +60,21 @@ class EncryptShareMenu extends StatelessWidget {
         icon: Icon(Icons.share),
         offset: Offset(0, 10),
         onSelected: callback,
-        itemBuilder: (BuildContext context) =>
-        <PopupMenuEntry<String>>[
-          const PopupMenuItem<String>(
-            value: Strings.encryptShareUrl,
-            child: Text(Strings.encryptShareUrl),
-          ),
-          const PopupMenuDivider(),
-          const PopupMenuItem<String>(
-            value: Strings.encryptSharePassword,
-            child: Text(Strings.encryptSharePassword),
-          ),
-          const PopupMenuDivider(),
-          const PopupMenuItem<String>(
-            value: Strings.encryptShareBoth,
-            child: Text(Strings.encryptShareBoth),
-          ),
-        ]
-    );
+        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: Strings.encryptShareUrl,
+                child: Text(Strings.encryptShareUrl),
+              ),
+              const PopupMenuDivider(),
+              const PopupMenuItem<String>(
+                value: Strings.encryptSharePassword,
+                child: Text(Strings.encryptSharePassword),
+              ),
+              const PopupMenuDivider(),
+              const PopupMenuItem<String>(
+                value: Strings.encryptShareBoth,
+                child: Text(Strings.encryptShareBoth),
+              ),
+            ]);
   }
 }

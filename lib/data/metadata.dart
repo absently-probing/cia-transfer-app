@@ -23,4 +23,21 @@ class FileMetadata {
         'fileLink' : fileLink,
         'publicKey' : publicKey,
       };
+
+  List showMetadata(){
+    var msize = (size.toDouble() / (1000 * 1000)).floor();
+    List<String> keys = ['Files: ', 'Date: ', 'PublicKey: ', 'Total Size: '];
+    List<String> values = [filenames.toString(), DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true)
+        .toIso8601String(), publicKey, msize.toString() + " MB"];
+    Map<String, String> map = {};
+
+    if (keys.length != values.length){
+      throw FormatException("invalid map configuration");
+    }
+    for (int i = 0; i < keys.length; i++){
+      map[keys[i]] = values[i];
+    }
+
+    return [keys, map];
+  }
 }

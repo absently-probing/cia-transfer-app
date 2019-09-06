@@ -495,13 +495,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
                   EdgeInsets.only(left: 20, right: 20, bottom: 50, top: 50),
               child: Text(
                 _step,
-                style: TextStyle(
-                  color: Colors.white,
-                  decoration: TextDecoration.none,
-                  fontFamily: Strings.titleTextFont,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20.0,
-                ),
+                style: Theme.of(context).textTheme.headline,
               ),
             ),
             Container(

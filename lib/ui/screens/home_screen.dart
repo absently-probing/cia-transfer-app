@@ -6,9 +6,9 @@ import '../../data/global.dart' as globals;
 import '../custom/logo.dart';
 import 'decrypt/decrypt_path_home.dart';
 import 'encrypt/encrypt_path_home.dart';
+import 'encrypt/encrypt_path_share_selection.dart';
 import 'onboarding/walkthrough_screen.dart';
 import 'package:libsodium/libsodium.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:io';
 
@@ -41,10 +41,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _menuAction(String input, BuildContext context) {
+    // TODO: remove from production code, only for testing
     if (input == Strings.mainContextMenuOnboarding) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => WalkthroughScreen()),
+      );
+    }
+    if (input == Strings.shareSelectionTitle) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ShareSelection("testurl", "testpw")),
       );
     }
   }
@@ -67,8 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (!_libsodium) {
       return AlertDialog(
-        content: Text("Sorry your Device is not supported yet.",
-          style: TextStyle(color: Colors.black),
+        content: Text(
+          "Sorry your Device is not supported yet.",
+          style: Theme.of(context).textTheme.body1,
         ),
         actions: [
           FlatButton(
@@ -115,13 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Strings.welcome,
                       softWrap: true,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        decoration: TextDecoration.none,
-                        fontFamily: Strings.titleTextFont,
-                        fontWeight: FontWeight.w700,
-                        fontSize: globals.logoFontSize,
-                      ),
+                      style: Theme.of(context).textTheme.headline,
                     )),
               ),
             ]),
