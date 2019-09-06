@@ -132,20 +132,24 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
     List<String> keys = table[0];
     Map<String, String> map = table[1];
 
-    for (String key in keys){
-      if (map[key] != ""){
+    for (String key in keys) {
+      if (map[key] != "") {
         showInfo.add(
           TableRow(children: [
             Padding(
-                padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+                padding:
+                    EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
                 child: Text(
                   key,
                   style: Theme.of(context).primaryTextTheme.body1,
                 )),
             Padding(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-              child: Text(map[key],
-                style: Theme.of(context).primaryTextTheme.body1,),
+              padding:
+                  EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+              child: Text(
+                map[key],
+                style: Theme.of(context).primaryTextTheme.body1,
+              ),
             ),
           ]),
         );
@@ -226,18 +230,21 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
     if (!_metadataExists) {
       return Scaffold(
         appBar: appBar,
-        body: Padding(
-          padding: EdgeInsets.only(
-              left: 30,
-              right: 30,
-              top: (utils.screenHeight(context) -
-                      utils.screenSafeAreaPadding(context) -
-                      appBar.preferredSize.height) /
-                  8,
-              bottom: 20),
-          child: Text(
-            Strings.decryptMetadata,
-            style: Theme.of(context).textTheme.headline,
+        body: Container(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: EdgeInsets.only(
+                left: 30,
+                right: 30,
+                top: (utils.screenHeight(context) -
+                        utils.screenSafeAreaPadding(context) -
+                        appBar.preferredSize.height) /
+                    8,
+                bottom: 20),
+            child: Text(
+              Strings.decryptMetadata,
+              style: Theme.of(context).textTheme.headline,
+            ),
           ),
         ),
       );
@@ -265,8 +272,10 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
                   //icon: Icon(
                   //  Icons.cloud_upload,
                   //),
-                  child: Text(Strings.decryptMetadataCancelButton,
-                      style: Theme.of(context).textTheme.button,),
+                  child: Text(
+                    Strings.decryptMetadataCancelButton,
+                    style: Theme.of(context).textTheme.button,
+                  ),
                 ),
               ),
               Padding(
@@ -283,8 +292,10 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
                   //icon: Icon(
                   //  Icons.cloud_upload,
                   //),
-                  child: Text(Strings.decryptMetadataReceiveButton,
-                    style: Theme.of(context).textTheme.button,),
+                  child: Text(
+                    Strings.decryptMetadataReceiveButton,
+                    style: Theme.of(context).textTheme.button,
+                  ),
                 ),
               ),
             ],
@@ -304,8 +315,8 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
                 )),
             Container(
                 child: Table(
-                  defaultColumnWidth: IntrinsicColumnWidth(),
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              defaultColumnWidth: IntrinsicColumnWidth(),
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: _createFileInfo(),
             )),
           ])),

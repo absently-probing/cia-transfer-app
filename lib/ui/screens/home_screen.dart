@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return AlertDialog(
         content: Text(
           "Sorry your Device is not supported yet.",
-          style: Theme.of(context).textTheme.body1,
+          style: Theme.of(context).textTheme.title,
         ),
         actions: [
           FlatButton(

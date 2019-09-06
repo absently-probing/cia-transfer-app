@@ -29,13 +29,7 @@ class ShareQr extends StatelessWidget {
                     padding: EdgeInsets.all(30),
                     child: Text(
                       Strings.shareQrInfo,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        decoration: TextDecoration.none,
-                        fontFamily: Strings.titleTextFont,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20.0,
-                      ),
+                      style: Theme.of(context).textTheme.body1,
                     ),
                   ),
 

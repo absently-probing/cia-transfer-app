@@ -67,7 +67,7 @@ class _EncryptCloudState extends State<EncryptCloud> {
             //),
             child: Text(
                 '${providerToString(CloudProvider.values[i])}',
-                style: TextStyle(fontSize: 20)),
+                style: Theme.of(context).accentTextTheme.title),
           ),
         ),
       ),);

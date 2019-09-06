@@ -49,13 +49,7 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
                 padding: EdgeInsets.only(left: 30, right: 30, top: (utils.screenHeight(context) - utils.screenSafeAreaPadding(context) - appBar.preferredSize.height) / 8, bottom: 20),
                 child: Text(
                   "You are using ${providerToString(cloudClient.provider)} for the first time. To authorize you against ${providerToString(cloudClient.provider)} you have to log in to the service in a browser window, which is opend when you click on continue.", //TODO: put in strings
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    decoration: TextDecoration.none,
-                    fontFamily: Strings.titleTextFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0,
-                  ),
+                  style: Theme.of(context).textTheme.body1,
                 ),
               ),
               Spacer(),
@@ -73,7 +67,7 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
                       _onClickContinue(context);
                     },
                     child: Text('Continue', // TODO put in Strings
-                        style: TextStyle(fontSize: 20)),
+                        style: Theme.of(context).accentTextTheme.title),
                   ),
                 ),
               ),

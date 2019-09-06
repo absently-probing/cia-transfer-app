@@ -25,7 +25,6 @@ class ShareSelection extends StatelessWidget {
           padding: EdgeInsets.only(right: 40, left: 40, top: 20, bottom: 20),
           child: SizedBox(
             width: globals.rootButtonWidth(context),
-            height: globals.rootButtonHeight(context),
             child: OutlineButton(
               borderSide: BorderSide(
                 color: Theme.of(context).colorScheme.primary,
@@ -38,7 +37,7 @@ class ShareSelection extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => screen),
                 );
               },
-              child: Text(label, style: TextStyle(fontSize: 20)),
+              child: Text(label, style: Theme.of(context).accentTextTheme.title),
             ),
           ),
         ),

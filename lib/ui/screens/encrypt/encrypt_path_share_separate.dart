@@ -56,13 +56,7 @@ class _ShareSeparate extends State<ShareSeparate> {
                     bottom: 20),
                 child: Text(
                   _infoText,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    decoration: TextDecoration.none,
-                    fontFamily: Strings.titleTextFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0,
-                  ),
+                  style: Theme.of(context).textTheme.body1,
                 ),
               ),
               Spacer(),
@@ -70,10 +64,7 @@ class _ShareSeparate extends State<ShareSeparate> {
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding: EdgeInsets.only(left: 40, right: 40, bottom: 30),
-                  child: SizedBox(
-                    width: globals.rootButtonWidth(context) - 100,
-                    height: globals.rootButtonHeight(context),
-                    child: OutlineButton(
+                  child: OutlineButton(
                       borderSide: BorderSide(
                         color: Theme.of(context).colorScheme.primary,
                       ),
@@ -100,9 +91,8 @@ class _ShareSeparate extends State<ShareSeparate> {
                           });
                         }
                       },
-                      child: Text(_buttonText, style: TextStyle(fontSize: 20)),
+                      child: Text(_buttonText, style: Theme.of(context).accentTextTheme.title),
                     ),
-                  ),
                 ),
               ),
             ],
