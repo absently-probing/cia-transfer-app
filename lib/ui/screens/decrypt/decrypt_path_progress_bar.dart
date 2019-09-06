@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive.dart';
+import 'package:path/path.dart' as p;
 
 import 'dart:convert';
 import 'dart:math';
@@ -51,17 +52,19 @@ class DecryptProgress extends StatefulWidget {
   final String url;
   final String password;
   final int size;
+  final List<String> expectedFiles;
 
-  DecryptProgress({@required this.url, @required this.password, @required this.size});
+  DecryptProgress({@required this.url, @required this.password, @required this.size, @required this.expectedFiles});
 
   _DecryptProgressState createState() =>
-      _DecryptProgressState(url: url, password: password, size: size);
+      _DecryptProgressState(url: url, password: password, size: size, expectedFiles: expectedFiles);
 }
 
 class _DecryptProgressState extends State<DecryptProgress> {
   final String url;
   final String password;
   final int size;
+  final List<String> expectedFiles;
 
   Isolate _downloadIsolate;
   Isolate _decryptIsolate;
@@ -86,7 +89,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
 
   List<String> _files;
 
-  _DecryptProgressState({this.url, this.password, this.size}) {
+  _DecryptProgressState({this.url, this.password, this.size, this.expectedFiles}) {
     start();
   }
 
@@ -121,6 +124,33 @@ class _DecryptProgressState extends State<DecryptProgress> {
     _downloadReceive.listen((data) {
       _communicateDownload(data);
     });
+  }
+
+  // check if expected files (metadata) matches archive files
+  bool validFiles(){
+    bool valid = true;
+    Map<String, int> test = {};
+    for (String file in expectedFiles){
+      if (test.containsKey(file)){
+        test[file] = test[file] + 1;
+      } else {
+        test[file] = 1;
+      }
+    }
+
+    for (String file in _files){
+      var filename = p.basename(file);
+      if (!test.containsKey(filename)){
+        valid = false;
+      } else {
+        test[filename] = test[filename] - 1;
+        if (test[filename] < 0){
+          valid = false;
+        }
+      }
+    }
+
+    return valid;
   }
 
   void _communicateDownload(IsolateMessage<String, List<dynamic>> message) async {
@@ -173,8 +203,15 @@ class _DecryptProgressState extends State<DecryptProgress> {
       File(_persistentArchive).deleteSync();
       _files = message.data;
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => DecryptShowFiles(_files)));
+      //TODO error handling expected file list doesn't match files extracted
+      if (!validFiles()){
+
+      } else {
+        Navigator.of(context).pop();
+
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => DecryptShowFiles(_files)));
+      }
     }
   }
 
@@ -238,6 +275,8 @@ class _DecryptProgressState extends State<DecryptProgress> {
       encFile.init(sourceFile, CryptoMode.dec);
       bool success = encFile.writeIntoFile(
           targetFile, callback: progress.progress);
+
+      print("finished decryption");
       if (!success) {
         message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, "Decryption failed", null));
       } else {
@@ -279,7 +318,6 @@ class _DecryptProgressState extends State<DecryptProgress> {
         }
       }
 
-      print(files.toString());
       message.sendPort.send(IsolateMessage<String, List<dynamic>>(message.data.progressEnd, true, false, null, files));
     } catch (e){
       print(e.toString());
@@ -291,7 +329,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: WillPopScope(
-        //onWillPop: () async => false,
+        onWillPop: () async => false,
         child: Center(
           child: SingleChildScrollView(
             child: Column(children: [

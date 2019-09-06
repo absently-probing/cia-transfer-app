@@ -57,8 +57,12 @@ class Strings {
 
   // decrypt progress bar
   static const String decryptProgressTextExtract = 'Extracting archive..';
-  static const String decryptProgressTextDecrypt = 'decrypting..';
+  static const String decryptProgressTextDecrypt = 'Decrypting..';
   static const String decryptProgressTextDownload = 'Downloading file..';
+
+  // decrypt show files
+  static const String decryptShowFilesLabel = 'Files';
+  static const String decryptShowFilesInfoText = 'Tap on file to open';
 
   // onboarding screens
   static const String mainContextMenuOnboarding = 'OnBoarding';

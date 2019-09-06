@@ -86,6 +86,8 @@ class _DecryptScreen extends State<DecryptScreen> {
     final String url = _urlController.text;
     final String password = _passwordController.text;
 
+    FocusScope.of(context).unfocus();
+    FocusScope.of(context).requestFocus(FocusNode());
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => DecryptMetadata(url, password)),

@@ -32,6 +32,28 @@ class _ShareSeparate extends State<ShareSeparate> {
     }
   }
 
+  void _shareSeparate(){
+    if (!_sharedUrl) {
+      Share.share(_url);
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          _sharedUrl = true;
+          _infoText = Strings.shareSeparateInfoPassword;
+          _buttonText =
+              Strings.shareSeparateButtonLabelPassword;
+        });
+      });
+    } else if (!_sharedPassword) {
+      Share.share(_password);
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          _sharedPassword = true;
+          _buttonColor = Colors.green;
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
@@ -70,27 +92,7 @@ class _ShareSeparate extends State<ShareSeparate> {
                       ),
                       color: Theme.of(context).colorScheme.primary,
                       textColor: Theme.of(context).colorScheme.primary,
-                      onPressed: () {
-                        if (!_sharedUrl) {
-                          Share.share(_url);
-                          Future.delayed(const Duration(milliseconds: 500), () {
-                            setState(() {
-                              _sharedUrl = true;
-                              _infoText = Strings.shareSeparateInfoPassword;
-                              _buttonText =
-                                  Strings.shareSeparateButtonLabelPassword;
-                            });
-                          });
-                        } else if (!_sharedPassword) {
-                          Share.share(_password);
-                          Future.delayed(const Duration(milliseconds: 500), () {
-                            setState(() {
-                              _sharedPassword = true;
-                              _buttonColor = Colors.green;
-                            });
-                          });
-                        }
-                      },
+                      onPressed: () => _shareSeparate,
                       child: Text(_buttonText, style: Theme.of(context).accentTextTheme.title),
                     ),
                 ),

@@ -165,13 +165,16 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
   }
 
   void _continuePressed() {
+    Navigator.of(context).pop();
+
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => DecryptProgress(
                 url: _metadata.fileLink,
                 password: _password,
-                size: _metadata.size)));
+                size: _metadata.size,
+                expectedFiles: _metadata.filenames)));
   }
 
   static void downloadMetadata(
@@ -231,6 +234,8 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
 
   @override
   Widget build(BuildContext context) {
+
+
     final appBar = AppBar(
       centerTitle: true,
       title: Text(Strings.decryptMetadataLabel),
@@ -327,13 +332,16 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-            Padding(
-                padding:
-                    EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 20),
-                child: Text(
-                  Strings.decryptMetadataInfo,
-                  style: Theme.of(context).textTheme.headline,
-                )),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                  padding:
+                      EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 20),
+                  child: Text(
+                    Strings.decryptMetadataInfo,
+                    style: Theme.of(context).textTheme.headline,
+                  )),
+            ),
             Container(
                 child: Table(
               defaultColumnWidth: IntrinsicColumnWidth(),
