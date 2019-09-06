@@ -29,8 +29,8 @@ class _DecryptScreen extends State<DecryptScreen> {
   void _submit(BuildContext context) {
     final form = _stateKey.currentState;
     // use this to fast skip entering url and password
-    //_urlController.text = "https://drive.google.com/uc?id=1E_ftaWTjbEp5RJssdrL4TFMs9HASB6Hj&export=download";
-    //_passwordController.text = "f4ReJgBFpiK3jEjtHyFqrUq+8JFyFoaI4ogJz9KX5qs=";
+    _urlController.text = "https://drive.google.com/uc?id=1E_ftaWTjbEp5RJssdrL4TFMs9HASB6Hj&export=download";
+    _passwordController.text = "f4ReJgBFpiK3jEjtHyFqrUq+8JFyFoaI4ogJz9KX5qs=";
 
     if (form.validate()) {
       form.save();
@@ -89,8 +89,7 @@ class _DecryptScreen extends State<DecryptScreen> {
 
     await Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) => DecryptMetadata(url, password)),
+      MaterialPageRoute(builder: (context) => DecryptMetadata(url, password)),
     );
   }
 
@@ -146,12 +145,7 @@ class _DecryptScreen extends State<DecryptScreen> {
                         Padding(
                           padding: EdgeInsets.only(
                               right: 40, left: 40, top: 20, bottom: 20),
-                          child: SizedBox(
-                            width: globals.rootButtonWidth(context),
-                            height: globals.rootButtonHeight(context),
-
-                            //Adding Correct Button depending on Prefs-Setting
-                            child: OutlineButton(
+                          child: OutlineButton(
                               borderSide: BorderSide(
                                 color: Theme.of(context).colorScheme.primary,
                               ),
@@ -164,10 +158,9 @@ class _DecryptScreen extends State<DecryptScreen> {
                               //  Icons.cloud_upload,
                               //),
                               child: Text(Strings.decryptReceiveButton,
-                                  style: TextStyle(fontSize: 20)),
+                                  style: Theme.of(context).accentTextTheme.title),
                             ),
                           ),
-                        ),
                       ]))),
         )));
   }

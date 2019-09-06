@@ -56,7 +56,10 @@ final themes = {
         title: TextStyle(color: Colors.black),
         button: TextStyle(color: Colors.black)),
     accentColor: Colors.redAccent[100],
-    accentTextTheme: TextTheme(button: TextStyle(color: Colors.black)),
+    accentTextTheme: TextTheme(
+      title: TextStyle(color: Colors.cyan[600]),
+        button: TextStyle(color: Colors.black)
+    ),
     backgroundColor: Colors.grey[900],
     scaffoldBackgroundColor: Colors.grey[900],
     cardTheme: CardTheme(color: Colors.grey[800]),

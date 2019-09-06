@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           label: Text(
                               Strings.homeScreenEncryptLabel.toUpperCase(),
-                              style: TextStyle(fontSize: 20)),
+                              style: Theme.of(context).accentTextTheme.title),
                         ),
                       ),
                     ),
@@ -177,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           icon: Icon(Icons.cloud_download),
                           label: Text(
                               Strings.homeScreenDecryptLabel.toUpperCase(),
-                              style: TextStyle(fontSize: 20)),
+                              style: Theme.of(context).accentTextTheme.title),
                         ),
                       ),
                     ),
