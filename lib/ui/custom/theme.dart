@@ -39,11 +39,16 @@ final themes = {
     textTheme: TextTheme(
         body1: TextStyle(color: Colors.white, fontFamily: "Didactic Gothic"),
         body2: TextStyle(color: Colors.white),
-        title: TextStyle(color: Colors.cyan[700]),
+        title: TextStyle(color: Colors.black),
         subtitle: TextStyle(color: Colors.redAccent[100]),
         subhead: TextStyle(color: Colors.white),
         button: TextStyle(color: Colors.cyan[600]),
         headline: TextStyle(color: Colors.white),
+        display1: TextStyle(color: Colors.white,
+          decoration: TextDecoration.none,
+          fontFamily: "OpenSans",
+          fontWeight: FontWeight.w700,
+          fontSize: 24,),
     ),
     primaryColor: Colors.cyan[600],
     primaryTextTheme: TextTheme(

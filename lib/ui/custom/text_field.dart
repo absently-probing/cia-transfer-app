@@ -40,15 +40,9 @@ class CustomTextField extends StatelessWidget {
           autofocus: autofocus,
           obscureText: obsecure,
           controller: controller,
-          style: TextStyle(
-            fontSize: 20,
-            color: Theme.of(context).colorScheme.onSurface
-          ),
+          style: Theme.of(context).textTheme.body1,
           decoration: InputDecoration(
-              hintStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
+              hintStyle: Theme.of(context).textTheme.body2,
               hintText: hint,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),

@@ -15,8 +15,6 @@ double lockIcon(BuildContext context) {
   return min(50.0, cloudIcon(context) / 2);
 }
 
-  double logoFontSize = 24.0;
-
 // pager_indicator.dart
   double paperIndicatorWidth = 45.0;
   double indicatorMinWidth = 20.0;
@@ -55,19 +53,13 @@ double lockIcon(BuildContext context) {
     RenderParagraph renderParagraph = RenderParagraph(
       TextSpan(
         text: Strings.appTitle,
-        style: TextStyle(
-          color: Colors.white,
-          decoration: TextDecoration.none,
-          fontFamily: Strings.titleTextFont,
-          fontWeight: FontWeight.w700,
-          fontSize: logoFontSize,
-        ),
+        style: Theme.of(context).textTheme.display1,
       ),
       textDirection: TextDirection.ltr,
       maxLines: 1,
     );
     renderParagraph.layout(constraints);
-    return renderParagraph.getMinIntrinsicHeight(logoFontSize).ceilToDouble();
+    return renderParagraph.getMinIntrinsicHeight(Theme.of(context).textTheme.display1.fontSize).ceilToDouble();
   }
 
   double onboardMaxPageHeight(BuildContext context){
