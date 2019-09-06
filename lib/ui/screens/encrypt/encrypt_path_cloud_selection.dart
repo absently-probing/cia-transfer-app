@@ -83,12 +83,22 @@ class _EncryptCloudState extends State<EncryptCloud> {
         centerTitle: true,
         title: Text(Strings.encryptCloudSelection),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-            child: Column(
-          children: _createCloudProviderList(),
-        )),
-      ),
-    );
+      body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding (
+                padding: EdgeInsets.only(top: 20, bottom: 40, left: 20, right: 20),
+                child: Text(
+                  Strings.encryptCouldSecectionHelpText,
+                  style: Theme.of(context).textTheme.subhead,
+                ),
+              ),
+              Column(
+                children: _createCloudProviderList(),
+              ),
+            ]
+          )
+        ));
   }
 }

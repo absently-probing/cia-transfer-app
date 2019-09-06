@@ -29,6 +29,7 @@ class Strings {
   static const String encryptShareBoth = 'Share both';
   static const String encryptCloudSelection = 'Cloud Storage Selection';
   static const String encryptCloudCredentials = 'Cloud Credentials';
+  static const String encryptCouldSecectionHelpText = 'Select a Cloud Storage Provider which you want to share the data. Keep ready your credentials to log in.';
 
   static const String shareSelectionTitle = "Share Files";
   static const String shareQrTitle = "Share QR Code";
