@@ -25,10 +25,27 @@ class FileMetadata {
       };
 
   List showMetadata(){
+    // calculate size in MB
     var msize = (size.toDouble() / (1000 * 1000)).floor();
+
+    // create file entry
+    String filesString = "";
+
+    for (String file in filenames){
+      if (filesString == ""){
+        filesString = file;
+      } else {
+        filesString = filesString + ", " + file;
+      }
+    }
+
+    // show Date
+    var tmpDate = DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true);
+    String date = "${tmpDate.year.toString()}-${tmpDate.month.toString().padLeft(2, "0")}-${tmpDate.day.toString().padLeft(2, "0")}"
+        + " ${tmpDate.hour.toString()}:${tmpDate.minute.toString()}";
+
     List<String> keys = ['Files: ', 'Date: ', 'PublicKey: ', 'Total Size: '];
-    List<String> values = [filenames.toString(), DateTime.fromMillisecondsSinceEpoch(timestamp, isUtc: true)
-        .toIso8601String(), publicKey, msize.toString() + " MB"];
+    List<String> values = [filesString, date, publicKey, msize.toString() + " MB"];
     Map<String, String> map = {};
 
     if (keys.length != values.length){

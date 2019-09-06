@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:googleapis/chat/v1.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:secure_upload/backend/crypto/cryptapi/cryptapi.dart';
 
@@ -147,9 +146,13 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
             Padding(
               padding:
                   EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-              child: Text(
-                map[key],
-                style: Theme.of(context).primaryTextTheme.body1,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  map[key],
+                  textAlign: TextAlign.right,
+                  style: Theme.of(context).primaryTextTheme.body1,
+              ),
               ),
             ),
           ]),
