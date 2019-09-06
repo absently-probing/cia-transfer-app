@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../data/strings.dart';
 import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
-import '../../../data/global.dart' as globals;
 import 'decrypt_path_qr.dart';
 import 'decrypt_path_metadata.dart';
 import '../../custom/text_field.dart';

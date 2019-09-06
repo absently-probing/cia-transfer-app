@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:googleapis/chat/v1.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:secure_upload/backend/crypto/cryptapi/cryptapi.dart';
 
@@ -189,7 +190,7 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
       totalbytes = totalbytes + event.length;
 
       // 1MB check
-      if (totalbytes > 1000 * 1000){
+      if (totalbytes > 1000 * 1000) {
         throw FormatException("File is to large");
       }
 
@@ -238,23 +239,35 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
     if (!_metadataExists) {
       return Scaffold(
         appBar: appBar,
-        body: Container(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: EdgeInsets.only(
-                left: 30,
-                right: 30,
-                top: (utils.screenHeight(context) -
-                        utils.screenSafeAreaPadding(context) -
-                        appBar.preferredSize.height) /
-                    8,
-                bottom: 20),
-            child: Text(
-              Strings.decryptMetadata,
-              style: Theme.of(context).textTheme.headline,
+        body: Column(children: [
+          Container(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  left: 30,
+                  right: 30,
+                  top: 40,
+
+                  /*
+                  top: (utils.screenHeight(context) -
+                          utils.screenSafeAreaPadding(context) -
+                          appBar.preferredSize.height) /
+                      8,*/
+
+                  bottom: 20),
+              child: Text(
+                Strings.decryptMetadata,
+                style: Theme.of(context).textTheme.headline,
+              ),
             ),
           ),
-        ),
+          Spacer(),
+          Padding(
+            padding: EdgeInsets.only(top: 20, bottom: 20),
+            child: CircularProgressIndicator(),
+          ),
+          Spacer(),
+        ]),
       );
     }
 
