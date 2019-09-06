@@ -234,8 +234,6 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
 
   @override
   Widget build(BuildContext context) {
-
-
     final appBar = AppBar(
       centerTitle: true,
       title: Text(Strings.decryptMetadataLabel),
@@ -244,35 +242,38 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
     if (!_metadataExists) {
       return Scaffold(
         appBar: appBar,
-        body: Column(children: [
-          Container(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.only(
-                  left: 30,
-                  right: 30,
-                  top: 40,
+        body: WillPopScope(
+          onWillPop: () async => false,
+          child: Column(children: [
+            Container(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 30,
+                    right: 30,
+                    top: 40,
 
-                  /*
+                    /*
                   top: (utils.screenHeight(context) -
                           utils.screenSafeAreaPadding(context) -
                           appBar.preferredSize.height) /
                       8,*/
 
-                  bottom: 20),
-              child: Text(
-                Strings.decryptMetadata,
-                style: Theme.of(context).textTheme.headline,
+                    bottom: 20),
+                child: Text(
+                  Strings.decryptMetadata,
+                  style: Theme.of(context).textTheme.headline,
+                ),
               ),
             ),
-          ),
-          Spacer(),
-          Padding(
-            padding: EdgeInsets.only(top: 20, bottom: 20),
-            child: CircularProgressIndicator(),
-          ),
-          Spacer(),
-        ]),
+            Spacer(),
+            Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 20),
+              child: CircularProgressIndicator(),
+            ),
+            Spacer(),
+          ]),
+        ),
       );
     }
 
