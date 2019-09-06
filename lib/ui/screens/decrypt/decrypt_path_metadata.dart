@@ -184,7 +184,15 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
 
     var file = File(tmpFile);
     var output = file.openSync(mode: FileMode.write);
+    var totalbytes = 0;
     response.listen((List event) {
+      totalbytes = totalbytes + event.length;
+
+      // 1MB check
+      if (totalbytes > 1000 * 1000){
+        throw FormatException("File is to large");
+      }
+
       output.writeFromSync(event);
     }, onDone: () {
       output.closeSync();

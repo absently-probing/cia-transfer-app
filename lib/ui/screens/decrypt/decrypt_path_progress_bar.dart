@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:archive/archive.dart';
 
 import 'dart:convert';
 import 'dart:math';
@@ -14,22 +15,36 @@ import '../../custom/progress_indicator.dart';
 import '../../../data/isolate_messages.dart';
 import '../../../backend/crypto/cryptapi/cryptapi.dart';
 import '../../../data/strings.dart';
+import 'decrypt_path_show_files.dart';
 
 
 class IsolateDownloadData {
+  final double progressStart;
+  final double progressEnd;
   final String url;
   final String destination;
   final int size;
 
-  IsolateDownloadData(this.url, this.destination, this.size);
+  IsolateDownloadData(this.progressStart, this.progressEnd, this.url, this.destination, this.size);
 }
 
 class IsolateDecryptData {
+  final double progressStart;
+  final double progressEnd;
   final String file;
   final String password;
   final String destinationFile;
 
-  IsolateDecryptData(this.file, this.password, this.destinationFile);
+  IsolateDecryptData(this.progressStart, this.progressEnd, this.file, this.password, this.destinationFile);
+}
+
+class IsolateExtractData {
+  final double progressStart;
+  final double progressEnd;
+  final String file;
+  final String destination;
+
+  IsolateExtractData(this.progressStart, this.progressEnd, this.file, this.destination);
 }
 
 class DecryptProgress extends StatefulWidget {
@@ -50,49 +65,75 @@ class _DecryptProgressState extends State<DecryptProgress> {
 
   Isolate _downloadIsolate;
   Isolate _decryptIsolate;
+  Isolate _extractIsolate;
+
+  ReceivePort _downloadReceive = ReceivePort();
+  ReceivePort _decryptReceive = ReceivePort();
+  ReceivePort _extractReceive = ReceivePort();
+
+  bool _decryptStarted = false;
+  bool _extractStarted = false;
+
   double _progress = 0.0;
   String _progressString = "0%";
   String _step = Strings.decryptProgressTextDownload;
 
-  String filename; // = 'secureUpload-'+Filecrypt.randomFilename();
-  String path; // = (await getTemporaryDirectory()).path;
-  String tmpDestination; // = path+'/'+filename;
-  String persistentDestination;
+  String _filename;
+  String _docPath;
+  String _tmpPath; // = (await getTemporaryDirectory()).path;
+  String _tmpDownloadFile; // = path+'/'+filename;
+  String _persistentArchive;
+
+  List<String> _files;
 
   _DecryptProgressState({this.url, this.password, this.size}) {
     start();
   }
 
   void dispose(){
-    _downloadIsolate.kill();
+    _downloadIsolate.kill(priority: Isolate.immediate);
+
+    if (_decryptStarted){
+      _decryptIsolate.kill(priority: Isolate.immediate);
+    }
+
+    if (_extractStarted){
+      _extractIsolate.kill(priority: Isolate.immediate);
+    }
+
+    _downloadReceive.close();
+    _decryptReceive.close();
+    _extractReceive.close();
     super.dispose();
   }
 
   void start() async {
-    ReceivePort receivePort= ReceivePort(); //port for this main isolate to receive messages.
-    filename = Consts.decryptEncFile;
-    path = (await getTemporaryDirectory()).path;
-    tmpDestination = path+'/'+filename;
-    persistentDestination = (await getExternalStorageDirectory()).path+'/'+Consts.decryptZipFile;
-    _downloadIsolate = await Isolate.spawn(downloadFile, IsolateInitMessage<IsolateDownloadData>(receivePort.sendPort, IsolateDownloadData(url, tmpDestination, size)));
-    receivePort.listen((data) {
+    _filename = Consts.decryptEncFile;
+    _tmpPath = (await getTemporaryDirectory()).path;
+    _docPath = (await getExternalStorageDirectory()).path;
+    _tmpDownloadFile = _tmpPath+'/'+_filename;
+    _persistentArchive = _docPath+'/'+Consts.decryptZipFile;
+    _downloadIsolate = await Isolate.spawn(downloadFile,
+        IsolateInitMessage<IsolateDownloadData>(
+            _downloadReceive.sendPort,
+            IsolateDownloadData(0.0, 0.6,url, _tmpDownloadFile, size)));
+
+    _downloadReceive.listen((data) {
       _communicateDownload(data);
     });
-
-
-
-    //TODO: delete tmp-file
-    //File(tmpDestination).deleteSync();
   }
 
   void _communicateDownload(IsolateMessage<String, List<dynamic>> message) async {
     _updateProgress(message.progress);
     if(message.finished) {
       _downloadIsolate.kill();
-      ReceivePort receivePort= ReceivePort();
       _step = Strings.decryptProgressTextDecrypt;
-      _decryptIsolate = await Isolate.spawn(decryptFile, IsolateInitMessage<IsolateDecryptData>(receivePort.sendPort, IsolateDecryptData(tmpDestination, password, persistentDestination)));
-      receivePort.listen((data) {
+      _decryptIsolate = await Isolate.spawn(decryptFile,
+          IsolateInitMessage<IsolateDecryptData>(
+              _decryptReceive.sendPort,
+              IsolateDecryptData(0.6, 0.9,_tmpDownloadFile, password, _persistentArchive)));
+
+      _decryptReceive.listen((data) {
         _communicateDecrypt(data);
       });
     }
@@ -103,7 +144,37 @@ class _DecryptProgressState extends State<DecryptProgress> {
     if(message.finished) {
       _decryptIsolate.kill();
       _step = Strings.decryptProgressTextExtract;
-      File(tmpDestination).deleteSync();
+
+      try {
+        Directory(_docPath + '/' + Consts.decryptExtractDir).deleteSync(
+            recursive: true);
+      } catch (e) {}
+
+      Directory(_docPath +'/'+Consts.decryptExtractDir).createSync(recursive: true);
+      File(_tmpDownloadFile).deleteSync();
+      _extractIsolate = await Isolate.spawn(extractFile,
+          IsolateInitMessage<IsolateExtractData>(
+              _extractReceive.sendPort, IsolateExtractData(
+              0.9,
+              1.0,
+              _persistentArchive,
+              _docPath +'/'+Consts.decryptExtractDir)));
+
+      _extractReceive.listen((data) {
+        _communcateExtract(data);
+      });
+    }
+  }
+
+  void _communcateExtract(IsolateMessage<String, List<dynamic>> message) async {
+    _updateProgress(message.progress);
+    if (message.finished){
+      _extractIsolate.kill();
+      File(_persistentArchive).deleteSync();
+      _files = message.data;
+
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => DecryptShowFiles(_files)));
     }
   }
 
@@ -130,37 +201,25 @@ class _DecryptProgressState extends State<DecryptProgress> {
     var tmpFile = message.data.destination;
 
     var file = File(tmpFile);
-    //var sink = file.openWrite();
     var output = file.openSync(mode: FileMode.write);
-    //var allBytes = await response.contentLength;//50000;//await response.length;
     var allBytes = message.data.size;
     var writtenBytes = 0;
-    ProgressOject progress = ProgressOject(message.sendPort, 0.0, 0.5);
+    ProgressOject progress = ProgressOject(message.sendPort, message.data.progressStart, message.data.progressEnd);
     response.listen((List event) {
-      //var writtenBytesNew = writtenBytes+event.length;
       writtenBytes = writtenBytes + event.length;
       if (writtenBytes > allBytes){
         throw FormatException("wrong size");
       }
 
       output.writeFromSync(event);
-      //sink.add(event);
-      /*
-      if(writtenBytesNew % 1024 != writtenBytes % 1024) {
-        message.sendPort.send(IsolateMessage<String, String>(writtenBytesNew/(2*allBytes), false, false, null, null));
-      }*/
       progress.progress(writtenBytes, allBytes, false);
-      //writtenBytes = writtenBytesNew;
     }, onDone: () {
-      //sink.close();
       output.closeSync();
-      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.5, true, false, null, null));
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(message.data.progressEnd, true, false, null, null));
     }, onError: (e) {
-      //sink.close();
       output.closeSync();
       message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, e.toString(), null));
     });
-    //await Isolate.spawn(encrypt, IsolateInitMessage<IsolateEncryptInitData>(_receiveEncrypt.sendPort, IsolateEncryptInitData(file, _appDocDir)))
   }
 
   static void decryptFile(IsolateInitMessage<IsolateDecryptData> message) async {
@@ -170,24 +229,61 @@ class _DecryptProgressState extends State<DecryptProgress> {
         throw FormatException("Libsodium not supported");
       }
 
-      // start encryption
+      // start decryption
       File sourceFile = File(message.data.file);
       File targetFile = File(message.data.destinationFile);
 
-      ProgressOject progress = ProgressOject(message.sendPort, 0.5, 1.0);
+      ProgressOject progress = ProgressOject(message.sendPort, message.data.progressStart, message.data.progressEnd);
       Filecrypt encFile = Filecrypt(base64.decode(message.data.password));
       encFile.init(sourceFile, CryptoMode.dec);
       bool success = encFile.writeIntoFile(
           targetFile, callback: progress.progress);
       if (!success) {
-        message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, true, true, "Encryption failed", null));
+        message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, "Decryption failed", null));
       } else {
         message.sendPort.send(
             IsolateMessage<String, List<dynamic>>(0.0, true, false, null, null));
       }
     } catch (e){
       print(e.toString());
-      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, true, true, "File error", null));
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, "File error", null));
+    }
+  }
+
+  static void extractFile(IsolateInitMessage<IsolateExtractData> message) async {
+    try {
+      File source = File(message.data.file);
+      var content = source.readAsBytesSync();
+      Archive archive = ZipDecoder().decodeBytes(content);
+
+      ProgressOject progress = ProgressOject(message.sendPort, message.data.progressStart, message.data.progressEnd);
+      var numberOfFiles = archive.length;
+      int i = 0;
+      List<String> files = [];
+      for (ArchiveFile file in archive){
+        String filename = file.name;
+        if (file.isFile) {
+          List<int> data = file.content;
+          File(message.data.destination+'/'+ filename)
+            ..createSync(recursive: true)
+            ..writeAsBytesSync(data);
+        } else {
+          Directory(message.data.destination+'/'+ filename)
+            ..create(recursive: true);
+        }
+
+        i++;
+        progress.progress(i, numberOfFiles, false);
+        if (file.isFile) {
+          files.add(message.data.destination+'/'+ filename);
+        }
+      }
+
+      print(files.toString());
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(message.data.progressEnd, true, false, null, files));
+    } catch (e){
+      print(e.toString());
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, "Extraction failed", null));
     }
   }
 
