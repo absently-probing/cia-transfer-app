@@ -84,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Text("close"),
             onPressed: () async {
               await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-              exit(1);
             },
           )
         ],
