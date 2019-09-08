@@ -27,6 +27,7 @@ class Libsodium {
 
       Kdf();
     } catch (e){
+      print(e.toString());
       return false;
     }
 

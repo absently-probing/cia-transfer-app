@@ -11,6 +11,7 @@ String _platformPath(String name, {String path}) {
 	return path + "lib" + name + ".so";
   if (Platform.isMacOS) return path + "lib" + name + ".dylib";
   if (Platform.isWindows) return path + name + ".dll";
+  if (Platform.isIOS) return path + "lib" + name + ".dylib";
   throw Exception("Platform not implemented");
 }
 
