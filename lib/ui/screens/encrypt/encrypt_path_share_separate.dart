@@ -32,15 +32,14 @@ class _ShareSeparate extends State<ShareSeparate> {
     }
   }
 
-  void _shareSeparate(){
+  void _shareSeparate() {
     if (!_sharedUrl) {
       Share.share(_url);
       Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
           _sharedUrl = true;
           _infoText = Strings.shareSeparateInfoPassword;
-          _buttonText =
-              Strings.shareSeparateButtonLabelPassword;
+          _buttonText = Strings.shareSeparateButtonLabelPassword;
         });
       });
     } else if (!_sharedPassword) {
@@ -87,14 +86,15 @@ class _ShareSeparate extends State<ShareSeparate> {
                 child: Padding(
                   padding: EdgeInsets.only(left: 40, right: 40, bottom: 30),
                   child: OutlineButton(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                    borderSide: BorderSide(
                       color: Theme.of(context).colorScheme.primary,
-                      textColor: Theme.of(context).colorScheme.primary,
-                      onPressed: () => _shareSeparate,
-                      child: Text(_buttonText, style: Theme.of(context).accentTextTheme.title),
                     ),
+                    color: Theme.of(context).colorScheme.primary,
+                    textColor: Theme.of(context).colorScheme.primary,
+                    onPressed: () => _shareSeparate(),
+                    child: Text(_buttonText,
+                        style: Theme.of(context).accentTextTheme.title),
+                  ),
                 ),
               ),
             ],
