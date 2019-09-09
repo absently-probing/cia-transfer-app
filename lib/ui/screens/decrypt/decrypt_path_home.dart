@@ -16,7 +16,6 @@ class DecryptScreen extends StatefulWidget {
 }
 
 class _DecryptScreen extends State<DecryptScreen> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _stateKey = GlobalKey<FormState>();
 
   var _urlEnabled = true;
@@ -25,7 +24,7 @@ class _DecryptScreen extends State<DecryptScreen> {
   var _urlController = TextEditingController();
   var _passwordController = TextEditingController();
 
-  void _submit(BuildContext context) {
+  void _submit() {
     final form = _stateKey.currentState;
     // use this to fast skip entering url and password
     //_urlController.text = "https://drive.google.com/uc?id=1E_ftaWTjbEp5RJssdrL4TFMs9HASB6Hj&export=download";
@@ -111,7 +110,6 @@ class _DecryptScreen extends State<DecryptScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
           title: Text(Strings.Receive),
@@ -167,9 +165,7 @@ class _DecryptScreen extends State<DecryptScreen> {
                               ),
                               hoverColor: Theme.of(context).colorScheme.primary,
                               textColor: Theme.of(context).colorScheme.primary,
-                              onPressed: () {
-                                _submit(context);
-                              },
+                              onPressed: _submit,
                               //icon: Icon(
                               //  Icons.cloud_upload,
                               //),

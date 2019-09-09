@@ -15,8 +15,6 @@ class EncryptScreen extends StatefulWidget {
 }
 
 class _EncryptScreen extends State<EncryptScreen> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _stateKey = GlobalKey<FormState>();
   final Color _buttonColorUnusable = Colors.grey;
   final Color _buttonColorUsable = Colors.blue;
   Color _buttonColor = Colors.grey;
@@ -66,13 +64,11 @@ class _EncryptScreen extends State<EncryptScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(Strings.Sharing),
       ),
       body: Container(
-          key: _stateKey,
           child: Stack(children: <Widget>[
             Column(
               children: <Widget>[

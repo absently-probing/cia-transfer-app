@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:path/path.dart' as p;
 import 'package:open_file/open_file.dart';
 
@@ -18,39 +19,41 @@ class DecryptShowFiles extends StatefulWidget {
 }
 
 class _DecryptShowFiles extends State<DecryptShowFiles> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _stateKey = GlobalKey<FormState>();
   final List<String> files;
   final String prefix;
 
   Map<String, bool> _saved = {};
 
   _DecryptShowFiles(this.files, this.prefix) {
-    for (String file in files){
+    for (String file in files) {
       _saved[file] = false;
     }
   }
 
-  void _callProgramForFile(String file){
+  void _callProgramForFile(String file) {
     OpenFile.open(file);
   }
 
-  void _saveFile(String file, int index){
+  // use new BuildContext to call Scaffold.of(_context), you cannot use
+  // Scaffold.of(context) if Scaffold has the same context
+  void _saveFile(BuildContext _context, String file, int index) {
     _saved[file] = true;
     var tmpFile = File(file);
     var filename = p.basename(file);
 
-    tmpFile.copy(Path.getExternalDir()+'/'+filename);
+    tmpFile.copy(Path.getExternalDir() + '/' + filename);
 
     final snackBar = SnackBar(
       duration: Duration(milliseconds: 100),
-      content: Text('saved ${filename}', style: Theme.of(context).textTheme.title),
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      content:
+          Text('saved $filename', style: Theme.of(_context).textTheme.title),
+      backgroundColor: Theme.of(_context).colorScheme.primary,
     );
 
     // Find the Scaffold in the widget tree and use
     // it to show a SnackBar.
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    Scaffold.of(_context).showSnackBar(snackBar);
+    //_scaffoldKey.currentState.showSnackBar(snackBar);
     setState(() {
       var item = files[index];
       files.removeAt(index);
@@ -58,17 +61,17 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
     });
   }
 
-  void _finishButton(BuildContext context){
+  void _finishButton(BuildContext context) {
     try {
-      Directory(Path.getDocDir() + '/' + Consts.decryptExtractDir).deleteSync(
-          recursive: true);
+      Directory(Path.getDocDir() + '/' + Consts.decryptExtractDir)
+          .deleteSync(recursive: true);
     } catch (e) {}
 
     Navigator.of(context)
         .pushNamedAndRemoveUntil('/root', (Route<dynamic> route) => false);
   }
 
-  ListView _showFiles() {
+  ListView _showFiles(BuildContext _context) {
     return ListView.builder(
         padding: const EdgeInsets.only(top: 10.0),
         itemCount: files.length,
@@ -82,12 +85,15 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
               key: Key(item),
               child: ListTile(
                 trailing: IconButton(
-                  icon: Icon(Icons.file_download, color: Colors.blue,),
-                  onPressed: () => _saveFile(files[index], index),
+                  icon: Icon(
+                    Icons.file_download,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () => _saveFile(_context, files[index], index),
                 ),
                 onTap: () => _callProgramForFile(files[index]),
-                title: Text(filename,
-                    style: Theme.of(context).textTheme.body1),
+                title:
+                    Text(filename, style: Theme.of(_context).textTheme.body1),
               ),
             );
           }
@@ -96,8 +102,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
             key: Key(item),
             child: ListTile(
               onTap: () => _callProgramForFile(files[index]),
-              title: Text(filename,
-                  style: Theme.of(context).textTheme.body1),
+              title: Text(filename, style: Theme.of(_context).textTheme.body1),
             ),
           );
         });
@@ -106,7 +111,6 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _finishButton(context);
@@ -118,23 +122,26 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
         centerTitle: true,
         title: Text(Strings.decryptShowFilesLabel),
       ),
-      body: Container(
-        key: _stateKey,
-        child: Column(
-          children: [
-            Padding(
-              padding:
-                  EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-              child: Text(
-                Strings.decryptShowFilesInfoText,
-                style: Theme.of(context).textTheme.body1,
-              ),
+      body: Builder(
+        builder: (BuildContext _context) {
+          return Container(
+            child: Column(
+              children: [
+                Padding(
+                  padding:
+                      EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                  child: Text(
+                    Strings.decryptShowFilesInfoText,
+                    style: Theme.of(_context).textTheme.body1,
+                  ),
+                ),
+                Expanded(
+                  child: _showFiles(_context),
+                ),
+              ],
             ),
-            Expanded(
-              child: _showFiles(),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
