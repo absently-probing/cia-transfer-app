@@ -81,11 +81,11 @@ class _DecryptProgressState extends State<DecryptProgress> {
   String _progressString = "0%";
   String _step = Strings.decryptProgressTextDownload;
 
-  String _filename;
   String _docPath;
   String _tmpPath; // = (await getTemporaryDirectory()).path;
   String _tmpDownloadFile; // = path+'/'+filename;
   String _persistentArchive;
+  String _extractPath;
 
   List<String> _files;
 
@@ -111,10 +111,10 @@ class _DecryptProgressState extends State<DecryptProgress> {
   }
 
   void start() async {
-    _filename = Consts.decryptEncFile;
     _tmpPath = (await getTemporaryDirectory()).path;
     _docPath = (await getExternalStorageDirectory()).path;
-    _tmpDownloadFile = _tmpPath+'/'+_filename;
+    _extractPath = _docPath +'/'+Consts.decryptExtractDir;
+    _tmpDownloadFile = _tmpPath+'/'+Consts.decryptEncFile;
     _persistentArchive = _docPath+'/'+Consts.decryptZipFile;
     _downloadIsolate = await Isolate.spawn(downloadFile,
         IsolateInitMessage<IsolateDownloadData>(
@@ -176,11 +176,11 @@ class _DecryptProgressState extends State<DecryptProgress> {
       _step = Strings.decryptProgressTextExtract;
 
       try {
-        Directory(_docPath + '/' + Consts.decryptExtractDir).deleteSync(
+        Directory(_extractPath).deleteSync(
             recursive: true);
       } catch (e) {}
 
-      Directory(_docPath +'/'+Consts.decryptExtractDir).createSync(recursive: true);
+      Directory(_extractPath).createSync(recursive: true);
       File(_tmpDownloadFile).deleteSync();
       _extractIsolate = await Isolate.spawn(extractFile,
           IsolateInitMessage<IsolateExtractData>(
@@ -188,7 +188,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
               0.9,
               1.0,
               _persistentArchive,
-              _docPath +'/'+Consts.decryptExtractDir)));
+              _extractPath)));
 
       _extractReceive.listen((data) {
         _communcateExtract(data);
@@ -210,7 +210,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
         Navigator.of(context).pop();
 
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => DecryptShowFiles(_files)));
+            MaterialPageRoute(builder: (context) => DecryptShowFiles(_files, _extractPath+"/")));
       }
     }
   }
@@ -252,7 +252,12 @@ class _DecryptProgressState extends State<DecryptProgress> {
       progress.progress(writtenBytes, allBytes, false);
     }, onDone: () {
       output.closeSync();
-      message.sendPort.send(IsolateMessage<String, List<dynamic>>(message.data.progressEnd, true, false, null, null));
+      if (writtenBytes != allBytes) {
+        message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, "Download failed", null));
+      } else {
+        message.sendPort.send(IsolateMessage<String, List<dynamic>>(
+            message.data.progressEnd, true, false, null, null));
+      }
     }, onError: (e) {
       output.closeSync();
       message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, e.toString(), null));

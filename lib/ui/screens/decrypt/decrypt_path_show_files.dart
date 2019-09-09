@@ -10,22 +10,24 @@ import '../../../data/strings.dart';
 
 class DecryptShowFiles extends StatefulWidget {
   final List<String> list;
-  DecryptShowFiles(this.list, {Key key}) : super(key: key);
+  final String prefix;
+  DecryptShowFiles(this.list, this.prefix, {Key key}) : super(key: key);
 
   @override
-  _DecryptShowFiles createState() => _DecryptShowFiles(list);
+  _DecryptShowFiles createState() => _DecryptShowFiles(list, prefix);
 }
 
 class _DecryptShowFiles extends State<DecryptShowFiles> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _stateKey = GlobalKey<FormState>();
   final List<String> files;
+  final String prefix;
 
   String _docPath;
   String _saveDir;
   Map<String, bool> _saved = {};
 
-  _DecryptShowFiles(this.files) {
+  _DecryptShowFiles(this.files, this.prefix) {
     for (String file in files){
       _saved[file] = false;
     }
@@ -81,7 +83,8 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
         itemCount: files.length,
         itemBuilder: (BuildContext ctxt, int index) {
           final item = files[index];
-          final filename = p.basename(files[index]);
+          //final filename = p.basename(files[index]);
+          final filename = files[index].replaceFirst(prefix, "");
 
           if (!_saved[files[index]]) {
             return Card(
@@ -93,17 +96,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
                 ),
                 onTap: () => _callProgramForFile(files[index]),
                 title: Text(filename,
-                    style: TextStyle(
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .secondary)),
-                subtitle: Text(files[index],
-                    style: TextStyle(
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .onSurface)),
+                    style: Theme.of(context).textTheme.body1),
               ),
             );
           }
@@ -137,7 +130,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
         onPressed: () {
           _finishButton(context);
         },
-        child: Icon(Icons.thumb_up),
+        child: Icon(Icons.check),
         backgroundColor: Colors.green,
       ),
       appBar: AppBar(

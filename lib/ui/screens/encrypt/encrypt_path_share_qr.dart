@@ -63,7 +63,7 @@ class ShareQr extends StatelessWidget {
                 onPressed: () {
                   _finishButton(context);
                 },
-                child: Icon(Icons.thumb_up),
+                child: Icon(Icons.check),
                 backgroundColor: Colors.green,
               ),
             ),

@@ -26,7 +26,7 @@ class FileMetadata {
 
   List showMetadata(){
     // calculate size in MB
-    var msize = (size.toDouble() / (1000 * 1000)).floor();
+    var msize = (size.toDouble() / (1000 * 1000)).ceil();
 
     // create file entry
     String filesString = "";
@@ -35,7 +35,7 @@ class FileMetadata {
       if (filesString == ""){
         filesString = file;
       } else {
-        filesString = filesString + ", " + file;
+        filesString = filesString + "\n" + file;
       }
     }
 
