@@ -1,7 +1,4 @@
 import 'dart:isolate';
-import 'dart:collection';
-
-import 'package:googleapis/docs/v1.dart';
 
 class IsolateMessage<S,T> {
   final double progress;
@@ -15,9 +12,11 @@ class IsolateMessage<S,T> {
 
 class IsolateInitMessage<T> {
   final SendPort sendPort;
+  final double progressStart;
+  final double progressEnd;
   final T data;
 
-  IsolateInitMessage(this.sendPort, this.data);
+  IsolateInitMessage(this.sendPort, {this.progressStart = 0.0, this.progressEnd = 0.0, this.data});
 }
 
 class IsolateRequest<T> {

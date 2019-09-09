@@ -76,7 +76,7 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
     _downloadIsolate = await Isolate.spawn(
         downloadMetadata,
         IsolateInitMessage<IsolateDownloadData>(
-            _downloadReceive.sendPort, IsolateDownloadData(_url, _tmpEncFile)));
+            _downloadReceive.sendPort, data: IsolateDownloadData(_url, _tmpEncFile)));
     _downloadReceive.listen((data) {
       _communicateDownload(data);
     });
@@ -90,7 +90,7 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
       _decryptIsolate = await Isolate.spawn(
           decryptMetadata,
           IsolateInitMessage<IsolateDecryptData>(_decryptReceive.sendPort,
-              IsolateDecryptData(_tmpEncFile, _password)));
+              data: IsolateDecryptData(_tmpEncFile, _password)));
       _decryptReceive.listen((data) {
         _communicateDecrypt(data);
       });

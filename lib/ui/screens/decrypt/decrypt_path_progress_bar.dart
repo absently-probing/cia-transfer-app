@@ -20,32 +20,26 @@ import 'decrypt_path_show_files.dart';
 
 
 class IsolateDownloadData {
-  final double progressStart;
-  final double progressEnd;
   final String url;
   final String destination;
   final int size;
 
-  IsolateDownloadData(this.progressStart, this.progressEnd, this.url, this.destination, this.size);
+  IsolateDownloadData(this.url, this.destination, this.size);
 }
 
 class IsolateDecryptData {
-  final double progressStart;
-  final double progressEnd;
   final String file;
   final String password;
   final String destinationFile;
 
-  IsolateDecryptData(this.progressStart, this.progressEnd, this.file, this.password, this.destinationFile);
+  IsolateDecryptData(this.file, this.password, this.destinationFile);
 }
 
 class IsolateExtractData {
-  final double progressStart;
-  final double progressEnd;
   final String file;
   final String destination;
 
-  IsolateExtractData(this.progressStart, this.progressEnd, this.file, this.destination);
+  IsolateExtractData(this.file, this.destination);
 }
 
 class DecryptProgress extends StatefulWidget {
@@ -114,8 +108,8 @@ class _DecryptProgressState extends State<DecryptProgress> {
     _persistentArchive = Path.getDocDir()+'/'+Consts.decryptZipFile;
     _downloadIsolate = await Isolate.spawn(downloadFile,
         IsolateInitMessage<IsolateDownloadData>(
-            _downloadReceive.sendPort,
-            IsolateDownloadData(0.0, 0.6,url, _tmpDownloadFile, size)));
+            _downloadReceive.sendPort, progressStart: 0.0, progressEnd: 0.6,
+            data: IsolateDownloadData(url, _tmpDownloadFile, size)));
 
     _downloadReceive.listen((data) {
       _communicateDownload(data);
@@ -156,8 +150,8 @@ class _DecryptProgressState extends State<DecryptProgress> {
       _step = Strings.decryptProgressTextDecrypt;
       _decryptIsolate = await Isolate.spawn(decryptFile,
           IsolateInitMessage<IsolateDecryptData>(
-              _decryptReceive.sendPort,
-              IsolateDecryptData(0.6, 0.9,_tmpDownloadFile, password, _persistentArchive)));
+              _decryptReceive.sendPort, progressStart: 0.6, progressEnd: 0.9,
+              data: IsolateDecryptData(_tmpDownloadFile, password, _persistentArchive)));
 
       _decryptReceive.listen((data) {
         _communicateDecrypt(data);
@@ -180,9 +174,8 @@ class _DecryptProgressState extends State<DecryptProgress> {
       File(_tmpDownloadFile).deleteSync();
       _extractIsolate = await Isolate.spawn(extractFile,
           IsolateInitMessage<IsolateExtractData>(
-              _extractReceive.sendPort, IsolateExtractData(
-              0.9,
-              1.0,
+              _extractReceive.sendPort, progressStart: 0.9, progressEnd: 1.0,
+              data: IsolateExtractData(
               _persistentArchive,
               _extractPath)));
 
@@ -237,7 +230,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
     var output = file.openSync(mode: FileMode.write);
     var allBytes = message.data.size;
     var writtenBytes = 0;
-    ProgressOject progress = ProgressOject(message.sendPort, message.data.progressStart, message.data.progressEnd);
+    ProgressOject progress = ProgressOject(message.sendPort, message.progressStart, message.progressEnd);
     response.listen((List event) {
       writtenBytes = writtenBytes + event.length;
       if (writtenBytes > allBytes){
@@ -252,7 +245,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
         message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, "Download failed", null));
       } else {
         message.sendPort.send(IsolateMessage<String, List<dynamic>>(
-            message.data.progressEnd, true, false, null, null));
+            message.progressEnd, true, false, null, null));
       }
     }, onError: (e) {
       output.closeSync();
@@ -271,7 +264,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
       File sourceFile = File(message.data.file);
       File targetFile = File(message.data.destinationFile);
 
-      ProgressOject progress = ProgressOject(message.sendPort, message.data.progressStart, message.data.progressEnd);
+      ProgressOject progress = ProgressOject(message.sendPort, message.progressStart, message.progressEnd);
       Filecrypt encFile = Filecrypt(base64.decode(message.data.password));
       encFile.init(sourceFile, CryptoMode.dec);
       bool success = encFile.writeIntoFile(
@@ -296,7 +289,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
       var content = source.readAsBytesSync();
       Archive archive = ZipDecoder().decodeBytes(content);
 
-      ProgressOject progress = ProgressOject(message.sendPort, message.data.progressStart, message.data.progressEnd);
+      ProgressOject progress = ProgressOject(message.sendPort, message.progressStart, message.progressEnd);
       var numberOfFiles = archive.length;
       int i = 0;
       List<String> files = [];
@@ -319,7 +312,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
         }
       }
 
-      message.sendPort.send(IsolateMessage<String, List<dynamic>>(message.data.progressEnd, true, false, null, files));
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(message.progressEnd, true, false, null, files));
     } catch (e){
       print(e.toString());
       message.sendPort.send(IsolateMessage<String, List<dynamic>>(0.0, false, true, "Extraction failed", null));

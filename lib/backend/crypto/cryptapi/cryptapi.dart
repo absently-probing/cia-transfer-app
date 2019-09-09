@@ -7,18 +7,18 @@ export 'package:libsodium/libsodium.dart';
 enum CryptoMode { none, enc, dec }
 
 class Filecrypt {
-  Kdf _kdf = null;
+  Kdf _kdf;
   int _id = 0;
-  Secretstream _stream = null;
+  Secretstream _stream;
   CryptoMode _mode = CryptoMode.none;
-  RandomAccessFile _input = null;
+  RandomAccessFile _input;
   int _processed = 0;
 
   static const int bufferSize = 1024 * 1024;
 
   Filecrypt._(this._kdf);
 
-  factory Filecrypt([List<int> key = null]) {
+  factory Filecrypt([List<int> key]) {
     if (key != null && key.length != Kdf.masterkeyBytes()) {
       return null;
     }
@@ -42,8 +42,8 @@ class Filecrypt {
 
     // bufferSize = plaintext size
     List<int> buffer = new List<int>(bufferSize);
-    List<int> m = null;
-    List<int> c = null;
+    List<int> m;
+    List<int> c;
     read = _input.readIntoSync(buffer);
     _processed = _processed + read;
     var tag = length - _processed > 0
@@ -68,8 +68,8 @@ class Filecrypt {
 
     // bufferSize + abytes = ciphertext
     List<int> buffer = new List<int>(bufferSize + Secretstream.abytes());
-    List<int> m = null;
-    List<int> c = null;
+    List<int> m;
+    List<int> c;
     read = _input.readIntoSync(buffer);
     _processed = _processed + read;
     var tag = length - _processed > 0
@@ -87,8 +87,8 @@ class Filecrypt {
     out.writeFromSync(_stream.pushInit());
     // bufferSize = plaintext size
     List<int> buffer = new List<int>(bufferSize);
-    List<int> m = null;
-    List<int> c = null;
+    List<int> m;
+    List<int> c;
     do {
       read = _input.readIntoSync(buffer);
       _processed = _processed + read;
@@ -120,8 +120,8 @@ class Filecrypt {
     int read = 0;
     // bufferSize + abytes = ciphertext size
     List<int> buffer = new List<int>(bufferSize + Secretstream.abytes());
-    List<int> m = null;
-    List<int> c = null;
+    List<int> m;
+    List<int> c;
     List<int> header = new List<int>(Secretstream.headerbytes());
     read = _input.readIntoSync(header);
     _processed = _processed + read;
@@ -215,7 +215,7 @@ class Filecrypt {
   // write decryption / encryption to file
   // encrypt or decrypt input file and write to output file
   bool writeIntoFile(File output,
-      {Function(int state, int quota, bool done) callback = null}) {
+      {Function(int state, int quota, bool done) callback}) {
     if (_cleared()) {
       throw CryptoException("Fliecrypt was cleared");
     }
@@ -295,7 +295,7 @@ class Filecrypt {
     }
 
     int length = _input.lengthSync();
-    List<int> out = null;
+    List<int> out;
     try {
       if (_mode == CryptoMode.enc) {
         // encryption
@@ -344,7 +344,7 @@ class Filecrypt {
     }
 
     List<int> output = [];
-    List<int> part = null;
+    List<int> part;
 
     if (_mode == CryptoMode.enc) {
       // encryption
@@ -391,15 +391,15 @@ class Filecrypt {
   }
 
   static String randomFilename() {
-    return HexString(Random.randomBytes(6));
+    return HexString(Random.randomBytes(16));
   }
 
   static String HexString(List<int> bytes) {
-    String hexstr = "0123456789abcdef";
+    String hexStr = "0123456789abcdef";
     StringBuffer str = new StringBuffer();
     for (int i = 0; i < bytes.length; ++i) {
-      var upper = hexstr[(bytes[i] >> 4)];
-      var lower = hexstr[(bytes[i] & 0x0f)];
+      var upper = hexStr[(bytes[i] >> 4)];
+      var lower = hexStr[(bytes[i] & 0x0f)];
       str.write(upper);
       str.write(lower);
     }

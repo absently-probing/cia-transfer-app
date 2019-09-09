@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../data/utils.dart' as utils;
 import '../../../data/strings.dart';
 import '../../../data/global.dart' as globals;
 import 'encrypt_path_share_qr.dart';
@@ -26,18 +28,21 @@ class ShareSelection extends StatelessWidget {
           child: SizedBox(
             width: globals.rootButtonWidth(context),
             child: OutlineButton(
-              borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.primary,
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                hoverColor: Theme.of(context).colorScheme.primary,
+                textColor: Theme.of(context).colorScheme.primary,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => screen),
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Text(label, style: Theme.of(context).accentTextTheme.title),
               ),
-              hoverColor: Theme.of(context).colorScheme.primary,
-              textColor: Theme.of(context).colorScheme.primary,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => screen),
-                );
-              },
-              child: Text(label, style: Theme.of(context).accentTextTheme.title),
             ),
           ),
         ),
@@ -48,16 +53,34 @@ class ShareSelection extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      centerTitle: true,
+      title: Text(Strings.shareSelectionTitle),
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(Strings.shareSelectionTitle),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
+      appBar: appBar,
+      body: SingleChildScrollView(
             child: Column(
-          children: _createShareOptionList(context),
-        )),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: 30,
+                      right: 30,
+                      top: (utils.screenHeight(context) -
+                          utils.screenSafeAreaPadding(context) -
+                          appBar.preferredSize.height) /
+                          8,
+                      bottom: 50),
+                  child: Text(
+                    Strings.shareSelectionInfo,
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                ),
+                Column( children: _createShareOptionList(context),),
+        ]
+        ),
       ),
     );
   }

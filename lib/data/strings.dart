@@ -29,16 +29,24 @@ class Strings {
   static const String encryptShareBoth = 'Share both';
   static const String encryptCloudSelection = 'Cloud Storage Selection';
   static const String encryptCloudCredentials = 'Cloud Credentials';
-  static const String encryptCouldSecectionHelpText = 'Select a Cloud Storage Provider which you want to share the data. Keep ready your credentials to log in.';
+  static const String encryptCouldSecectionHelpText = 'Select a Cloud Storage Provider which you want to share the data. Keep ready your credentials to log in';
 
+  // select share methond
   static const String shareSelectionTitle = "Share Files";
+  static const String shareSelectionInfo = "Choose how you want to share URL and password. Sharing password and URL separately increases your security";
+
+  // share qr code
   static const String shareQrTitle = "Share QR Code";
   static const String shareQrInfo = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
+
+  // share separate
   static const String shareSeparateTitle = "Share URL and PW Separatly";
   static const String shareSeparateInfoUrl = "URL: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
   static const String shareSeparateButtonLabelUrl = "Share Url";
   static const String shareSeparateInfoPassword = "PW: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
   static const String shareSeparateButtonLabelPassword = "Share Password";
+
+  // share together
   static const String shareTogetherTitle = "Share URL and PW Together";
   static const String shareTogetherInfo = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.";
   static const String shareTogetherButtonLabel = "Share";
