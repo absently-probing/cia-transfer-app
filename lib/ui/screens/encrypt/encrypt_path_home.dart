@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/ui/screens/encrypt/encrypt_path_cloud_selection.dart';
-import 'package:secure_upload/data/strings.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io' show Platform;
+
+import 'encrypt_path_cloud_selection.dart';
+import '../../../data/strings.dart';
+import '../../../data/path.dart';
 
 class EncryptScreen extends StatefulWidget {
   EncryptScreen({Key key}) : super(key: key);
@@ -82,8 +84,8 @@ class _EncryptScreen extends State<EncryptScreen> {
                         final item = _paths[index][1];
                         String showFile = _paths[index][0];
 
-                        if (Platform.isAndroid && _paths[index][1].startsWith("/storage/emulated/0/")){
-                          showFile = _paths[index][1].replaceFirst("/storage/emulated/0/", "");
+                        if (Platform.isAndroid && _paths[index][1].startsWith(Path.androidStoragePrefix)){
+                          showFile = _paths[index][1].replaceFirst(Path.androidStoragePrefix, "");
                         }
 
                         return Dismissible(

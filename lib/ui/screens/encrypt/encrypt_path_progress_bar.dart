@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
 
@@ -12,6 +11,7 @@ import 'dart:math';
 
 import '../../../data/metadata.dart';
 
+import '../../../data/path.dart';
 import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
 import '../../../data/strings.dart';
@@ -29,7 +29,7 @@ import 'encrypt_path_share_selection.dart';
 class IsolateZipInitMessage {
   final List<String> files;
   final SendPort sendPort;
-  final Directory appDir;
+  final String appDir;
 
   IsolateZipInitMessage(this.files, this.sendPort, this.appDir);
 }
@@ -39,7 +39,7 @@ class IsolateEncryptInitData {
   final double progressStart;
   final double progressEnd;
   final String file;
-  final Directory appDir;
+  final String appDir;
 
   IsolateEncryptInitData(this.progressStart, this.progressEnd,
       this.file, this.appDir);
@@ -61,7 +61,7 @@ class IsolateUploadInitData {
 class IsolateEncMetadataInitData {
   final double progressStart;
   final double progressEnd;
-  final Directory appDir;
+  final String appDir;
   final List<String> files;
   final String key;
   final String fileUrl;
@@ -114,9 +114,8 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
   String _step = Strings.encryptProgressTextZip;
 
-  double _progress = 0.0;
-  String _progressString = "0%";
-  Directory _appDocDir;
+  double _progress = 0.01;
+  String _progressString = "1%";
   String _key;
   String _fileUrl;
   int _fileSize;
@@ -163,10 +162,8 @@ class _EncryptProgressState extends State<EncryptProgress> {
   void startEncryptAndUpload() async {
     _handler = IsolateCommunicationHandler(_receiveStorage, _handleRequest);
 
-    _appDocDir = await getApplicationDocumentsDirectory();
-    _updateProgress(0.01);
     _isolateZip = await Isolate.spawn(
-        zip, IsolateZipInitMessage(files, _receiveZip.sendPort, _appDocDir));
+        zip, IsolateZipInitMessage(files, _receiveZip.sendPort, Path.getDocDir()));
     _receiveZip.listen((data) async {
       if (data == "") {
         // TODO handle error (ui)
@@ -181,7 +178,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
         _isolateEncrypt = await Isolate.spawn(
             encrypt,
             IsolateInitMessage<IsolateEncryptInitData>(_receiveEncrypt.sendPort,
-                IsolateEncryptInitData(0.1, 0.3, data, _appDocDir)));
+                IsolateEncryptInitData(0.1, 0.3, data, Path.getDocDir())));
         _receiveEncrypt.listen((data) {
           _communicateEncrypt(data);
         });
@@ -211,7 +208,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
                 IsolateUploadInitData(
                     0.3,
                     0.9,
-                    _appDocDir.path + "/" + Consts.encryptTargetFile,
+                    Path.getDocDir() + "/" + Consts.encryptTargetFile,
                     _receiveStorage.sendPort,
                     cloudProvider)));
         _uploadStarted = true;
@@ -244,7 +241,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
             IsolateEncMetadataInitData(
                 0.9,
                 0.95,
-                _appDocDir,
+                Path.getDocDir(),
                 files,
                 _key,
                 _fileUrl,
@@ -352,14 +349,14 @@ class _EncryptProgressState extends State<EncryptProgress> {
   static void zip(IsolateZipInitMessage message) {
     try {
       var encoder = ZipFileEncoder();
-      encoder.open(message.appDir.path + "/" + Consts.encryptZipFile);
+      encoder.open(message.appDir + "/" + Consts.encryptZipFile);
       for (String file in message.files) {
         encoder.addFile(File(file));
       }
 
       encoder.close();
 
-      message.sendPort.send(message.appDir.path + "/" + Consts.encryptZipFile);
+      message.sendPort.send(message.appDir + "/" + Consts.encryptZipFile);
     } catch (e) {
       print(e.toString());
       message.sendPort.send("");
@@ -379,7 +376,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
       // start encryption
       File sourceFile = File(message.data.file);
       File targetFile =
-          File(message.data.appDir.path + "/" + Consts.encryptTargetFile);
+          File(message.data.appDir + "/" + Consts.encryptTargetFile);
 
       ProgressOject progress = ProgressOject(message.sendPort, message.data.progressStart, message.data.progressEnd);
       encFile.init(sourceFile, CryptoMode.enc);
@@ -451,7 +448,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
     Filecrypt fcrypt = Filecrypt(_rkey);
     try {
       // encode to json and write into sourceFile
-      File sourceFile = File(message.data.appDir.path + "/" + Consts.encryptMetadataTmpFile);
+      File sourceFile = File(message.data.appDir + "/" + Consts.encryptMetadataTmpFile);
       List<int> content = utf8.encode(json.encode(meta));
       var rsource = sourceFile.openSync(mode: FileMode.writeOnly);
       rsource.writeFromSync(content);
@@ -459,7 +456,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
       // encrypt sourceFile
       ProgressOject progress = ProgressOject(message.sendPort, message.data.progressStart, message.data.progressEnd);
-      File targetFile = File(message.data.appDir.path + "/" + Consts.encryptMetadataFile);
+      File targetFile = File(message.data.appDir + "/" + Consts.encryptMetadataFile);
       fcrypt.init(sourceFile, CryptoMode.enc, Consts.subkeyIDMetadata);
       bool success = fcrypt.writeIntoFile(targetFile, callback: progress.progress);
       fcrypt.clear();

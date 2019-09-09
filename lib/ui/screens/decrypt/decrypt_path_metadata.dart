@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:secure_upload/backend/crypto/cryptapi/cryptapi.dart';
 
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:convert';
 
+import '../../../data/path.dart';
 import '../../../data/utils.dart' as utils;
 import '../../../data/strings.dart';
 import '../../../data/constants.dart';
 import '../../../data/metadata.dart';
 import '../../../data/isolate_messages.dart';
+import '../../../backend/crypto/cryptapi/cryptapi.dart';
 import 'decrypt_path_progress_bar.dart';
 
 class IsolateDownloadData {
@@ -48,7 +48,6 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
   ReceivePort _downloadReceive = ReceivePort();
   ReceivePort _decryptReceive = ReceivePort();
 
-  String _tmpPath;
   String _tmpEncFile;
 
   bool _decryptingStarted = false;
@@ -73,8 +72,7 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
   }
 
   void _startMetadataDownloadAndDecryption() async {
-    _tmpPath = (await getTemporaryDirectory()).path;
-    _tmpEncFile = _tmpPath + '/' + Consts.decryptEncMetadata;
+    _tmpEncFile = Path.getTmpDir() + '/' + Consts.decryptEncMetadata;
     _downloadIsolate = await Isolate.spawn(
         downloadMetadata,
         IsolateInitMessage<IsolateDownloadData>(

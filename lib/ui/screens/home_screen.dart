@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:libsodium/libsodium.dart';
+
 import '../custom/menus.dart';
+import '../../data/path.dart';
 import '../../data/strings.dart';
 import '../../data/global.dart' as globals;
 import '../custom/logo.dart';
@@ -8,9 +11,6 @@ import 'decrypt/decrypt_path_home.dart';
 import 'encrypt/encrypt_path_home.dart';
 import 'encrypt/encrypt_path_share_selection.dart';
 import 'onboarding/walkthrough_screen.dart';
-import 'package:libsodium/libsodium.dart';
-
-import 'dart:io';
 
 class HomeScreen extends StatefulWidget {
   final double _iconPercentVisible = 1.0;
@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _checkLibsodium();
+    Path.initDirs();
   }
 
   Future<void> _checkLibsodium() async {

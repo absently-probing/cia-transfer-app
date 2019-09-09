@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 
 import 'dart:io';
 
+import '../../../data/path.dart';
 import '../../../data/constants.dart';
 import '../../../data/strings.dart';
 
@@ -23,21 +23,12 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
   final List<String> files;
   final String prefix;
 
-  String _docPath;
-  String _saveDir;
   Map<String, bool> _saved = {};
 
   _DecryptShowFiles(this.files, this.prefix) {
     for (String file in files){
       _saved[file] = false;
     }
-
-    _init();
-  }
-
-  void _init() async {
-    _saveDir = (await getExternalStorageDirectory()).path;
-    _docPath = (await getExternalStorageDirectory()).path;
   }
 
   void _callProgramForFile(String file){
@@ -49,7 +40,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
     var tmpFile = File(file);
     var filename = p.basename(file);
 
-    tmpFile.copy(_saveDir+'/'+filename);
+    tmpFile.copy(Path.getExternalDir()+'/'+filename);
 
     final snackBar = SnackBar(
       duration: Duration(milliseconds: 100),
@@ -69,7 +60,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
 
   void _finishButton(BuildContext context){
     try {
-      Directory(_docPath + '/' + Consts.decryptExtractDir).deleteSync(
+      Directory(Path.getDocDir() + '/' + Consts.decryptExtractDir).deleteSync(
           recursive: true);
     } catch (e) {}
 
@@ -106,17 +97,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
             child: ListTile(
               onTap: () => _callProgramForFile(files[index]),
               title: Text(filename,
-                  style: TextStyle(
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .secondary)),
-              subtitle: Text(files[index],
-                  style: TextStyle(
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .onSurface)),
+                  style: Theme.of(context).textTheme.body1),
             ),
           );
         });

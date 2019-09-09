@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive.dart';
 import 'package:path/path.dart' as p;
 
@@ -9,6 +8,7 @@ import 'dart:math';
 import 'dart:io';
 import 'dart:isolate';
 
+import '../../../data/path.dart';
 import '../../../data/constants.dart';
 import '../../../data/utils.dart' as utils;
 import '../../../data/progress_object.dart';
@@ -81,8 +81,6 @@ class _DecryptProgressState extends State<DecryptProgress> {
   String _progressString = "0%";
   String _step = Strings.decryptProgressTextDownload;
 
-  String _docPath;
-  String _tmpPath; // = (await getTemporaryDirectory()).path;
   String _tmpDownloadFile; // = path+'/'+filename;
   String _persistentArchive;
   String _extractPath;
@@ -111,11 +109,9 @@ class _DecryptProgressState extends State<DecryptProgress> {
   }
 
   void start() async {
-    _tmpPath = (await getTemporaryDirectory()).path;
-    _docPath = (await getExternalStorageDirectory()).path;
-    _extractPath = _docPath +'/'+Consts.decryptExtractDir;
-    _tmpDownloadFile = _tmpPath+'/'+Consts.decryptEncFile;
-    _persistentArchive = _docPath+'/'+Consts.decryptZipFile;
+    _extractPath = Path.getDocDir() +'/'+Consts.decryptExtractDir;
+    _tmpDownloadFile = Path.getTmpDir()+'/'+Consts.decryptEncFile;
+    _persistentArchive = Path.getDocDir()+'/'+Consts.decryptZipFile;
     _downloadIsolate = await Isolate.spawn(downloadFile,
         IsolateInitMessage<IsolateDownloadData>(
             _downloadReceive.sendPort,
