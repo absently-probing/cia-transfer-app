@@ -10,6 +10,16 @@ enum CloudProvider {
   OneDrive
 }
 
+class CloudCredentialsException implements Exception {
+  final String cause;
+
+  CloudCredentialsException({this.cause = ""});
+
+  String toString(){
+    return cause;
+  }
+}
+
 String providerToString(CloudProvider provider) {
   switch(provider) {
     case CloudProvider.DropBox: return "Dropbox";

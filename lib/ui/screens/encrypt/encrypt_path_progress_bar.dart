@@ -91,6 +91,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
   Isolate _isolateEncrypt;
   Isolate _isolateUpload;
   Isolate _isolateEncMetadata;
+  Isolate _isolateUploadMetadata;
 
   ReceivePort _receiveZip = ReceivePort();
   ReceivePort _receiveEncrypt = ReceivePort();
@@ -116,29 +117,11 @@ class _EncryptProgressState extends State<EncryptProgress> {
   bool _uploadError = false;
   bool _metadataError = false;
 
-  bool _encryptStarted = false;
-  bool _uploadStarted = false;
-  bool _encMetadataStarted = false;
-
   _EncryptProgressState({this.files, this.cloudProvider}) {
     startEncryptAndUpload();
   }
 
   void dispose() {
-    _isolateZip.kill(priority: Isolate.immediate);
-
-    if (_encryptStarted) {
-      _isolateEncrypt.kill(priority: Isolate.immediate);
-    }
-
-    if (_uploadStarted) {
-      _isolateUpload.kill(priority: Isolate.immediate);
-    }
-
-    if (_encMetadataStarted){
-      _isolateEncMetadata.kill(priority: Isolate.immediate);
-    }
-
     _receiveZip.close();
     _receiveEncrypt.close();
     _receiveUpload.close();
@@ -164,16 +147,17 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
   void _communicateZip(IsolateMessage<String, List<dynamic>> message) async {
     if (message.error) {
-      // TODO handle error (ui)
       _zipError = true;
+      _isolateZip.kill();
+      _showErrorDialog(message.errorData);
     }
 
     if (!_zipError) {
       _updateProgress(message.progress);
 
       if (message.finished) {
+        _isolateZip.kill();
         var _zipFile = message.data[0];
-        _encryptStarted = true;
         _step = Strings.encryptProgressTextEncrypt;
         _isolateEncrypt = await Isolate.spawn(
             encrypt,
@@ -190,8 +174,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
   // ui thread communication with isolate encrypt process
   void _communicateEncrypt(IsolateMessage<String, List<dynamic>> message) async {
     if (message.error) {
-      // TODO handle error (ui)
       _encryptError = true;
+      _isolateEncrypt.kill();
+      _showErrorDialog(message.errorData);
     }
 
     if (!_encryptError) {
@@ -210,7 +195,6 @@ class _EncryptProgressState extends State<EncryptProgress> {
                     Path.getDocDir() + "/" + Consts.encryptTargetFile,
                     _receiveStorage.sendPort,
                     cloudProvider)));
-        _uploadStarted = true;
         _handler.start();
         _receiveUpload.listen((data) {
           _communicateUpload(data);
@@ -222,8 +206,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
   // ui thread communication with isolate upload process
   void _communicateUpload(IsolateMessage<String, List<dynamic>> message) async {
     if (message.error) {
-      // TODO handle error (ui)
       _uploadError = true;
+      _isolateUpload.kill();
+      _showErrorDialog(message.errorData);
     }
 
     if (!_uploadError) {
@@ -245,7 +230,6 @@ class _EncryptProgressState extends State<EncryptProgress> {
                 _fileSize)
           )
         );
-        _encMetadataStarted = true;
         _step = Strings.encryptProgressTextMetadata;
         _receiveEncMetadata.listen((data){
           _communicateEncMetadata(data);
@@ -256,8 +240,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
   void _communicateEncMetadata(IsolateMessage<String, List<dynamic>> message) async {
     if (message.error){
-      // TODO handle error (ui)
       _metadataError = true;
+      _isolateEncMetadata.kill();
+      _showErrorDialog(message.errorData);
     }
 
     if (!_metadataError){
@@ -267,7 +252,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
         var file = message.data[0];
         _isolateEncMetadata.kill();
 
-        _isolateUpload = await Isolate.spawn(
+        _isolateUploadMetadata = await Isolate.spawn(
             upload,
             IsolateInitMessage<IsolateUploadInitData>(
                 _receiveUploadMetadata.sendPort, progressStart: 0.95, progressEnd: 1.0,
@@ -275,7 +260,6 @@ class _EncryptProgressState extends State<EncryptProgress> {
                     file,
                     _receiveStorage.sendPort,
                     cloudProvider)));
-        _uploadStarted = true;
         _receiveUploadMetadata.listen((data) {
           _communicateMetadataUpload(data);
         });
@@ -285,8 +269,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
   void _communicateMetadataUpload(IsolateMessage<String, List<dynamic>> message) async {
     if (message.error){
-      // TODO handle error (ui)
       _uploadError = true;
+      _isolateUploadMetadata.kill();
+      _showErrorDialog(message.errorData);
     }
 
     if (!_uploadError) {
@@ -294,7 +279,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
       if (message.finished) {
         var url = message.data[0];
-        _isolateUpload.kill();
+        _isolateUploadMetadata.kill();
+
+        Navigator.of(context).pop();
 
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => ShareSelection(url, _key)));
@@ -340,11 +327,44 @@ class _EncryptProgressState extends State<EncryptProgress> {
     }
   }
 
+  void _showErrorDialog(String error){
+    // TODO delete FILE if already uploaded
+    if (_fileUrl != null){
+
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext _context) {
+        return AlertDialog(
+          content: Text(
+            error,
+            style: Theme.of(context).textTheme.title,
+          ),
+          actions: [
+            FlatButton(
+              child: Text("close"),
+              onPressed: () async {
+                Navigator.popUntil(context, ModalRoute.withName("/cloudSelection"));
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  // TODO handle cancel
+  Future<bool> _cancelEncryptionAndUpload() async {
+    return false;
+  }
+
   // zip files before encryption
   static void zip(IsolateInitMessage<IsolateZipInitMessage> message) {
+    var zipFullPath = message.data.appDir + "/" + Consts.encryptZipFile;
     try {
       var encoder = ZipFileEncoder();
-      encoder.open(message.data.appDir + "/" + Consts.encryptZipFile);
+      encoder.open(zipFullPath);
       ProgressOject progress = ProgressOject(message.sendPort, message.progressStart, message.progressEnd);
       var i = 0;
       for (String file in message.data.files) {
@@ -358,75 +378,105 @@ class _EncryptProgressState extends State<EncryptProgress> {
       message.sendPort.send(IsolateMessage<String, List<dynamic>>(
           message.progressEnd, true, false, null, [message.data.appDir + "/" + Consts.encryptZipFile]));
     } catch (e) {
-      print(e.toString());
+      // delete zip file, if exists
+      var tmp = File(zipFullPath);
+      if (tmp.existsSync()){
+        tmp.deleteSync();
+      }
+
       message.sendPort.send(IsolateMessage<String, List<dynamic>>(
-          0.0, false, true, e.toString(), null));
+          0.0, false, true, "Unable to create zip archive", null));
     }
   }
 
   // isolate encryption
   static void encrypt(IsolateInitMessage<IsolateEncryptInitData> message) async {
     Filecrypt encFile = Filecrypt();
+    var encFileFullPath = message.data.appDir + "/" + Consts.encryptTargetFile;
 
     try {
-      // check if libsodium is supported for platform
-      if (!Libsodium.supported()) {
-        throw FormatException("Libsodium not supported");
-      }
-
       // start encryption
       File sourceFile = File(message.data.file);
       File targetFile =
-          File(message.data.appDir + "/" + Consts.encryptTargetFile);
+          File(encFileFullPath);
 
       ProgressOject progress = ProgressOject(message.sendPort, message.progressStart, message.progressEnd);
       encFile.init(sourceFile, CryptoMode.enc);
       bool success =
           encFile.writeIntoFile(targetFile, callback: progress.progress);
       var key = base64.encode(encFile.getKey());
-      encFile.clear();
       sourceFile.deleteSync();
-      print("finished file encryption");
       var size = targetFile.lengthSync();
 
       if (!success) {
-        message.sendPort.send(IsolateMessage<String, List<dynamic>>(
-            0.0, false, true, "Encryption failed", null));
+        throw Exception("Encryption failed");
       } else {
+        encFile.clear();
         message.sendPort
             .send(IsolateMessage<String, List<dynamic>>(message.progressEnd, true, false, null, [key, size]));
 
         key = "";
       }
     } catch (e) {
-      print(e.toString());
       encFile.clear();
+
+      var tmpEncFile = File(encFileFullPath);
+      var tmpSourceFile = File(message.data.file);
+
+      // clean up remove zip file and encrypted file
+      if (tmpSourceFile.existsSync()){
+        tmpSourceFile.deleteSync();
+      }
+
+      if (tmpEncFile.existsSync()){
+        tmpEncFile.deleteSync();
+      }
+
+
       message.sendPort.send(
-          IsolateMessage<String, List<dynamic>>(0.0, false, true, "File error", null));
+          IsolateMessage<String, List<dynamic>>(0.0, false, true, "Unable to encrypt file(s)", null));
     }
   }
 
   // isolate upload
-  // TODO error handling
   static void upload(IsolateInitMessage<IsolateUploadInitData> message) async {
     File targetFile = File(message.data.file);
     IsolateCommunication comm = IsolateCommunication(message.data.send);
     Storage storage = IsolateStorage(comm);
-    IsolateVoidFunctions voidFunctions = IsolateVoidFunctions(comm);
-    CloudClient client =
-        await CloudClientFactory.create(message.data.cloudProvider, storage);
-    if (!(await client.hasCredentials())) {
-      await client.authenticate(voidFunctions.openURL);
-    }
 
-    ProgressOject progress = ProgressOject(message.sendPort, message.progressStart, message.progressEnd);
-    var fileID = await client.createFile(Filecrypt.randomFilename(), targetFile,
-        progress: progress.progress);
-    await client.setAccessibility(fileID, true);
-    var url = await client.getURL(fileID);
-    targetFile.deleteSync();
-    message.sendPort
-        .send(IsolateMessage<String, List<dynamic>>(message.progressEnd, true, false, null, [url]));
+    try {
+      CloudClient client =
+      await CloudClientFactory.create(message.data.cloudProvider, storage);
+      if (!(await client.hasCredentials())) {
+        throw CloudCredentialsException(cause: providerToString(message.data.cloudProvider));
+      }
+
+      ProgressOject progress = ProgressOject(
+          message.sendPort, message.progressStart, message.progressEnd);
+      var fileID = await client.createFile(
+          Filecrypt.randomFilename(), targetFile,
+          progress: progress.progress);
+      await client.setAccessibility(fileID, true);
+      var url = await client.getURL(fileID);
+      targetFile.deleteSync();
+      message.sendPort
+          .send(IsolateMessage<String, List<dynamic>>(
+          message.progressEnd, true, false, null, [url]));
+    } on CloudCredentialsException catch (cc) {
+      if (targetFile.existsSync()){
+        targetFile.deleteSync();
+      }
+
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(
+          0.0, false, true, "Unable to log into "+cc.toString(), null));
+    } catch (e) {
+      if (targetFile.existsSync()){
+        targetFile.deleteSync();
+      }
+
+      message.sendPort.send(IsolateMessage<String, List<dynamic>>(
+          0.0, false, true, "Upload failed", null));
+    }
   }
 
   // isolate create encrypted metadata
@@ -447,9 +497,12 @@ class _EncryptProgressState extends State<EncryptProgress> {
         publicKey: message.data.publicKey);
 
     Filecrypt fcrypt = Filecrypt(_rkey);
+
+    File sourceFile = File(message.data.appDir + "/" + Consts.encryptMetadataTmpFile);
+    File targetFile = File(message.data.appDir + "/" + Consts.encryptMetadataFile);
+
     try {
       // encode to json and write into sourceFile
-      File sourceFile = File(message.data.appDir + "/" + Consts.encryptMetadataTmpFile);
       List<int> content = utf8.encode(json.encode(meta));
       var rsource = sourceFile.openSync(mode: FileMode.writeOnly);
       rsource.writeFromSync(content);
@@ -457,26 +510,33 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
       // encrypt sourceFile
       ProgressOject progress = ProgressOject(message.sendPort, message.progressStart, message.progressEnd);
-      File targetFile = File(message.data.appDir + "/" + Consts.encryptMetadataFile);
       fcrypt.init(sourceFile, CryptoMode.enc, Consts.subkeyIDMetadata);
       bool success = fcrypt.writeIntoFile(targetFile, callback: progress.progress);
-      fcrypt.clear();
       sourceFile.deleteSync();
-      print("finished metadata encryption");
+
       if (!success) {
-        message.sendPort.send(IsolateMessage<String, List<dynamic>>(
-            0.0, false, true, "Encryption failed", null));
+        throw Exception("Encryption failed");
       } else {
+        fcrypt.clear();
+
         message.sendPort
             .send(IsolateMessage<String, List<dynamic>>(message.progressEnd, true, false, null, [targetFile.path]));
       }
 
       _rkey = [];
     } catch (e){
-      print(e.toString());
       fcrypt.clear();
+
+      if (sourceFile.existsSync()){
+        sourceFile.deleteSync();
+      }
+
+      if (targetFile.existsSync()){
+        targetFile.deleteSync();
+      }
+
       message.sendPort.send(
-          IsolateMessage<String, List<dynamic>>(0.0, false, true, "File error", null));
+          IsolateMessage<String, List<dynamic>>(0.0, false, true, "Encrypting metadata failed", null));
     }
   }
 
@@ -484,7 +544,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: _cancelEncryptionAndUpload,
       child: Center(
           child: SingleChildScrollView(
           child: Column(children: [

@@ -57,7 +57,9 @@ class _EncryptScreen extends State<EncryptScreen> {
 
     if (files.length > 0) {
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => EncryptCloud(files: files)));
+          MaterialPageRoute(
+              settings: RouteSettings(name: "/cloudSelection", isInitialRoute: false),
+              builder: (context) => EncryptCloud(files: files)));
     }
   }
 

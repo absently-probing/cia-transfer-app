@@ -47,10 +47,13 @@ class IsolateCommunication {
     sendPort.send(request);
   }
 
+
   Future<IsolateResponse> receive() async {
     await for (IsolateResponse response in _stream){
       return response;
     }
+
+    return null;
   }
 }
 
