@@ -236,6 +236,14 @@ class _DecryptProgressState extends State<DecryptProgress> {
 
         //TODO error handling expected file list doesn't match files extracted
         if (!validFiles()) {
+          var extractDir = Directory(_extractPath);
+          try {
+            if (extractDir.existsSync()) {
+              extractDir.deleteSync(recursive: true);
+            }
+          } catch (e) {}
+
+          _showErrorDialog("Incorrect Metadata informations");
         } else {
           Navigator.of(context).pop();
 

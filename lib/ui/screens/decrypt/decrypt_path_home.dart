@@ -27,8 +27,8 @@ class _DecryptScreen extends State<DecryptScreen> {
   void _submit() {
     final form = _stateKey.currentState;
     // use this to fast skip entering url and password
-    _urlController.text = "https://drive.google.com/uc?id=1E_ftaWTjbEp5RJssdrL4TFMs9HASB6Hj&export=download";
-    _passwordController.text = "f4ReJgBFpiK3jEjtHyFqrUq+8JFyFoaI4ogJz9KX5qs=";
+    //_urlController.text = "https://drive.google.com/uc?id=1E_ftaWTjbEp5RJssdrL4TFMs9HASB6Hj&export=download";
+    //_passwordController.text = "f4ReJgBFpiK3jEjtHyFqrUq+8JFyFoaI4ogJz9KX5qs=";
 
     if (form.validate()) {
       form.save();

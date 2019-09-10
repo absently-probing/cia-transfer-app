@@ -29,8 +29,13 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
     }
   }
 
+  // TODO handle open failed exception
   void _callProgramForFile(String file) {
-    OpenFile.open(file);
+    try {
+      OpenFile.open(file);
+    } catch (e){
+
+    }
   }
 
   // use new BuildContext to call Scaffold.of(_context), you cannot use
@@ -38,32 +43,61 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
   void _saveFile(BuildContext _context, String file, int index) {
     _saved[file] = true;
     var tmpFile = File(file);
-    var filename = p.basename(file);
+    bool error = false;
+    var snackBar;
+    try {
+      var filename = p.basename(file);
 
-    tmpFile.copy(Path.getExternalDir() + '/' + filename);
+      tmpFile.copy(Path.getExternalDir() + '/' + filename);
 
-    final snackBar = SnackBar(
-      duration: Duration(milliseconds: 100),
-      content:
-          Text('saved $filename', style: Theme.of(_context).textTheme.title),
-      backgroundColor: Theme.of(_context).colorScheme.primary,
-    );
+      snackBar = SnackBar(
+        duration: Duration(milliseconds: 100),
+        content:
+        Text('saved $filename', style: Theme
+            .of(_context)
+            .textTheme
+            .title),
+        backgroundColor: Theme
+            .of(_context)
+            .colorScheme
+            .primary,
+      );
+    } catch (e) {
+      error = true;
+      snackBar = SnackBar(
+        duration: Duration(milliseconds: 100),
+        content:
+        Text('Saving failed', style: Theme
+            .of(_context)
+            .textTheme
+            .title),
+        backgroundColor: Theme
+            .of(_context)
+            .colorScheme
+            .primary,
+      );
+    }
 
     // Find the Scaffold in the widget tree and use
     // it to show a SnackBar.
     Scaffold.of(_context).showSnackBar(snackBar);
-    //_scaffoldKey.currentState.showSnackBar(snackBar);
-    setState(() {
-      var item = files[index];
-      files.removeAt(index);
-      files.add(item);
-    });
+    if (!error) {
+      setState(() {
+        var item = files[index];
+        files.removeAt(index);
+        files.add(item);
+      });
+    }
   }
 
   void _finishButton(BuildContext context) {
+    var extractDir = Directory(Path.getDocDir() + '/' + Consts.decryptExtractDir);
+
+    // TODO handle error or skip error.
     try {
-      Directory(Path.getDocDir() + '/' + Consts.decryptExtractDir)
-          .deleteSync(recursive: true);
+      if (extractDir.existsSync()){
+        extractDir.delete(recursive: true);
+      }
     } catch (e) {}
 
     Navigator.of(context)

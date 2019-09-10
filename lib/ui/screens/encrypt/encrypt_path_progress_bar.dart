@@ -218,6 +218,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
       if (message.finished) {
         _fileUrl = message.data[0];
         _isolateUpload.kill();
+        _step = Strings.encryptProgressTextMetadata;
 
         _isolateEncMetadata = await Isolate.spawn(
             encMetadata,
@@ -231,7 +232,6 @@ class _EncryptProgressState extends State<EncryptProgress> {
                 _fileSize)
           )
         );
-        _step = Strings.encryptProgressTextMetadata;
         _receiveEncMetadata.listen((data){
           _communicateEncMetadata(data);
         });
@@ -252,6 +252,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
       if (message.finished){
         var file = message.data[0];
         _isolateEncMetadata.kill();
+        _step = Strings.encryptProgressTextMetadataUpload;
 
         _isolateUploadMetadata = await Isolate.spawn(
             upload,

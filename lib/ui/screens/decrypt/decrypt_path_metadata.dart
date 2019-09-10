@@ -50,8 +50,8 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
 
   String _tmpEncFile;
 
-  bool _DownloadError = false;
-  bool _DecryptError = false;
+  bool _downloadError = false;
+  bool _decryptError = false;
 
   bool _metadataExists = false;
   FileMetadata _metadata;
@@ -80,14 +80,15 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
   void _communicateDownload(
       IsolateMessage<String, List<dynamic>> message) async {
     if (message.error) {
-      _DownloadError = true;
+      _downloadError = true;
       _downloadIsolate.kill();
       _showErrorDialog(message.errorData);
     }
 
-    if (!_DownloadError) {
+    if (!_downloadError) {
       if (message.finished) {
         _downloadIsolate.kill();
+
         _decryptIsolate = await Isolate.spawn(
             decryptMetadata,
             IsolateInitMessage<IsolateDecryptData>(_decryptReceive.sendPort,
@@ -101,26 +102,31 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
 
   void _communicateDecrypt(IsolateMessage<String, List<dynamic>> message) {
     if (message.error) {
-      _DecryptError = true;
+      _decryptError = true;
       _decryptIsolate.kill();
       _showErrorDialog(message.errorData);
     }
 
-    if (!_DecryptError) {
+    if (!_decryptError) {
       if (message.finished) {
         _decryptIsolate.kill();
-        var encodedMetadata = utf8.decode(message.data[0]);
 
-        Map metadataMap = json.decode(encodedMetadata);
-        _metadata = FileMetadata.fromJson(metadataMap);
-        if (_metadata.fileLink == null ||
-            _metadata.timestamp == null ||
-            _metadata.publicKey == null ||
-            _metadata.size == null ||
-            _metadata.filenames == null) {
-          // TODO handle error (wrong metadata)
-        } else {
-          _showMetadata();
+        try {
+          var encodedMetadata = utf8.decode(message.data[0]);
+
+          Map metadataMap = json.decode(encodedMetadata);
+          _metadata = FileMetadata.fromJson(metadataMap);
+          if (_metadata.fileLink == null || !utils.isValidUrl(_metadata.fileLink) ||
+              _metadata.timestamp == null ||
+              _metadata.publicKey == null ||
+              _metadata.size == null || _metadata.size <= 0 ||
+              _metadata.filenames == null || _metadata.filenames.length == 0) {
+            _showErrorDialog("Invalid metadata");
+          } else {
+            _showMetadata();
+          }
+        } catch (e){
+          _showErrorDialog("Invalid metadata");
         }
       }
     }

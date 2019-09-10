@@ -23,6 +23,7 @@ class Strings {
   static const String encryptProgressTextEncrypt = 'Encrypting..';
   static const String encryptProgressTextUpload = 'Uploading file..';
   static const String encryptProgressTextMetadata = 'Creating encrypted metadata..';
+  static const String encryptProgressTextMetadataUpload = 'Uploading encrypted metadata..';
 
   static const String encryptShareUrl = 'Share URL only';
   static const String encryptSharePassword = 'Share Password only';
