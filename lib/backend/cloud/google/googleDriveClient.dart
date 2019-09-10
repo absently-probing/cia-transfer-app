@@ -1,8 +1,6 @@
 import 'dart:core';
 import 'dart:io';
 
-import 'package:googleapis/analytics/v3.dart';
-
 import '../cloudClient.dart' as cloudClient;
 import '../../storage/storage.dart';
 

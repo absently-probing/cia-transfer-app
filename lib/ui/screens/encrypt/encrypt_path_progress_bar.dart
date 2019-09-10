@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as p;
@@ -328,7 +329,7 @@ class _EncryptProgressState extends State<EncryptProgress> {
   }
 
   void _showErrorDialog(String error){
-    // TODO delete FILE if already uploaded
+    // TODO delete _fileurl
     if (_fileUrl != null){
 
     }
@@ -354,9 +355,35 @@ class _EncryptProgressState extends State<EncryptProgress> {
     );
   }
 
-  // TODO handle cancel
   Future<bool> _cancelEncryptionAndUpload() async {
-    return false;
+    if (_isolateZip != null){
+      _isolateZip.kill(priority: Isolate.immediate);
+    }
+
+    if (_isolateEncrypt != null){
+      _isolateEncrypt.kill(priority: Isolate.immediate);
+    }
+
+    if (_isolateUpload != null){
+      _isolateUpload.kill(priority: Isolate.immediate);
+    }
+
+    if (_isolateEncMetadata != null){
+      _isolateEncMetadata.kill(priority: Isolate.immediate);
+    }
+
+    if (_isolateUploadMetadata != null){
+      _isolateUploadMetadata.kill(priority: Isolate.immediate);
+    }
+
+    var uploadPath = Directory(Path.getDocDir() +"/" + Consts.encryptDir);
+    if (uploadPath.existsSync()){
+      uploadPath.deleteSync(recursive: true);
+    }
+
+    // TODO delete _fileurl and metadata if exists
+
+    return true;
   }
 
   // zip files before encryption
@@ -391,15 +418,14 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
   // isolate encryption
   static void encrypt(IsolateInitMessage<IsolateEncryptInitData> message) async {
-    Filecrypt encFile = Filecrypt();
+    Filecrypt encFile;
     var encFileFullPath = message.data.appDir + "/" + Consts.encryptTargetFile;
+    File sourceFile = File(message.data.file);
+    File targetFile = File(encFileFullPath);
 
     try {
       // start encryption
-      File sourceFile = File(message.data.file);
-      File targetFile =
-          File(encFileFullPath);
-
+      encFile = Filecrypt();
       ProgressOject progress = ProgressOject(message.sendPort, message.progressStart, message.progressEnd);
       encFile.init(sourceFile, CryptoMode.enc);
       bool success =
@@ -418,20 +444,18 @@ class _EncryptProgressState extends State<EncryptProgress> {
         key = "";
       }
     } catch (e) {
-      encFile.clear();
-
-      var tmpEncFile = File(encFileFullPath);
-      var tmpSourceFile = File(message.data.file);
+      if (encFile != null) {
+        encFile.clear();
+      }
 
       // clean up remove zip file and encrypted file
-      if (tmpSourceFile.existsSync()){
-        tmpSourceFile.deleteSync();
+      if (sourceFile.existsSync()){
+        sourceFile.deleteSync();
       }
 
-      if (tmpEncFile.existsSync()){
-        tmpEncFile.deleteSync();
+      if (targetFile.existsSync()){
+        targetFile.deleteSync();
       }
-
 
       message.sendPort.send(
           IsolateMessage<String, List<dynamic>>(0.0, false, true, "Unable to encrypt file(s)", null));
@@ -496,13 +520,14 @@ class _EncryptProgressState extends State<EncryptProgress> {
         message.data.fileUrl,
         publicKey: message.data.publicKey);
 
-    Filecrypt fcrypt = Filecrypt(_rkey);
+    Filecrypt fcrypt;
 
     File sourceFile = File(message.data.appDir + "/" + Consts.encryptMetadataTmpFile);
     File targetFile = File(message.data.appDir + "/" + Consts.encryptMetadataFile);
 
     try {
       // encode to json and write into sourceFile
+      fcrypt = Filecrypt(_rkey);
       List<int> content = utf8.encode(json.encode(meta));
       var rsource = sourceFile.openSync(mode: FileMode.writeOnly);
       rsource.writeFromSync(content);
@@ -525,7 +550,9 @@ class _EncryptProgressState extends State<EncryptProgress> {
 
       _rkey = [];
     } catch (e){
-      fcrypt.clear();
+      if (fcrypt != null) {
+        fcrypt.clear();
+      }
 
       if (sourceFile.existsSync()){
         sourceFile.deleteSync();

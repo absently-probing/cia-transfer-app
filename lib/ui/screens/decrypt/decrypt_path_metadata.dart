@@ -50,7 +50,8 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
 
   String _tmpEncFile;
 
-  bool _decryptingStarted = false;
+  bool _DownloadError = false;
+  bool _DecryptError = false;
 
   bool _metadataExists = false;
   FileMetadata _metadata;
@@ -60,12 +61,6 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
   }
 
   void dispose() {
-    _downloadIsolate.kill(priority: Isolate.immediate);
-
-    if (_decryptingStarted) {
-      _decryptIsolate.kill(priority: Isolate.immediate);
-    }
-
     _downloadReceive.close();
     _decryptReceive.close();
     super.dispose();
@@ -75,8 +70,8 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
     _tmpEncFile = Path.getTmpDir() + '/' + Consts.decryptEncMetadata;
     _downloadIsolate = await Isolate.spawn(
         downloadMetadata,
-        IsolateInitMessage<IsolateDownloadData>(
-            _downloadReceive.sendPort, data: IsolateDownloadData(_url, _tmpEncFile)));
+        IsolateInitMessage<IsolateDownloadData>(_downloadReceive.sendPort,
+            data: IsolateDownloadData(_url, _tmpEncFile)));
     _downloadReceive.listen((data) {
       _communicateDownload(data);
     });
@@ -84,37 +79,74 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
 
   void _communicateDownload(
       IsolateMessage<String, List<dynamic>> message) async {
-    if (message.finished) {
+    if (message.error) {
+      _DownloadError = true;
       _downloadIsolate.kill();
-      // TODO validate metadata file length (should be less than 1MB)
-      _decryptIsolate = await Isolate.spawn(
-          decryptMetadata,
-          IsolateInitMessage<IsolateDecryptData>(_decryptReceive.sendPort,
-              data: IsolateDecryptData(_tmpEncFile, _password)));
-      _decryptReceive.listen((data) {
-        _communicateDecrypt(data);
-      });
-      _decryptingStarted = true;
+      _showErrorDialog(message.errorData);
+    }
+
+    if (!_DownloadError) {
+      if (message.finished) {
+        _downloadIsolate.kill();
+        _decryptIsolate = await Isolate.spawn(
+            decryptMetadata,
+            IsolateInitMessage<IsolateDecryptData>(_decryptReceive.sendPort,
+                data: IsolateDecryptData(_tmpEncFile, _password)));
+        _decryptReceive.listen((data) {
+          _communicateDecrypt(data);
+        });
+      }
     }
   }
 
   void _communicateDecrypt(IsolateMessage<String, List<dynamic>> message) {
-    if (message.finished) {
+    if (message.error) {
+      _DecryptError = true;
       _decryptIsolate.kill();
-      var encodedMetadata = utf8.decode(message.data[0]);
+      _showErrorDialog(message.errorData);
+    }
 
-      Map metadataMap = json.decode(encodedMetadata);
-      _metadata = FileMetadata.fromJson(metadataMap);
-      if (_metadata.fileLink == null ||
-          _metadata.timestamp == null ||
-          _metadata.publicKey == null ||
-          _metadata.size == null ||
-          _metadata.filenames == null) {
-        // TODO handle error (wrong metadata)
-      } else {
-        _showMetadata();
+    if (!_DecryptError) {
+      if (message.finished) {
+        _decryptIsolate.kill();
+        var encodedMetadata = utf8.decode(message.data[0]);
+
+        Map metadataMap = json.decode(encodedMetadata);
+        _metadata = FileMetadata.fromJson(metadataMap);
+        if (_metadata.fileLink == null ||
+            _metadata.timestamp == null ||
+            _metadata.publicKey == null ||
+            _metadata.size == null ||
+            _metadata.filenames == null) {
+          // TODO handle error (wrong metadata)
+        } else {
+          _showMetadata();
+        }
       }
     }
+  }
+
+  void _showErrorDialog(String error) {
+    showDialog(
+      context: context,
+      builder: (BuildContext _context) {
+        return AlertDialog(
+          content: Text(
+            error,
+            style: Theme.of(context).textTheme.title,
+          ),
+          actions: [
+            FlatButton(
+              child: Text("close"),
+              onPressed: () async {
+                Navigator.popUntil(
+                    context, ModalRoute.withName("/decryptHome"));
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 
   void _showMetadata() {
@@ -181,8 +213,6 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
   }
 
   void _continuePressed() {
-    Navigator.of(context).pop();
-
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -197,54 +227,84 @@ class _DecryptMetadataState extends State<DecryptMetadata> {
       IsolateInitMessage<IsolateDownloadData> message) async {
     String url = message.data.url;
 
-    HttpClient client = HttpClient();
-    var request = await client.getUrl(Uri.parse(url));
-    var response = await request.close();
-    var tmpFile = message.data.destination;
+    var file = File(message.data.destination);
+    var error = false;
 
-    var file = File(tmpFile);
-    var output = file.openSync(mode: FileMode.write);
-    var totalbytes = 0;
-    response.listen((List event) {
-      totalbytes = totalbytes + event.length;
+    try {
+      HttpClient client = HttpClient();
+      var request = await client.getUrl(Uri.parse(url));
+      var response = await request.close();
 
-      // 1MB check
-      if (totalbytes > 1000 * 1000) {
-        throw FormatException("File is to large");
+      if (!file.existsSync()){
+        file.createSync(recursive: true);
       }
 
-      output.writeFromSync(event);
-    }, onDone: () {
-      output.closeSync();
-      message.sendPort.send(
-          IsolateMessage<String, List<dynamic>>(0.0, true, false, null, null));
-    }, onError: (e) {
-      output.closeSync();
+      var output = file.openSync(mode: FileMode.write);
+      var totalbytes = 0;
+      response.listen((List event) {
+        totalbytes = totalbytes + event.length;
+
+        // 1MB check
+        if (totalbytes > 1000 * 1000) {
+          throw FormatException("File is to large");
+        }
+
+        output.writeFromSync(event);
+      }, onDone: () {
+        output.closeSync();
+
+        if (error) {
+          if (file.existsSync()) {
+            file.deleteSync();
+          }
+
+          message.sendPort.send(IsolateMessage<String, List<dynamic>>(
+              0.0, false, true, "Download failed", null));
+        }
+        else {
+          message.sendPort.send(IsolateMessage<String, List<dynamic>>(
+              0.0, true, false, null, null));
+        }
+      }, onError: (e) {
+        error = true;
+      });
+    } catch (e) {
+      if (file.existsSync()) {
+        file.deleteSync();
+      }
+
       message.sendPort.send(IsolateMessage<String, List<dynamic>>(
-          0.0, false, true, e.toString(), null));
-    });
+          0.0, false, true, "Download failed", null));
+    }
   }
 
   static void decryptMetadata(IsolateInitMessage<IsolateDecryptData> message) {
     File sourceFile = File(message.data.file);
-    Filecrypt fcrypt = Filecrypt(base64.decode(message.data.password));
+    Filecrypt fcrypt;
+
     try {
       fcrypt = Filecrypt(base64.decode(message.data.password));
       fcrypt.init(sourceFile, CryptoMode.dec, Consts.subkeyIDMetadata);
       List<int> content = fcrypt.writeAllIntoBuffer();
-      fcrypt.clear();
       sourceFile.deleteSync();
       if (content != null && content.length > 0) {
+        fcrypt.clear();
         message.sendPort.send(IsolateMessage<String, List<dynamic>>(
             0.0, true, false, null, [content]));
       } else {
-        message.sendPort.send(IsolateMessage<String, List<dynamic>>(
-            0.0, false, true, "Empty file", null));
+        throw Exception("invalid file");
       }
     } catch (e) {
-      fcrypt.clear();
+      if (fcrypt != null) {
+        fcrypt.clear();
+      }
+
+      if (sourceFile.existsSync()){
+        sourceFile.deleteSync();
+      }
+
       message.sendPort.send(IsolateMessage<String, List<dynamic>>(
-          0.0, false, true, e.toString(), null));
+          0.0, false, true, "Decryption failed", null));
     }
   }
 

@@ -68,7 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _decryptButtonAction(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => DecryptScreen()),
+      MaterialPageRoute(
+          settings: RouteSettings(name: "/decryptHome", isInitialRoute: false),
+          builder: (context) => DecryptScreen()),
     );
   }
 

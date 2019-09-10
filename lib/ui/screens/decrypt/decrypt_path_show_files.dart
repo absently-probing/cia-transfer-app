@@ -70,6 +70,16 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
         .pushNamedAndRemoveUntil('/root', (Route<dynamic> route) => false);
   }
 
+  Future<bool> _cancelShowFiles() async{
+    var extractDir = Directory(prefix);
+
+    if (extractDir.existsSync()){
+      extractDir.deleteSync(recursive: true);
+    }
+    
+    return true;
+  }
+
   ListView _showFiles(BuildContext _context) {
     return ListView.builder(
         padding: const EdgeInsets.only(top: 10.0),
@@ -121,7 +131,9 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
         centerTitle: true,
         title: Text(Strings.decryptShowFilesLabel),
       ),
-      body: Builder(
+      body: WillPopScope(
+        onWillPop: _cancelShowFiles,
+      child: Builder(
         builder: (BuildContext _context) {
           return Container(
             child: Column(
@@ -141,7 +153,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
             ),
           );
         },
-      ),
+      ),),
     );
   }
 }
