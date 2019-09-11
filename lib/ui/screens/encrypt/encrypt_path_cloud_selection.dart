@@ -27,8 +27,15 @@ class _EncryptCloudState extends State<EncryptCloud> {
     // Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
 
     CloudClient client = CloudClientFactory.create(cloudProvider, storage);
+    var hasCredentials = false;
 
-    if (await client.hasCredentials()) {
+    try {
+      hasCredentials = await client.hasCredentials();
+    } catch (e){
+      hasCredentials = false;
+    }
+
+    if (hasCredentials) {
       Navigator.push(
           context,
           MaterialPageRoute(

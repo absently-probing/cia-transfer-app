@@ -11,6 +11,7 @@ class CustomTextField extends StatefulWidget {
   final autofocus;
   final TextEditingController controller;
   final FocusNode focusNode;
+  final FormFieldSetter<String> onChanged;
 
   CustomTextField(
       {this.icon,
@@ -22,7 +23,8 @@ class CustomTextField extends StatefulWidget {
       this.onSaved,
       this.autofocus = true,
       this.focusNode,
-      this.controller});
+      this.controller,
+      this.onChanged});
 
   _CustomTextFieldState createState() => _CustomTextFieldState(
         icon: icon,
@@ -35,6 +37,7 @@ class CustomTextField extends StatefulWidget {
         autofocus: autofocus,
         focusNode: focusNode,
         controller: controller,
+        onChanged: onChanged,
       );
 }
 
@@ -49,6 +52,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   final autofocus;
   final TextEditingController controller;
   final FocusNode focusNode;
+  final FormFieldSetter<String> onChanged;
 
   bool switchObscure = false;
 
@@ -62,7 +66,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       this.onSaved,
       this.autofocus = true,
       this.focusNode,
-      this.controller}) {
+      this.controller,
+      this.onChanged}) {
     switchObscure = obsecure;
   }
 
@@ -97,6 +102,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           enabled: enabled,
           focusNode: this.focusNode,
           onSaved: onSaved,
+          onChanged: onChanged,
           validator: validator,
           autofocus: autofocus,
           obscureText: switchObscure,

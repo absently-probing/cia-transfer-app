@@ -24,14 +24,47 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
   _EncryptCloudCredentialsState({this.files, this.cloudClient});
 
   void _onClickContinue(BuildContext context) async {
-    await cloudClient.authenticate(utils.openURL);
+    var error = false;
+    try {
+      await cloudClient.authenticate(utils.openURL);
+    } catch (e){
+      error = true;
+    }
+
     DeviceApps.openApp("de.fuberlin.imp.secure_upload");
 
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => EncryptProgress(
-                files: files, cloudProvider: cloudClient.provider)));
+    if (error){
+      _showErrorDialog("Unable to authenticate, something went wrong.");
+    } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  EncryptProgress(
+                      files: files, cloudProvider: cloudClient.provider)));
+    }
+  }
+
+  void _showErrorDialog(String error) {
+    showDialog(
+      context: context,
+      builder: (BuildContext _context) {
+        return AlertDialog(
+          content: Text(
+            error,
+            style: Theme.of(context).textTheme.title,
+          ),
+          actions: [
+            FlatButton(
+              child: Text("close"),
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override

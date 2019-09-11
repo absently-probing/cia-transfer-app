@@ -54,7 +54,7 @@ class Strings {
 
   // decrypt home
   static const String decryptReceiveButton = 'Receive';
-  static const String decryptUrlTextField = 'URL';
+  static const String decryptUrlTextField = 'URL or Together';
   static const String decryptPasswordTextField = 'Password';
 
   // decrypt metadata

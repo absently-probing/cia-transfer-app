@@ -68,7 +68,7 @@ class _ShareTogether extends State<ShareTogether> {
                       color: Theme.of(context).colorScheme.primary,
                       textColor: Theme.of(context).colorScheme.primary,
                       onPressed: () {
-                        Share.share(_url + '\n' + _password);
+                        Share.share(_url + '\$' + _password);
                         // delay color change a bit, so user does only see it when coming back
                         Future.delayed(const Duration(milliseconds: 500), () {
                           setState(() {

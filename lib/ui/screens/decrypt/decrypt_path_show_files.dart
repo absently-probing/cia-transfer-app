@@ -51,7 +51,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
       tmpFile.copy(Path.getExternalDir() + '/' + filename);
 
       snackBar = SnackBar(
-        duration: Duration(milliseconds: 100),
+        duration: Duration(milliseconds: 500),
         content:
         Text('saved $filename', style: Theme
             .of(_context)
@@ -65,7 +65,7 @@ class _DecryptShowFiles extends State<DecryptShowFiles> {
     } catch (e) {
       error = true;
       snackBar = SnackBar(
-        duration: Duration(milliseconds: 100),
+        duration: Duration(milliseconds: 500),
         content:
         Text('Saving failed', style: Theme
             .of(_context)

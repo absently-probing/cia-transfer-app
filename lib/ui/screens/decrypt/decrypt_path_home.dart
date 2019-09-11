@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../data/strings.dart';
 import '../../../data/constants.dart';
@@ -16,6 +17,7 @@ class DecryptScreen extends StatefulWidget {
 }
 
 class _DecryptScreen extends State<DecryptScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _stateKey = GlobalKey<FormState>();
 
   var _urlEnabled = true;
@@ -23,6 +25,35 @@ class _DecryptScreen extends State<DecryptScreen> {
 
   var _urlController = TextEditingController();
   var _passwordController = TextEditingController();
+
+  _DecryptScreen(){
+    _autoCopy();
+  }
+
+  void _autoCopy() async {
+    var cData = await Clipboard.getData("text/plain");
+    if (cData != null) {
+      var content = cData.text;
+      var ok = _checkForUrlAndPassword(content);
+      if (ok){
+        final snackBar = SnackBar(
+          duration: Duration(milliseconds: 1000),
+          content:
+          Text('Copied from clipboard', style: Theme
+              .of(context)
+              .textTheme
+              .title),
+          backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .primary,
+        );
+
+        _releaseFocus();
+        _scaffoldKey.currentState.showSnackBar(snackBar);
+      }
+    }
+  }
 
   void _submit() {
     final form = _stateKey.currentState;
@@ -59,6 +90,21 @@ class _DecryptScreen extends State<DecryptScreen> {
     }
 
     return null;
+  }
+
+  bool _checkForUrlAndPassword(String text){
+    if (text != null && text.contains('\$')){
+      var tmp = text.split('\$');
+      if (tmp.length == 2 && tmp[1].length == Consts.keySize
+          && utils.isValidUrl(tmp[0])
+          && _passwordController.text == ""){
+        _urlController.text = tmp[0];
+        _passwordController.text = tmp[1];
+        return true;
+      }
+    }
+
+    return false;
   }
 
   _openQRCodeScanner(BuildContext context) async {
@@ -112,6 +158,7 @@ class _DecryptScreen extends State<DecryptScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           centerTitle: true,
           title: Text(Strings.Receive),
@@ -145,6 +192,7 @@ class _DecryptScreen extends State<DecryptScreen> {
                               icon: Icon(Icons.cloud_download),
                               hint: Strings.decryptUrlTextField,
                               autofocus: true,
+                              onChanged: _checkForUrlAndPassword,
                             )),
                         Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
@@ -156,7 +204,6 @@ class _DecryptScreen extends State<DecryptScreen> {
                               hint: Strings.decryptPasswordTextField,
                               icon: Icon(Icons.lock),
                               autofocus: false,
-                              maxLength: Consts.keySize,
                             )),
                         Padding(
                           padding: EdgeInsets.only(

@@ -463,6 +463,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
                     EdgeInsets.only(left: 20, right: 20, bottom: 50, top: 50),
                 child: Text(
                   _step,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline,
                 ),
               ),
