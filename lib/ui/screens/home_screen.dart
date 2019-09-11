@@ -26,7 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final double _iconPercentVisible;
   final double _titlePercentVisible;
-  bool _libsodium;
+  bool _libsodium = false;
 
   _HomeScreenState(this._iconPercentVisible, this._titlePercentVisible);
 

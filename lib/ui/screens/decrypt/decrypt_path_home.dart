@@ -57,9 +57,6 @@ class _DecryptScreen extends State<DecryptScreen> {
 
   void _submit() {
     final form = _stateKey.currentState;
-    // use this to fast skip entering url and password
-    //_urlController.text = "https://drive.google.com/uc?id=1E_ftaWTjbEp5RJssdrL4TFMs9HASB6Hj&export=download";
-    //_passwordController.text = "f4ReJgBFpiK3jEjtHyFqrUq+8JFyFoaI4ogJz9KX5qs=";
 
     if (form.validate()) {
       form.save();
@@ -173,9 +170,6 @@ class _DecryptScreen extends State<DecryptScreen> {
           ],
         ),
         body: Center(
-            child: Container(
-          width: utils.screenWidth(context),
-          alignment: Alignment.center,
           child: SingleChildScrollView(
               child: Form(
                   key: _stateKey,
@@ -191,9 +185,10 @@ class _DecryptScreen extends State<DecryptScreen> {
                               validator: _urlValidator,
                               icon: Icon(Icons.cloud_download),
                               hint: Strings.decryptUrlTextField,
-                              autofocus: true,
+                              autofocus: false,
                               onChanged: _checkForUrlAndPassword,
                             )),
+
                         Padding(
                             padding: EdgeInsets.only(top: 20, bottom: 20),
                             child: CustomTextField(
@@ -223,6 +218,6 @@ class _DecryptScreen extends State<DecryptScreen> {
                             ),
                           ),
                       ]))),
-        )));
+    ),);
   }
 }
