@@ -27,11 +27,7 @@ void openURL(String url) async {
   }
 }
 
-bool isValidUrl(String url) {
-  if (!val.isURL(url, protocols: ["https"], requireProtocol: true)) {
-    return false;
-  }
-
+bool isValidProvider(String url, {cloud.CloudProvider matchProvider}){
   var split = url.split('://');
 
   if (split.length < 2){
@@ -44,6 +40,14 @@ bool isValidUrl(String url) {
     return false;
   }
 
+  if (matchProvider != null){
+    if(split[0].startsWith(cloud.providerDomain(matchProvider))){
+      return true;
+    }
+
+    return false;
+  }
+
   for (String domain in cloud.providerDomains()){
     if (split[0].startsWith(domain)){
       return true;
@@ -51,4 +55,12 @@ bool isValidUrl(String url) {
   }
 
   return false;
+}
+
+bool isValidUrl(String url) {
+  if (!val.isURL(url, protocols: ["https"], requireProtocol: true)) {
+    return false;
+  }
+
+  return isValidProvider(url);
 }

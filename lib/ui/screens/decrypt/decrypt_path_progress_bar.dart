@@ -16,6 +16,7 @@ import '../../custom/progress_indicator.dart';
 import '../../../data/isolate_messages.dart';
 import '../../../backend/crypto/cryptapi/cryptapi.dart';
 import '../../../data/strings.dart';
+import '../../../backend/http/http_downloader.dart';
 import 'decrypt_path_show_files.dart';
 
 class IsolateDownloadData {
@@ -304,10 +305,7 @@ class _DecryptProgressState extends State<DecryptProgress> {
         file.createSync(recursive: true);
       }
 
-      HttpClient client = HttpClient();
-      var request = await client.getUrl(Uri.parse(url));
-      var response = await request.close();
-
+      var response = await HttpDownloader.getResponse(url);
       var output = file.openSync(mode: FileMode.write);
       var allBytes = message.data.size;
       var writtenBytes = 0;
