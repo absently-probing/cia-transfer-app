@@ -1,4 +1,4 @@
-import 'package:secure_upload/backend/storage/storage.dart';
+import 'package:cia_transfer/backend/storage/storage.dart';
 
 import 'dart:convert';
 import "dart:io"; //not usable in webApps

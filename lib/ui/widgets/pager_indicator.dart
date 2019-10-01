@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/ui/screens/onboarding/onboard_screen.dart';
+import 'package:cia_transfer/data/global.dart' as globals;
+import 'package:cia_transfer/ui/screens/onboarding/onboard_screen.dart';
 import 'dart:ui';
 
 class PagerIndicator extends StatelessWidget {

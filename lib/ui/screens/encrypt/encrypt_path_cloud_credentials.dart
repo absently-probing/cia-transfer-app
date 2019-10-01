@@ -31,7 +31,7 @@ class _EncryptCloudCredentialsState extends State<EncryptCloudCredentials> {
       error = true;
     }
 
-    DeviceApps.openApp("de.fuberlin.imp.secure_upload");
+    DeviceApps.openApp("dev.hanni.cia_transfer");
 
     if (error){
       _showErrorDialog("Unable to authenticate, something went wrong.");

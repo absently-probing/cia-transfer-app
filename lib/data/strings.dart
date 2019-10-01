@@ -1,5 +1,5 @@
 class Strings {
-  static const String appTitle = "Secure Sharing";
+  static const String appTitle = "CIA-Transfer";
   static const String titleTextFont = "OpenSans";
   static const String welcome = "Welcome";
   static const String appDescription = "Securely share data with trusted partners over the cloud.";

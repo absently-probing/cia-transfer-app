@@ -3,8 +3,8 @@ library globals;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:secure_upload/data/strings.dart';
-import 'package:secure_upload/data/utils.dart' as utils;
+import 'package:cia_transfer/data/strings.dart';
+import 'package:cia_transfer/data/utils.dart' as utils;
 
 // logo
 double cloudIcon(BuildContext context) {

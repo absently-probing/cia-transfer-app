@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:secure_upload/data/strings.dart';
+import 'package:cia_transfer/data/strings.dart';
 
 class ShareQr extends StatelessWidget {
   final String _url;
