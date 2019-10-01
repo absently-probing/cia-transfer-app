@@ -1,16 +1,11 @@
-# secure_upload
+# CIA-Transfer
 
-A new Flutter application.
+ConfIntegrAvail-Transfer or short CIA-Transfer is an application which allows
+you to share files via existing file host providers (e.g. Dropbox) but in a
+secure manner. Main objectives are confidentially, integrity and availability
+of the shared files while respecting your privacy. CIA-Transfer is also free,
+open-source and published under a BSD-style license.
 
-## Getting Started
+## CIA-Transfer App
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This is the repository of mobile application for Android and iOS.

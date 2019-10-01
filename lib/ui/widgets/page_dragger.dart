@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:secure_upload/data/global.dart' as globals;
-import 'package:secure_upload/ui/widgets/pager_indicator.dart';
+import 'package:cia_transfer/data/global.dart' as globals;
+import 'package:cia_transfer/ui/widgets/pager_indicator.dart';
 
 class PageDragger extends StatefulWidget {
   final bool canDragLeftToRight;

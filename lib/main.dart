@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:secure_upload/ui/custom/theme.dart' as theme;
-import 'package:secure_upload/data/strings.dart';
+import 'package:cia_transfer/ui/custom/theme.dart' as theme;
+import 'package:cia_transfer/data/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:secure_upload/ui/screens/onboarding/walkthrough_screen.dart';
-import 'package:secure_upload/ui/screens/home_screen.dart';
+import 'package:cia_transfer/ui/screens/onboarding/walkthrough_screen.dart';
+import 'package:cia_transfer/ui/screens/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

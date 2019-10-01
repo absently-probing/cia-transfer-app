@@ -1,4 +1,4 @@
-package de.fuberlin.imp.secure_upload
+package dev.hanni.cia_transfer
 
 import android.os.Bundle
 

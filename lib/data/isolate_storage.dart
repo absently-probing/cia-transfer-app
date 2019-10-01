@@ -1,6 +1,6 @@
 
 import '../backend/storage/storage.dart';
-import 'package:secure_upload/data/isolate_messages.dart';
+import 'package:cia_transfer/data/isolate_messages.dart';
 
 class IsolateStorage extends Storage {
   final IsolateCommunication comm;

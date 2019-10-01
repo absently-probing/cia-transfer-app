@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:secure_upload/data/strings.dart';
+import 'package:cia_transfer/data/strings.dart';
 
 class MainContextMenu extends StatelessWidget {
   final void Function(String, BuildContext) _callback;
