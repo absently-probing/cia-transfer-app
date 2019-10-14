@@ -9,3 +9,8 @@ open-source and published under a BSD-style license.
 ## CIA-Transfer App
 
 This is the repository of mobile application for Android and iOS.
+
+## Demonstraion Video
+
+Have a look at the [demonstration video](https://cia-transfer.github.io/demo.mp4) to see how the app works and what
+it looks like at the moment.
